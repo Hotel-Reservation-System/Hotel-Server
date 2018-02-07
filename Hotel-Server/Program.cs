@@ -36,6 +36,22 @@
  *      * Deploy to the cloud or on-premises.
  *      * Run on .NET Core or .NET Framework."[1]
  *
+ * The wwwroot folder is the root folder of your website. Any files that are part of your web
+ * application, such as HTML and JavaScript files, should be put into subfolders of wwwroot.
+ *
+ * A browser sends a request to a server. This application will be running on the server, so it
+ * needs to interpret incoming requests. Requests come in Context objects. Context objects and the
+ * requests contained therein, are managed by ASP.NET Core's Middleware. The Middleware can be 
+ * thought of as a series of pipes that decide what to do with incoming requests.
+ *
+ * When a request reaches the server, ASP.NET Core's Middleware handles it. The first "pipe-juncture"
+ * checks if the request requires an immediate response message. If no response is necessary, the
+ * request message (as a Context object) passes to the next "pipe-juncture". It's possible for a
+ * request to go through the whole middleware stack without a response message being sent back,
+ * which the client would interpret as a 404 error message (Resource Not Found). Sometimes, a
+ * "pipe-juncture" returns a response (which is attached to the Context object), but typically, the
+ * request message goes all the way to last "pipe-juncture", which will respond. The response
+ * message passes through the pipeline and the server sends it back to the client.
  * 
  **************************************************************************************************
  **************************************************************************************************
