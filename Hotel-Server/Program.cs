@@ -39,6 +39,10 @@
  * The wwwroot folder is the root folder of your website. Any files that are part of your web
  * application, such as HTML and JavaScript files, should be put into subfolders of wwwroot.
  *
+ * MIDDLEWARE
+ *
+ * See this link for more information: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/index?tabs=aspnetcore2x
+ * 
  * A browser sends a request to a server. This application will be running on the server, so it
  * needs to interpret incoming requests. Requests come in Context objects. Context objects and the
  * requests contained therein, are managed by ASP.NET Core's Middleware. The Middleware can be 
@@ -52,6 +56,10 @@
  * "pipe-juncture" returns a response (which is attached to the Context object), but typically, the
  * request message goes all the way to last "pipe-juncture", which will respond. The response
  * message passes through the pipeline and the server sends it back to the client.
+ *
+ * MVC is a piece of middlware that handles requests and responses. If you look at the Startup.cs
+ * file, you'll find MVC is added in the ConfigureServices() method ("services.AddMvc();") and in
+ * the Configure() method ("app.UseMvc();") 
  * 
  **************************************************************************************************
  **************************************************************************************************
