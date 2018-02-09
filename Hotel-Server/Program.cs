@@ -57,9 +57,35 @@
  * request message goes all the way to last "pipe-juncture", which will respond. The response
  * message passes through the pipeline and the server sends it back to the client.
  *
- * MVC is a piece of middlware that handles requests and responses. If you look at the Startup.cs
- * file, you'll find MVC is added in the ConfigureServices() method ("services.AddMvc();") and in
- * the Configure() method ("app.UseMvc();") 
+ * MVC is a piece of middlware that handles requests and responses. You need to add MVC to the
+ * middleware pipeline. There are three steps to adding MVC to our project:
+ *
+ * 1. Add MVC to the Project's References: All ASP.NET Core projects should include the
+ *    Microsoft.AspNetCore.All package. If it's missing, add it to the project.
+ * 
+ * 2. Add MVC to the Services: A service is a pre-requisite component that supports MVC and other 
+ *    bits of the middleware during the functioning of the program. Go to Startup.cs and in the
+ *    ConfigureServices() method, include this line to add MVC services to the services collection:
+ *
+ *        services.AddMvc();
+ * 
+ * 3. Add MVC to the Middleware Pipeline: In this step, I will add MVC to the pipeline, but this
+ *    has to done carefully. Here is a sample Startup.cs. Take a look at the Configure() method:
+ *
+ *        if (env.IsDevelopment())
+ *        {
+ *            app.UseDeveloperExceptionPage();
+ *        }
+ *
+ *        app.UseMvc();
+ *        app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); });
+ *
+ *    The if statement is running an environment status check, which is one of the first things
+ *    an ASP.NET Core project does when it starts. I don't want to add MVC before this check. The
+ *    last line is  Run() method, which sends a response to incoming requests. If MVC is added to
+ *    the pipeline at this point, it would never get turned on until after the responses message
+ *    had been sent out. That's why adding MVC to the middleware pipeline is the second instruction.
+ * 
  * 
  **************************************************************************************************
  **************************************************************************************************
