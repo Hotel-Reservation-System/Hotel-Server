@@ -1,7 +1,6 @@
 MODEL-VIEW-CONTROLLER ARCHITECTURE
  
-Here is an introduction to MVC:
-(Source: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+Here is an introduction to MVC[1]:
  
     Model–view–controller (MVC) is a software architectural pattern for implementing user
     interfaces on computers. It divides a given application into three interconnected parts.
@@ -14,69 +13,107 @@ Here is an introduction to MVC:
     Popular programming languages like Java, C#, Ruby, PHP and others have popular MVC frameworks
     that are currently being used in web application development straight out of the box.
  
-The multi-tier architecture traditionally organizes a codebase into a 3-tier hierarchy: The
-presentation layer, which is the user interface layer, sits on top of the stack of layers; the
-logic layer sits in the middle, and the data access layer sits at the bottom. The client layer
-never directly talks to the data layer, it must pass through the logic layer to talk to the data
-layer. Interactions between layers is linear and hierarchical. This architecture separates a
+
+SEPARATION OF CONCERNS
+
+MVC is a software architectural pattern that is primarily used for individual programs/modules,
+not client-server architectures. The MVC pattern helps to separate concerns. The Wikipedia article
+[2] explains Separation of Concerns: 
+
+    In computer science, separation of concerns (SoC) is a design principle for separating a 
+    computer program into distinct sections, such that each section addresses a separate concern. 
+    A concern is a set of information that affects the code of a computer program.
+ 
+At the lowest level of software, this design principle is closely related to the Single 
+Responsibility Principle. Separation of Concerns says that dissimilar aspects of software 
+functionality need be separated from each other into classes, modules, layers of similar 
+functionality. An article on DevIQ provides an example:
+
+    The general idea is that one should avoid co-locating different concerns within the design or 
+    code.  For instance, if your application includes business logic for identifying certain 
+    noteworthy items to display to the user, and your application formats such items in a certain 
+    way to make them more noticeable, it would violate separation of concerns if both the logic for 
+    determining which items were noteworthy and the formatting of these items were in the same 
+    place.  The design would be more maintainable, less tightly coupled, and less likely to violate 
+    the Don’t Repeat Yourself principle if the logic for determining which items needed formatting 
+    were located in a single location (with other business logic), and were exposed to the user 
+    interface code responsible for formatting simply as a property.
+
+At the lowest level, this means that you don't want to write a class that mixes business logic AND 
+presentation logic or the data access layer. Rather, to separate concerns, you should write multiple 
+classes/interfaces/files, each of which has a specific responsibility. 
+
+The multi-tier architecture traditionally organizes a codebase into a 3-tier hierarchy to separate
+concerns: The presentation layer, which is the user interface layer, sits on top of the stack of 
+layers; the logic layer sits in the middle, and the data access layer sits at the bottom. The client 
+layer never directly talks to the data layer, it must pass through the logic layer to talk to the 
+data layer. Interactions between layers is linear and hierarchical. This architecture separates a
 program into modules, based on function. It is best suited for programs in a client-server
 relationship.
 
-MVC is a software architectural pattern that is primarily used for individual programs/modules,
-not client-server architectures. To modularize the program, it is necessary to "separate
-internal representations of information from the ways information is presented to, and accepted
-from, the user. The MVC design pattern decouples these major components allowing for efficient
-code reuse and parallel development."
-(Source: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) MVC seeks to
-separate concerns by extracting these components into 3 layers: Model, View, and Controller.
-Unlike the multi-tier architecture, MVC's components interact in a rectangular structure. To
-decipher the diagram that explains this structure, start with the User:
+MVC "separate[s] internal representations of information from the ways information is presented to, 
+and accepted from, the user. The MVC design pattern decouples these major components allowing for 
+efficient code reuse and parallel development."[4] MVC seeks to separate concerns by extracting 
+these components into 3 layers: Model, View, and Controller. The purpose of separating concerns into
+separate layers is prevent the codebase from turning into spaghetti code. If concerns are correctly
+separated, modifying business logic (Models) classes should not require changing Views or 
+Controllers.  
+
+Unlike the multi-tier architecture, 
+MVC's components interact in a triangular structure. Below, there is a diagram that explains this 
+structure. To decipher it, start with the User:
 
      
-                                       +-----------------+
-                                       |     MODELS      |
-                    +----------------+ |                 | <----------------+
-                    | If the Model     |  (IN DATABASE)  |   The Controller |
-                    | Changes, the     +-----------------+   Manipulates    |
-                    | View gets                              Models in the  |
-                    | Updated                                DB.            |
-                    |                                                       |
-                    v                                                       +
-                                      The View sends user input
-             +-----------------+          to the Controller          +-----------------+
-             |                 | +---------------------------------> |                 |
-             |       VIEW      |                                     |    CONTROLLER   |
-             |                 | <---------------------------------+ |                 |
-             +-----------------+  The Controller sometimes updates   +-----------------+
-                                         the View directly
-                    +                                                       ^
-                    |                                                       |
-                    |                                                       |
-                    | The User                               The User issues|
-                    | Interface (UI)                         orders via the |
-                    | presents info    +-----------------+   UI to the      |
-                    | to the user      |                 |   Controller     |
-                    +--------------->  |     THE USER    | -----------------+
-                                       |                 |
-                                       +-----------------+
- 
- 
-The three parts of MVC:
+                                                   +-----------------+
+                                                   |     MODELS      |
+                                +----------------+ |                 | <----------------+
+                                | If the Model     |  (IN DATABASE)  |   The Controller |
+                                | Changes, the     +-----------------+   Manipulates    |
+                                | View gets                              Models in the  |
+                                | Updated                                DB.            |
+                                |                                                       |
+                                v                                                       +
+                                                  The View sends user input
+                         +-----------------+          to the Controller          +-----------------+
+                         |                 | +---------------------------------> |                 |
+                         |       VIEW      |                                     |    CONTROLLER   |
+                         |                 | <---------------------------------+ |                 |
+                         +-----------------+  The Controller sometimes updates   +-----------------+
+                                                     the View directly
+                               
+                               ^      +
+                               |      |
+              The User issues  |      |   The User Interface 
+              orders via the   |      |   (UI) presents info
+              UI (View) to     |      |   to the user. 
+              the Controller   |      |   
+                               |      |
+                               +      v
+                           
+                         +----------------+
+                         |                |
+                         |    THE USER    |
+                         |                |
+                         +----------------+ 
+
+
+The three layers of MVC:
 
 1. Model: The model layer consists of classes that define important business entities in your
-   program. Example: In a Calendar program, Dates, Alarms, Contacts etc. are model objects on
-   which the program will operate. These objects will be stored in the program's database.
+   program and the Data Access Layer. In a Calendar program, Business entities such as Dates, 
+   Alarms, Contacts etc. are model objects on which the program will operate. These objects will be 
+   stored in the program's database. You may need an ORM library to talk the database. This stuff is 
+   the data access layer.
 
    Despite the fact that the database will contain model objects, the implementation of a
-   program's data access layer (the database) and all its associated business logic should be
-   separate from the Model layer. 
+   program's data access layer and all its associated logic should be separate from the Model layer. 
 
 2. View: "A view is a (visual) representation of its model. It would ordinarily highlight
    certain attributes of the model and suppress others. It is thus acting as a presentation
    filter. (Source: https://blog.codinghorror.com/understanding-model-view-controller/) The
    View layer is the presentation layer i.e. it formats and presents data from models to the
-   user. Armed with this information, the User can use the View (UI) to issue orders to to the
-   program. The View can be a webpage, a GUI, a text-based UI etc.
+   user. Armed with this information, the User can use the UI (the View) to issue orders to to the
+   program. The View can be an HTML webpage, a GUI, a text-based UI, Razor Views etc.
 
 3. Controller: The controller layer is the brain of an application. The Controller layer will
    respond to user-initiated events by issuing orders to models and views. By doing these
@@ -84,3 +121,10 @@ The three parts of MVC:
    via the UI, Controllers will process, interpret and validate these requests. Then it will
    query and modify models and create or update Views to fulfill the user request.
  
+ 
+ SOURCES:
+ 
+ 1: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+ 2: https://en.wikipedia.org/wiki/Separation_of_concerns
+ 3: http://deviq.com/separation-of-concerns/
+ 4: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
