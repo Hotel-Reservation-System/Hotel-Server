@@ -63,38 +63,42 @@ Unlike the multi-tier architecture,
 MVC's components interact in a triangular structure. Below, there is a diagram that explains this 
 structure. To decipher it, start with the User:
 
-     
-                                                   +-----------------+
-                                                   |     MODELS      |
-                                +----------------+ |                 | <----------------+
-                                | If the Model     |  (IN DATABASE)  |   The Controller |
-                                | Changes, the     +-----------------+   Manipulates    |
-                                | View gets                              Models in the  |
-                                | Updated                                DB.            |
-                                |                                                       |
-                                v                                                       +
-                                                  The View sends user input
-                         +-----------------+          to the Controller          +-----------------+
-                         |                 | +---------------------------------> |                 |
-                         |       VIEW      |                                     |    CONTROLLER   |
-                         |                 | <---------------------------------+ |                 |
-                         +-----------------+  The Controller sometimes updates   +-----------------+
-                                                     the View directly
-                               
-                               ^      +
-                               |      |
-              The User issues  |      |   The User Interface 
-              orders via the   |      |   (UI) presents info
-              UI (View) to     |      |   to the user. 
-              the Controller   |      |   
-                               |      |
-                               +      v
-                           
-                         +----------------+
-                         |                |
-                         |    THE USER    |
-                         |                |
-                         +----------------+ 
+
+                                     +-------------------------------------------------------------------------+
+                                     |                                                                         |
+                                     |                                                                         |
+                                     |                                                                         |
+                                     |                            AN MVC PROGRAM                               |
+                                     |                                                                         |
+                                     |                                                                         |
+                     The User issues |                                                                         |
+                     orders to the   |                                                                         |
+                     program through |                       The View sends user input                         |
+                     the UI (View)   |                           to the Controller                             |
++-----------------+                  |  +-----------------+                              +-----------------+   |
+|                 | +-----------------> |                 | +--------------------------> |                 |   |
+| THE CLIENT/USER |                  |  |       VIEW      |                              |    CONTROLLER   |   |
+|                 | <-----------------+ |                 | <--------------------------+ |                 |   |
++-----------------+                  |  +-----------------+                              +-----------------+   |
+                    Information is   |                       The Controller sometimes                          |
+                    presented to     |     ^                 updates the View directly                  +      |
+                    the User via     |     |                                                            |      |
+                    the User         |     |                                                            |      |
+                    Interface (View) |     |                                                            |      |
+                                     |     |                                             The Controller |      |
+                                     |     | When the                                    responds to    |      |
+                                     |     | Models in the +---------------------------+ the user       |      |
+                                     |     | Database      |                           | request by     |      |
+                                     |     | change, the   |     DATA ACCESS LAYER     | manipulating   |      |
+                                     |     | View gets     |                           | Model objects  |      |
+                                     |     | updated       |     +---------------+     | in the Database|      |
+                                     |     +-------------+ |     |  MODELS (IN   |     | <--------------+      |
+                                     |                     |     |      THE      |     |                       |
+                                     |                     |     |   DATABASE)   |     |                       |
+                                     |                     |     +---------------+     |                       |
+                                     |                     +---------------------------+                       |
+                                     |                                                                         |
+                                     +-------------------------------------------------------------------------+
 
 
 The three layers of MVC:
