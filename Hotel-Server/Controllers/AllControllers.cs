@@ -5,7 +5,8 @@
  * controller? When a user provides input to an application, controllers process and respond to it.
  * Controllers contain logic to query and alter models and to create and update new views.
  *
- * The Controller for this project is the class AllControllers. It appears that either .NET Core or
+ * The Controller for this project is the class AllControllers. It inherits from the Controller
+ * class, which is part of the MVC framework. It appears that either .NET Core or
  * Entity Framework Core magically instantiates this class behind the scenes and uses it direct
  * control flow. In a non-networked program, a Controller class would contain regular methods that
  * control application flow by reacting to user actions. But for networked projects such as this
@@ -28,20 +29,38 @@
  * 
  * 
  * ROUTING IN ASP.NET CORE
+ *
+ * Hotel-Server is an ASP.NET Core Web API project, which means that it is a program that will run
+ * on the server. It's the duty of Web API projects serve up public resources to clients while
+ * restricting access to private or gated resources. Hotel-Server will serve up resources to
+ * any program that can make HTTP requests to it. Hotel-Server is built to work with Hotel-Client, 
+ * but it can also work with a browser-based JS/WASM web application analoguous to Hotel-Client.
  * 
- * If you run Hotel-Server, it should open a URL in a browser tab that looks like this:
+ * Clients and users can access public resources on a server by calling up a Uniform Resource
+ * Locator (URL). This could be a person typing a URL into a browser-based web application or a
+ * client-side application like Hotel-Client. When the client sends a request for a resource to the
+ * server, Hotel-Server will receive this request and process it.
+ *
+ * Hotel-Server's middleware layer must map the URL of the incoming request to a resource on the 
+ * server. This process is called ROUTING. To route a URL, Hotel-Server will use classes called
+ * ROUTE HANDLERS to map it to specific Controller actions or files. 
+ *
+ * When Hotel-Server runs, it starts listening for incoming requests. A URL for a resource on a Web
+ * API project might look like this: http://localhost:23598/api/. For the sake of explaining the
+ * parts of a URL, look at the default URL for a Web application project:
  * 
  *      http://localhost:23598/Home/Index
  * 
- * These are the parts of a URL:
+ * To understand how routes and routing works, let's break down a URL. These are the parts of this
+ * URL:
  * 
  * http: is the network PROTOCOL.
  * localhost: is a universal name for the local computer (HOST) on which the program is run.
  * 23598: is the PORT where IIS (Internet Information Services, a Microsoft web server that comes
  *        standard on most recent versions of Windows) is hosting this ASP.NET Core application.
  *        IIS will find an use a port that is not being used to prevent conflicts. 
- * Home: is a reference to the CONTROLLER of the application. 
- * Index: In the Home Controller on the local host, the Index ACTION is being sought.
+ * Home: is a reference to the CONTROLLER class of this name in the application. 
+ * Index: reference to an ACTION method called Index() in the Home Controller class.
  * 
  * The Protocol and the Host are not part of the ASP.NET Core MVC stack. They are managed by your
  * Network Firewall and Server. Neither of these will be discussed here. When you want to deploy
@@ -51,9 +70,9 @@
  * 
  * ASP.NET Core has something called ROUTES. Here's an explanation of what is does: 
  * 
- *      
  * 
- * MVC maps Home to a Controller and Index to an Action through a ROUTING TEMPLATE. A Routing Template is a 
+ * MVC maps the Home Controller to a Controller and the Index method to an Action through a ROUTING
+ * TEMPLATE. A Routing Template is a string with standardized format.  
  *
  * 
  **************************************************************************************************
@@ -95,7 +114,7 @@
  * 
  * INTELLIJ RIDER
  * As of September 11, 2017, this feature does not exist in IntelliJ Rider.[2] You may be able to 
- * generate it through the terminal. 
+ * generate it through the terminal.[] 
  * 
  * Go the the main program folder (Hotel-Server) and find the project folder (also named 
  * Hotel-Server). Open a command prompt window. If you want to see general options, run 
