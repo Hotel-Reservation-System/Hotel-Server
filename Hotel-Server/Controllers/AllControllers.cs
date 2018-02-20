@@ -38,21 +38,40 @@
  * 
  * Clients and users can access public resources on a server by calling up a Uniform Resource
  * Locator (URL). This could be a person typing a URL into a browser-based web application or a
- * client-side application like Hotel-Client. When the client sends a request for a resource to the
- * server, Hotel-Server will receive this request and process it.
+ * request issued by a client-side application like Hotel-Client. When the client sends a request
+ * for a resource to the server, Hotel-Server will receive this request and process it.
  *
- * Hotel-Server's middleware layer must map the URL of the incoming request to a resource on the 
- * server. This process is called ROUTING. To route a URL, Hotel-Server will use classes called
- * ROUTE HANDLERS to map it to specific Controller actions or files. 
+ * The request is seeking a resource of some kind - a webpage, an image, a video, a document or
+ * another kind of file. Hotel-Server has to process this request, find the resource that is being
+ * sought and return it to the client. Along the way, Hotel-Server needs to determine if the
+ * resource exists and whether the client has access rights to it.
  *
+ * To respond to the request and fulfill it, Hotel-Server's middleware layer must map the URL of the
+ * incoming request to a resource on the server. This process is called ROUTING. To route a URL,
+ * Hotel-Server will use classes called ROUTE HANDLERS to map it to specific Controller actions or
+ * files. 
+ *
+ * 
+ * ANATOMY OF A URL
+ *
+ * Before talking about routing, one must understand the anatomy of a URL.
+ * 
  * When Hotel-Server runs, it starts listening for incoming requests. A URL for a resource on a Web
  * API project might look like this: http://localhost:23598/api/. For the sake of explaining the
  * parts of a URL, look at the default URL for a Web application project:
  * 
  *      http://localhost:23598/Home/Index
  * 
- * To understand how routes and routing works, let's break down a URL. These are the parts of this
- * URL:
+ *     |___|   |________|_____|____|_______|
+ *       |         |       |    |        |
+ *   PROTOCOL     HOST   PORT CONTROLLER INDEX
+ * 
+ *   |_______________________|________________|
+ *               |                   |
+ *       NETWORK & SERVER           MVC
+ * 
+ * To understand how routes and routing works, know thebreak down of a URL. These are the parts of 
+ * this URL:
  * 
  * http: is the network PROTOCOL.
  * localhost: is a universal name for the local computer (HOST) on which the program is run.
@@ -65,14 +84,28 @@
  * The Protocol and the Host are not part of the ASP.NET Core MVC stack. They are managed by your
  * Network Firewall and Server. Neither of these will be discussed here. When you want to deploy
  * this program in a production environment, you will have to talk to your company's IT services
- * to determine the specific URL. The Controller and Action portions of the URL are managed by the
- * MVC framework.
+ * to determine the specific URL.
+ *
+ * The important takeaway is this: the first part of a URL refers to the protocol and the address
+ * of the host. With this part, you can find a specific server on the internet. Once you find
+ * the server you're want, the second part of the URL refers to resources hosted on that server.
  * 
- * ASP.NET Core has something called ROUTES. Here's an explanation of what is does: 
+ * The second part of the URL is comprised of the Controller and Action (Only in the example above. 
+ * There are other parts not shown in this example.). This part of the URL is called a ROUTE,
+ * because it points to resources on the server or to code the server will execute. The MVC
+ * Framework manages the route and maps it to a resource on the server.
+ *
  * 
+ * ROUTES & ROUTING
  * 
  * MVC maps the Home Controller to a Controller and the Index method to an Action through a ROUTING
- * TEMPLATE. A Routing Template is a string with standardized format.  
+ * TEMPLATE. A routing template looks like this:
+ *
+ *     {controller}/{action}
+ *
+ * A Routing Template is a string with standardized format. In this example, the routing template
+ * requires the controller to come first and is separated from the action by forward slash. In the
+ * example, http://localhost:23598/Home/Index
  *
  * 
  **************************************************************************************************
