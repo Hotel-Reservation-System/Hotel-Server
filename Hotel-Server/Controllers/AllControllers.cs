@@ -96,7 +96,7 @@
  * Framework manages the route and maps it to a resource on the server.
  *
  * 
- * ROUTES & ROUTING
+ * ROUTES & ROUTING TEMPLATES
  * 
  * MVC maps the Home Controller to a Controller and the Index method to an Action through a ROUTING
  * TEMPLATE. A routing template looks like this:
@@ -104,9 +104,72 @@
  *     {controller}/{action}
  *
  * A Routing Template is a string with standardized format. In this example, the routing template
- * requires the controller to come first and is separated from the action by forward slash. In the
- * example, http://localhost:23598/Home/Index
+ * requires the controller to come first and is separated from the action by forward slash. If this
+ * routing template is applied to this URL
  *
+ *     http://localhost:23598/Home/Index
+ *
+ * Home is the controller and Index is the action method. When a routing template is defined, it
+ * can be given default values like this:
+ *
+ *     {controller=Home}/{action=Index}
+ *
+ * No controller or action is specified, if the incoming request requests this URL:
+ *
+ *     http://localhost:23598
+ *
+ * However, the middleware will load the default route, which means that this URL will be returned:
+ *
+ *     http://localhost:23598/Home/Index
+ *
+ * If you need the action methods in your controller to accept parameters, change the default 
+ * template to something like this:
+ *
+ *     {controller=Home}/{action=Index}/{id?}
+ * 
+ * In the context of routing templates, the Id field is a generic reference to a parameter name. 
+ * Adding Id to the routing template will let the client provide an argument to a parameter called
+ * Id in the Index() method. In a real routing template, replace the "Id" value with the paramter's
+ * name. The question mark indicates that the Id value is optional.
+ *
+ * Routing templates are defined in the Configure() method of the Startup.cs file. Here is sample
+ * default routing template for a Web Application project:
+ *
+ *     public void Configure(IApplicationBuilder app)
+ *     {
+ *         app.UseIISPlatformHandler();
+ *         app.UseRunTimeInfoPage();
+ *
+ *         app.UseMvc
+ *         (
+ *             routes =>
+ *             {
+ *                 // The Default Routing Template:
+ *                 routes.MapRoute("Default", "{controller = Home}/{action = Index}");
+ *             }
+ *         )
+ *     };
+ *
+ * It's possible to declare more than one routing template, like this:
+ *
+ *     routes =>
+ *     {
+ *         routes
+ *                // The Default Routing Template:
+ *                .MapRoute("Default", "{controller = Home}/{action = Index}");
+ *                // The Default Template for the Members Page:  
+ *                .MapRoute("Members", "Members/{controller = MemberHome}/{action = Index}/{id?});
+ *     };
+ *
+ * The Members routing template kicks in when one of these URLs are requested:
+ *
+ *     http://localhost:23598/Members
+ *     http://localhost:23598/Members/MemberHome
+ *     http://localhost:23598/Members/MemberHome/Index
+ *     http://localhost:23598/Members/MemberHome/Index/10
+ * 
+ * There is but one default Members page and it will be loaded for all these requests.
+ * 
  * 
  **************************************************************************************************
  **************************************************************************************************
