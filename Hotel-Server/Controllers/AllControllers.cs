@@ -96,7 +96,7 @@
  * Framework manages the route and maps it to a resource on the server.
  *
  * 
- * ROUTES & ROUTING TEMPLATES
+ * CONVENTION-BASED ROUTING: ROUTING TEMPLATES
  * 
  * MVC maps the Home Controller to a Controller and the Index method to an Action through a ROUTING
  * TEMPLATE. A routing template looks like this:
@@ -169,6 +169,57 @@
  *     http://localhost:23598/Members/MemberHome/Index/10
  * 
  * There is but one default Members page and it will be loaded for all these requests.
+ *
+ * 
+ * ATTRIBUTE ROUTING: THE ROUTE ATTRIBUTE
+ *
+ * Routing templates centralize routing information in Startup.cs. There is an alternative to using
+ * routing templates: Attribute Routing. In this way of doing routing, to specify their routes,
+ * controller classes and action methods are annotated with Route Attributes. This is usually done
+ * by declaring things in square brackets just above a class or method. Example:
+ *
+ *     [Route("")]
+ *     [Route("All")]
+ *     public class AllControllers : Controller
+ *     {
+ *         [Route("Index")]
+ *          public IActionResult Index()
+ *          {
+ *              return View;
+ *          }
+ *     }
+ *
+ * When you specify the name of a controller or action in an attribute, you are directing the
+ * program to expect these route values in the URL. This example code is routed in such a way that
+ * the URL would look like this:
+ *
+ *     http://localhost:23598/All/Index/
+ *
+ * A blank route string denotes a default controller or action. If the URL contains the world "All"
+ * after the hostname, the program will search attribute routes for the "All" route attribute.
+ * If such a route is found, the program will interpret this to mean that the URL is referring to
+ * the AllControllers class. 
+ *
+ * Attribute routing requires you to annotate virtually every class and method with an attribute,
+ * but it is preferred by some people because routing information is visible right above the class
+ * or method declaration.
+ *
+ * There is a variation of attribute routing, where one can use generic tokens like [controller] or
+ * [action] in place of specific strings within Route Attributes. If you use tokens, you're
+ * designating the name of aclass or method as the route values to expect in the URL. This way
+ * has similarities  to routing templates. For the URL from the last example, this is the attribute
+ * declaration using tokens:
+ *
+ *     [Route("")]
+ *     [Route("[controller]")]
+ *     public class AllControllers : Controller
+ *     {
+ *         [Route("[action]")]
+ *          public IActionResult Index()
+ *          {
+ *              return View;
+ *          }
+ *     }
  * 
  * 
  **************************************************************************************************
