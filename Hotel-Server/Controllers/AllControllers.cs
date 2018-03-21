@@ -1,27 +1,127 @@
-﻿/* CONTROLLER CLASSES AND ENDPOINT METHODS
+﻿/* INTRODUCTION TO CONTROLLER CLASSES AND ENDPOINTS
  * 
  * One of the main purposes of the Hotel-Server project is to define controllers (The other is to 
  * set up the Data Access Layer.). The Controller refers to the C in the MVC pattern. What is a
- * controller? When a user provides input to an application, controllers process and respond to it.
- * Controllers contain logic to query and alter models and to create and update new views.
+ * controller? From an MSDN article[1]:
  *
- * The Controller for this project is the class AllControllers. It inherits from the Controller
- * class, which is part of the MVC framework. It appears that either .NET Core or
+ *     Controllers process incoming requests, handle user input and interactions, and execute
+ *     appropriate application logic. A controller class typically calls a separate view component
+ *     to generate the HTML markup for the request.
+ *
+ * Simply put, controllers are classes that contain business logic methods which respond to user
+ * input. When a request comes in, the controller will process it. To do this, one or more of the
+ * methods in the controller may query the database to read and alter models. Then, it may issue
+ * updates to the View. The updated View may be returned as a response to the user request.
+ *
+ * Controller classes contain ACTION METHODS, which perform ACTIONS and return results called
+ * ACTION RESULTS.
+ *
+ *
+ * CONTROLLER CLASSES
+ * 
+ * Here's a little more on Controllers[2]:
+ *
+ *     A controller is used to define and group a set of actions. An action (or action method) is a
+ *     method on a controller which handles requests. Controllers logically group similar actions
+ *     together. This aggregation of actions allows common sets of rules, such as routing, caching,
+ *     and authorization, to be applied collectively. Requests are mapped to actions through
+ *     routing.
+ *
+ *     By convention, controller classes:
+ * 
+ *         * Reside in the project's root-level Controllers folder
+ *         * Inherit from Microsoft.AspNetCore.Mvc.Controller
+ *
+ *     A controller is an instantiable class in which at least one of the following conditions is
+ *     true:
+ *
+ *     * The class name is suffixed with "Controller".
+ *     * The class inherits from a class whose name is suffixed with "Controller".
+ *     * The class is decorated with the [Controller] attribute.
+ *
+ *     A controller class must not have an associated [NonController] attribute...
+ *
+ *     The controller is a UI-level abstraction. Its responsibilities are to ensure request data is
+ *     valid and to choose which view (or result for an API) should be returned. In well-factored
+ *     apps, it doesn't directly include data access or business logic. Instead, the controller
+ *     delegates to services handling these responsibilities.
+ *
+ * 
+ * From the first source[1], here is an excerpt that explains the class hierarchy:
+ *
+ *     The base class for all controllers is the ControllerBase class, which provides general MVC
+ *     handling. The Controller class inherits from ControllerBase and is the default
+ *     implement[ation] of a controller. The Controller class is responsible for the following
+ *     processing stages:
+ *
+ *         * Locating the appropriate action method to call and validating that it can be called.
+ *         * Getting the values to use as the action method's arguments.
+ *         * Handling all errors that might occur during the execution of the action method.
+ *
+ * The ControllerBase supports MVC Controllers WITHOUT View support. The Controller class is the
+ * base class for an MVC controller with View support. The Controller class has useful properties
+ * related to Request and Response objects built into it. It appears that either .NET Core or
  * Entity Framework Core magically instantiates this class behind the scenes and uses it direct
- * control flow. In a non-networked program, a Controller class would contain regular methods that
- * control application flow by reacting to user actions. But for networked projects such as this
- * one, where a multi-tier architecture separates the project into a user-facing client program,
- * a server-based database backend and a Common classes library, the client must communicate to the
- * database over a network. In this context, 'Network' can refer to the internet or LANs such as
- * your home network. If the client and server are running on the same machine, the communication
- * happens only on the local network.
+ * control flow. 
+ * 
+ * The Controller for this project is the class AllControllers. (Note that its name appears to 
+ * violate the requirement that controllers need to have the suffix -Controller.)
+ *
+ *
+ * ACTIONS/ACTION METHODS
+ *
+ * ACTIONS/ACTION METHODS appear to ASP.NET Core jargon for ENDPOINTS. What are endpoints?
+ * 
+ * In a non-networked program, a class would contain regular methods that control application flow
+ * by reacting to user actions. But for networked projects such as this one, where a multi-tier
+ * architecture separates the project into a user-facing client program, a server-based database
+ * backend and a Common class library, the client must communicate to the database backend over a
+ * network. In this context, 'Network' can refer to the internet or LANs such as your home network.
+ * If the client and server are running on the same machine, the communication happens only on the
+ * local network.
  *
  * To facilitate inter-program communication over a network, Hotel-Server must have its Controller 
  * class (AllControllers) expose an API to said network. Through this API, any network-based 
  * program can communicate with the database. In the case of networked programs, APIs are exposed 
- * through public methods called ENDPOINTS. In the context of an API, Endpoints are just public 
- * methods inside Controller classes that can be called over a network. All endpoints are 
- * controller methods, but not all controller methods are endpoints. 
+ * through public methods called ENDPOINTS. In the context of a Web API project, Endpoints are just
+ * public methods inside Controller classes that can be called over a network. All endpoints are 
+ * controller methods, but not all controller methods are endpoints. Controllers can have private,
+ * helper methods.
+ * 
+ * Here's the ASP.NET team's explanation for Actions[2]:
+ *
+ *     Public methods on a controller, except those decorated with the [NonAction] attribute, are
+ *     actions. Parameters on actions are bound to request data and are validated using model
+ *     binding. Model validation occurs for everything that's model-bound. The ModelState.IsValid
+ *     property value indicates whether model binding and validation succeeded.
+ *
+ *     Action methods should contain logic for mapping a request to a business concern. Business
+ *     concerns should typically be represented as services that the controller accesses through
+ *     dependency injection. Actions then map the result of the business action to an application
+ *     state.
+ *
+ *     Actions can return anything, but frequently return an instance of IActionResult (or
+ *     Task<IActionResult> for async methods) that produces a response. The action method is
+ *     responsible for choosing what kind of response. The action result does the responding.
+ *
+ *
+ * ACTION RESULTS
+ * 
+ * The Controller class has predefined methods with predefined return values. As noted at in the
+ * previous paragraph, most method return values indirectly implement the same interface:
+ * IActionResult.
+ *
+ * The ActionResult abstract class is an implementation of IActionResult. Most Controller class
+ * return data types derive from ActionResult. Look for methods that return objects ending in the
+ * word 'Result'. These data types usually implement IActionResult. Examples: ContentResult,
+ * EmptyResult, FileResult, HttpStatusCodeResult, JavaScriptResult, JsonResult, RedirectResult and
+ * RedirectToRouteResult. 
+ *
+ * 
+ * SOURCES:
+ *
+ * 1: https://msdn.microsoft.com/en-us/Library/dd410269(v=vs.98).aspx
+ * 2: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/actions
  *
  * 
  **************************************************************************************************
@@ -94,6 +194,11 @@
  * There are other parts not shown in this example.). This part of the URL is called a ROUTE,
  * because it points to resources on the server or to code the server will execute. The MVC
  * Framework manages the route and maps it to a resource on the server.
+ *
+ * In ASP.NET Core Web Applications, most people use both routing templates and attribute routes.
+ * To manage the default route, they can add "app.UseMvcWithDefaultRoute();" to the Configure()
+ * method in Startup.cs. Special cases can be handled with annotating those controllers and methods
+ * with attribute routes.  
  *
  * 
  * CONVENTION-BASED ROUTING: ROUTING TEMPLATES
