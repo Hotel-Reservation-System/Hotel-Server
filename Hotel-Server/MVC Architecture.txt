@@ -98,7 +98,7 @@ there is a diagram that explains this structure. To decipher it, start with the 
                                      |     | When the                                    responds to    |      |
                                      |     | Models in the +---------------------------+ the user       |      |
                                      |     | Database      |                           | request by     |      |
-                                     |     | change, the   |     DATA ACCESS LAYER     | manipulating   |      |
+                                     |     | change, the   |     DATA ACCESS LAYER     | operating on   |      |
                                      |     | View gets     |                           | Model objects  |      |
                                      |     | updated       |     +---------------+     | in the Database|      |
                                      |     +-------------+ |     |  MODELS (IN   |     | <--------------+      |
@@ -116,7 +116,7 @@ The layers of Model-View-Controller:
    program and the Data Access Layer. In a Calendar program, Business entities such as Dates, 
    Alarms, Contacts etc. are model objects on which the program will operate. These objects will be 
    stored in the program's database. You may need an ORM library to talk the database. This stuff is 
-   the data access layer.
+   the data access layer. 
 
    Despite the fact that the database will contain model objects, the implementation of a
    program's data access layer and all its associated logic should be separate from the Model layer. 
