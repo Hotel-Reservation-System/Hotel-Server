@@ -19,7 +19,7 @@
  *
  * The programmer must create Context.cs and set it to inherit from DbContext. Then, she has to
  * outline certain information about the database in this class. Use information from the Model
- * classes (from project Common) to define the Data Model of the database. See below for more
+ * classes (in project Common) to define the Data Model of the database. See below for more
  * details on how to do this.
  */
 
