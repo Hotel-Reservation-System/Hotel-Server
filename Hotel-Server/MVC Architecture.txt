@@ -13,6 +13,7 @@ Here is an introduction to MVC[1]:
     Popular programming languages like Java, C#, Ruby, PHP and others have popular MVC frameworks
     that are currently being used in web application development straight out of the box.
  
+ 
 
 SEPARATION OF CONCERNS
 
@@ -65,6 +66,7 @@ with either of those two layers. The same is true of Views and Controllers and t
 other two layers. If concerns are correctly separated, modifying business logic (Models) classes 
 should not require changing Views or Controllers. The same holds for the editing of Views and 
 Controllers; modifying one layer should not require changes to the other two layers.  
+
 
 
 THE COMPONENTS OF MODEL-VIEW-CONTROLLER 
@@ -121,16 +123,18 @@ The layers of Model-View-Controller:
    Despite the fact that the database will contain model objects, the implementation of a
    program's data access layer and all its associated logic should be separate from the Model layer. 
 
+
 2. View: "A view is a (visual) representation of its model. It would ordinarily highlight
    certain attributes of the model and suppress others. It is thus acting as a presentation
    filter.[5] The View layer is the presentation layer i.e. it formats and presents data from models 
    to the user. Armed with this information, the User can use the UI (the View) to issue orders to
    the program. The View can be an HTML webpage, a GUI, a text-based UI, Razor Views etc.
 
+
 3. ViewModel: This layer, strictly speaking, is not a part of MVC. It belongs to a variant of MVC,
    the Model-View-ViewModel (MVVM) pattern. However, as MVC/MVVM is not an either/or choice[6], I'm 
    introducing this concept here. In MVVM, ViewModels take up the role of Controllers, but do not 
-   necessarily replace them completely. See the sixth article for more details. Here is an 
+   necessarily replace them completely. See the sixth source for more details. Here is an 
    explanation of what ViewModels do from an MSDN article[7]:
    
        The ViewModel class, which is the bridge between the view and the model. Each View class has 
@@ -138,6 +142,22 @@ The layers of Model-View-Controller:
        it into the format required by the View. It notifies the View if the underlying data in the 
        model is changed, and it updates the data in the Model in response to UI events from the 
        View.
+       
+   However, in ASP.NET Core, viewmodels appear to passive containers. There are two ways to send 
+   information to the user in an ASP.NET Core MVC application: have the Controller send Models 
+   directly to the View, which displays it to the user OR the have Controller load into the 
+   Viewmodel only the parts of the Model that the View requires, and then send that to the View. 
+   
+   Though the first method is easier, in ASP.NET Core MVC, it is a best practice to use viewmodels 
+   as intermediaries between models and views. There are two reasons for this: The View() method
+   can usually accept only a single model or Viewmodel object and secondly, Viewmodels let you 
+   tailor models so that only required model data gets sent to the View. For these reasons, only 
+   necessary Models are packed as properties into a Viewmodel, which is then sent to the View().
+   You should use a Viewmodel even if you need to send only a single model to the View(), as this
+   is something that could change in the future.
+   
+   For more information, see the project 'ASPNETCore WebApp 1 - Routing'.
+
 
 4. Controller: The controller layer is the brain of an application. The Controller layer consists of
    one or more classes that will respond to user-initiated requests by issuing orders to models and 
