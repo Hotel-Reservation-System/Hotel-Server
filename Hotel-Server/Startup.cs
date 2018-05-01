@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using PostgresEFCore.Providers;
+
+using Common.Models;
+
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Server
 {
@@ -53,6 +52,15 @@ namespace Hotel_Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            
+            // It appears that you can add a connection string and instantiate a Context object
+            // in the Startup file. The documented way is do all this in Context.cs and 
+            // MyDbContextFactory.cs. Investigate this further.
+//            var connectionString = "Host=localhost;" +
+//                                   "Username=postgres;" +
+//                                   "Password=password;" +
+//                                   "Database=HotelManagement";
+//            services.AddDbContext<Context>(options => options.UseNpgsql(connectionString));
         }
         
 
