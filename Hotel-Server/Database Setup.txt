@@ -88,17 +88,17 @@ If EF Core is to perform these translations, it must understand the topology of 
 are several concepts you need to understand to set up a program to interface with a database:
 
 
-     1) Data Provider,              (Defined in DbContextFactory/MyDbContextFactory.cs)
+     1) Database Provider,          (Defined in DbContextFactory/MyDbContextFactory.cs)
      2) Data Model,                 (Defined in DbContext/Context.cs)
      3) Database Schema             (Generated into the Migrations Folder)
 
 
 Here's a short summary: 
 
-The DATA PROVIDER is a small library that helps EF Core to talk to databases from a given vendor.
-For instance, there are Data Providers for SQL Server, SQLite, PostgreSQL and other databases.
-The general layout of the database and its entities are defined in the DATA MODEL (DM). The DM is
-contained in Context.cs. 
+The DATABASE PROVIDER is a small library that helps EF Core to talk to databases from a given 
+vendor. For instance, there are Database Providers for SQL Server, SQLite, PostgreSQL and other 
+databases. the general layout of the database and its entities are defined in the DATA MODEL (DM). 
+The DM is contained in Context.cs. 
 
 The DATABASE SCHEMA is the more specific database layout. It is a snapshot of the current topology 
 of the database and it can be generated on command from the Data Model. During the course of 
@@ -112,25 +112,26 @@ The next two sections examine these three concepts.
 
 
 
-2.2 DATA PROVIDERS
+2.2 DATABASE PROVIDERS
  
-A Data Provider is a "a software library consisting of classes that provide data access 
+A Database Provider is a "a software library consisting of classes that provide data access 
 services such as connecting to a data source, executing commands at a data source and fetching 
 data from a data source with support to execute commands within transactions. It resides as a 
 lightweight layer between data source and code, providing data access services with increased 
 performance." (Source: https://www.techopedia.com/definition/25227/net-data-provider). 
  
-EF Core can talk to any database if it has the data provider library for it. When Hotel-Server is 
-run, Entity Framework will be brought online to talk to the database. The first thing EFC will do
-is search for the Data Provider. 
+EF Core can talk to any database if it has the database provider library for it. When Hotel-Server 
+is run, Entity Framework will be brought online to talk to the database. The first thing EFC will do
+is search for the Database Provider. 
 
-The Data Provider for this project is the 'Npgsql.EntityFrameworkCore.PostgreSQL' package, which 
-was added via Nuget. With the help of this data provider, EF Core will determine that this project 
-uses a PostgreSQL database. By using this package, EFC can interface with the database. 
+The Database Provider for this project is the 'Npgsql.EntityFrameworkCore.PostgreSQL' package, which 
+was added via Nuget. With the help of this database provider, EF Core will determine that this 
+project uses a PostgreSQL database. With the help of this package, EFC can interface with the 
+database. 
 
 Once it can talk to the database, EF Core will will use the Data Model to transform a SQL query 
 into an object model representation of a query (which is called a canonical command tree) and vice 
-versa. .NET Data Providers can consume canonical command trees to talk the database.
+versa. .NET Database Providers can consume canonical command trees to talk the database.
 
 Go to DbContextFactory/MyDbContextFactory.cs to configure the PostgreSQL database.
 
@@ -304,9 +305,9 @@ Go to Context.cs to learn more about the things discussed above.
 After creating the data model in the Context class, you need to configure a session. In the 
 DbContextFactory folder, you will find MyDbContextFactory.cs. This class has to implement
 IDesignTimeDbContextFactory<TContext>, where TContext is the Context class you wrote in section 3.1.
-Its CreateDbContext() method utilizes the Context class and the PostgreSQL Data Provider to create 
-a fully functional instance of the DbContext class. This object will get passed to your Controllers
-and other parts of the program, and gets used whenever the database is contacted. 
+Its CreateDbContext() method utilizes the Context class and the PostgreSQL Database Provider to 
+create a fully functional instance of the DbContext class. This object will get passed to your 
+Controllers and other parts of the program, and gets used whenever the database is contacted. 
 
 See the MyDbContextFactory.cs file for more information.
 
