@@ -13,8 +13,8 @@
  *
  * This project has a lot of notes that are essential to learning how this project is structured
  * and how it operates. Topics include: How the MVC architecture works, Database Setup,
- * Data Providers, Data Models, the Schema, Migrations, Controllers, Endpoints, REST architecture, 
- * HTTP Requests, Route Variables and more. Read the notes in this order:
+ * Database Providers, Data Models, the Schema, Migrations, Controllers, Endpoints, REST
+ * architecture, HTTP Requests, Route Variables and more. Read the notes in this order:
  * 
  *     1. WHAT IS MVC?:                    MVC Architecture.txt (Hotel-Server folder)
  *     2. DATABASE SETUP AND CONCEPTS:     Database Setup.txt (Hotel-Server folder)

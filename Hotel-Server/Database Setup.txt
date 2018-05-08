@@ -8,19 +8,15 @@ to interface with a database.
 
 2. INTRODUCTION TO DATABASE CONCEPTS AND FRAMEWORKS 
 
-
 2.1 ENTITY FRAMEWORK CORE
 
-A database usually understands only SQL. When you connect a database to a program written in C# 
-or another general purpose programming language, you need a program to translate SQL to C# and vice 
-versa.
+When you start up a program that uses a database, as this one does, one of the first things the
+program will do is try and talk to the database. A database usually understands only the the SQL 
+language. When you connect a database to a program written in C# or another general purpose 
+programming language, you need an translator program to translate SQL to C# and vice versa. A 
+program that translates SQL to a general purpose programming language like Java, C# or JavaScript 
+and vice versa is called an  OBJECT-RELATIONAL MAPPER (ORM).
 
-Entity Framework is an ORM (Object-Relational Mapper) that sits between a program like Hotel-Server 
-and its database. When you hook it up to a data source, such as a database, an ORM reads in raw data 
-and turns it into collections of C# objects for use in the program. Entity Framework Core is the 
-standard ORM solution in the .NET world, provided by Microsoft for .NET Core projects. It comes with
-the Microsoft.AspNetCore.All package, which is a required package for all ASP.NET Core projects. 
-This package contains packages for Razor, MVC, Entity Framework Core 
 
                                           +---------+
                                           |         |
@@ -47,7 +43,34 @@ This package contains packages for Razor, MVC, Entity Framework Core
                                          +------------+
 
 
-Consider this table from a database.
+Entity Framework Core (from here on in referred to as EFC or EF Core) is an ORM that sits between 
+a program like Hotel-Server and its database. When you hook it up to a data source, such as a 
+database, an ORM reads in raw data and turns it into collections of C# objects for use in the 
+program. By doing this, EF Core is translating data as it is represented in the database into a 
+data representation that C# programs would understand.
+
+Entity Framework Core is the standard ORM solution in the .NET world, provided by Microsoft for 
+.NET Core projects. You'll need several nuget packages to get EF Core functionality: 
+
+    Microsoft.EntityFrameworkCore, 
+    Microsoft.EntityFrameworkCore.Relational, and 
+    Microsoft.EntityFrameworkCore.Tools (For Migrations. Tools for Package Manager Console.)
+    
+Fortunately, all these packages come with the Microsoft.AspNetCore.All metapackage, which appears 
+to be mandatory for all ASP.NET Core projects. If you want to use the command line interface
+while working with migrations, you will this package, which must be installed separately:
+
+    Microsoft.EntityFrameworkCore.Tools.DotNet (For Migrations. Tools for the Command-line 
+                                                Interface. )
+
+Note: The docs say that "You have to install this package by editing the .csproj file; you can't 
+use the install-package command or the package manager GUI."
+
+
+
+2.2 HOW DOES ENTITY FRAMEWORK CORE TRANSLATE INFORMATION TO AND FROM THE DATABASE?
+
+Consider this table from a database, called Contacts:
 
 +----+-----------+----------+----------------+
 | Id | FirstName | LastName |  PhoneNumber   |
@@ -57,7 +80,10 @@ Consider this table from a database.
 |  3 | Linda     | Blom     | (234) 239-9231 |
 +----+-----------+----------+----------------+
 
-Its columns represent properties from a plain C# model class like this one: 
+The table contains 3 records. Each record has 4 fields. Each record contains Contact information 
+for one person. This is how data is stored and represented in a database. 
+
+There are other ways to represent this data. Take a look at the C# model class below: 
 
     public class Contact
     {
@@ -75,74 +101,78 @@ Its columns represent properties from a plain C# model class like this one:
         public string PhoneNumber { get; set; }
     }
     
-The table and the class have four properties - Id, FirstName, LastName and PhoneNumber. Each 
-horizontal line in this table is a record. In other words, every record presents information 
-from one Contact object. 
+The Contact class has a name similar to the table and it has four properties, but what is most 
+interesting is the property names - Id, FirstName, LastName and PhoneNumber - are the same as the 
+column names in the Contacts table above. Do you see where this is going?
 
-It's Entity Framework Core's job to map records from tables like this into a collection of C# 
-objects and and the reverse. EF Core acts as a translation layer between the Hotel Reservation 
-project and its database, translating C# code into SQL commands and C# objects into records in the 
-database and vice versa, all without writing SQL.
+Put simply, records in a database can be converted into C# objects. The structure of a table in 
+a database, such as the Contacts table above, can be represented in a C# program in the form a 
+plain C# POCO model class. Columns in a table can be mapped to properties in the class. The 
+information in a record from the Contacts table can be represented in the form of a Contact 
+object. To say it again, data contained in a record from a database table can transmuted into a 
+form recognizable and usable in a C# program - a C# object.  
 
-If EF Core is to perform these translations, it must understand the topology of the database. There
-are several concepts you need to understand to set up a program to interface with a database:
+This is Entity Framework Core's job: to map records from tables in a database to a collection of C# 
+objects and and the reverse. More specifically, EF Core acts as a translation layer between the 
+Hotel Reservation project and its database, translating C# code into SQL commands and C# objects 
+into records in the database and vice versa, all without writing SQL.
+
+EF Core needs several things to set up the program to interface with a database. There are the 
+concepts you need to understand:
 
 
      1) Database Provider,          (Defined in DbContextFactory/MyDbContextFactory.cs)
-     2) Data Model,                 (Defined in DbContext/Context.cs)
-     3) Database Schema             (Generated into the Migrations Folder)
+     2) Data Model,                 (Defined in the Models folder of the Common project)
+     3) Database Schema,            (Defined in DbContext/Context.cs)
+     4) Migrations                  (Generated into the Migrations Folder)
 
 
-Here's a short summary: 
-
-The DATABASE PROVIDER is a small library that helps EF Core to talk to databases from a given 
-vendor. For instance, there are Database Providers for SQL Server, SQLite, PostgreSQL and other 
-databases. the general layout of the database and its entities are defined in the DATA MODEL (DM). 
-The DM is contained in Context.cs. 
-
-The DATABASE SCHEMA is the more specific database layout. It is a snapshot of the current topology 
-of the database and it can be generated on command from the Data Model. During the course of 
-developing a database, you will add and remove tables and other entities from it. The relationships 
-between entities may also change. In other words, the topology of a database is in constant flux 
-during its lifetime. The schema serves as a snapshot of the topology of a database at certain point 
-in time. Schema snapshots are called MIGRATIONS. You can use migrations to update to or rollback 
-from a version of the database. Unsurprisingly, you can find them in the Migrations folder.
-
-The next two sections examine these three concepts.
+The next three sections explain these concepts.
 
 
 
-2.2 DATABASE PROVIDERS
+2.3 DATABASE PROVIDERS
  
 A Database Provider is a "a software library consisting of classes that provide data access 
 services such as connecting to a data source, executing commands at a data source and fetching 
 data from a data source with support to execute commands within transactions. It resides as a 
 lightweight layer between data source and code, providing data access services with increased 
 performance." (Source: https://www.techopedia.com/definition/25227/net-data-provider). 
- 
-EF Core can talk to any database if it has the database provider library for it. When Hotel-Server 
-is run, Entity Framework will be brought online to talk to the database. The first thing EFC will do
-is search for the Database Provider. 
 
-The Database Provider for this project is the 'Npgsql.EntityFrameworkCore.PostgreSQL' package, which 
-was added via Nuget. With the help of this database provider, EF Core will determine that this 
-project uses a PostgreSQL database. With the help of this package, EFC can interface with the 
-database. 
+A DATABASE PROVIDER is a small library that helps EF Core to talk to databases from a certain 
+vendor. For instance, there are Database Providers for SQL Server, SQLite, PostgreSQL and other 
+databases. EF Core can talk to any database if it has the database provider library for it. When 
+Hotel-Server is run, Entity Framework will be brought online to talk to the database. The first 
+thing EFC will do is search for the Database Provider. 
+
+Therefore, you need to find the right database provider for the database in your project and add
+it to the program via a Nuget package. The Database Provider for this project is the 
+'Npgsql.EntityFrameworkCore.PostgreSQL' package. By using this package, EF Core will come to 
+determine that this project uses a PostgreSQL database. Through it, EFC can interface with the 
+database and carry out operations on it. 
 
 Once it can talk to the database, EF Core will will use the Data Model to transform a SQL query 
 into an object model representation of a query (which is called a canonical command tree) and vice 
 versa. .NET Database Providers can consume canonical command trees to talk the database.
 
-Go to DbContextFactory/MyDbContextFactory.cs to configure the PostgreSQL database.
+
+Location: DbContextFactory/MyDbContextFactory.cs, OR
+          ConfigureServices() method of Startup.cs 
+to configure the database provider, connection string and other related things.
+
+To learn more about database providers, go to: https://docs.microsoft.com/en-us/ef/core/providers/
 
 
 
-2.3 DATABASE DATA MODEL vs. DATABASE SCHEMA
+2.4 DATABASE DATA MODEL vs. DATABASE SCHEMA
 
-In order to do two-way translations, the ORM library (EF Core) needs a Data Model of the
-database. A Data Model is an abstract formalization of the entities in a database. It also 
-conceptually standardizes how entites relate to one another. The Data Model is distinct from a 
-Database Schema; see this StackOverflow Answer from richik jaiswal to learn distinction[1]:
+Once EF Core confirms that it can talk to the database via the database provider, it needs 
+the Data Model and Schema of the database. Why? In order to do two-way translations i.e. to map
+tables and other databases entities to C# objects and vice versa, EF Core must know the names 
+and properties of entities in the database and their relationships.
+ 
+The Data Model is distinct from a Database Schema; see this StackOverflow Answer from richik 
+jaiswal to learn distinction[1]:
 
      A schema is a blueprint of the database which specifies what fields will be present and 
      what their types will be. For example an employee table will have an employee_ID column 
@@ -157,10 +187,76 @@ Database Schema; see this StackOverflow Answer from richik jaiswal to learn dist
      A data model can, for example, be a relational model where the data will be organised in 
      tables whereas the schema for this model would be the set of attributes and their 
      corresponding domains.
-     
 
-A Data Model is a general blueprint that defines some properties of entities in the database. Taken 
-from Context.cs, here is the Data Model for a Hotel table:
+A Data Model is an abstract formalization of a database's entities. The basic properties of database 
+entities like tables and columns are defined in model classes, forming the DATA MODEL. These 
+classes are most usually found in the 'Models' or 'Entities' folder of most ASP.NET Core projects. 
+
+For an example, let's take another look at the Contact class from earlier:
+
+
+    public class Contact
+    {
+        [Required]
+        public int Id { get; set; }
+        
+        [MinLength(2)] 
+        [MaxLength(50)]
+        public string FirstName { get; set; }
+        
+        [MinLength(2), MaxLength(50)]
+        public string LastName { get; set; }
+
+        [Phone]
+        public string PhoneNumber { get; set; }
+    }
+
+
+This class will serve as a blueprint for Contact objects, which represent records in a Contacts
+table. Note that the properties have data annotation attributes on them. These annotations mandate
+values for Id property and establish value minimums and maximums on FirstName and LastName 
+properties; as the data model informs the schema, when the schema is written, these restrictions 
+will carry over to it. 
+
+Location: /Common/Models/Tables. Go here to see the model classes for this project.
+
+Let's move on to discussing the schema. The DATABASE SCHEMA is a more specific definition of a 
+database's entities and their. It serves as a snapshot of the database's topology at a certain 
+point in time, usually reflecting its current state. The schema takes entities defined in the 
+data model, plus any data annotation attributes defined therein, and adds other things to it. This 
+may include restrictions on character length for a field, marking certain fields as mandatory 
+when a record is created, and establishing the nature of relationships between entities.   
+
+First, take a look at the Hotel model class (from the Models folder): 
+
+
+    public class Hotel : IObjectWithState
+    {
+        // The primary key of the Hotel table in the Database is the Room Number.
+        [Key]
+        public long Id { get; set; } 
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
+
+        // Hotel Objects have a HotelRooms property to track the list of hotelrooms at a hotel
+        // without needing to query the database.
+        public virtual IEnumerable<HotelRoom> HotelRooms { get; set; }
+
+
+        // ORMs (Object-Relational Mapper) map properties in an object to a table. The ObjectState
+        // property is not a table column; it is used to track changes in an entity. This will 
+        // likely happen in the endpoints of this project.
+        [NotMapped]
+        public ObjectState State { get; set; }
+    }
+
+There are schemas for at least three levels of a database: physical schema (how data blocks are
+stored at the lowest level; this is where database designers work), logical schema (how records
+get stored in data structures; this level is where programmers and DB administrators work) and
+view schemas (which are schemas for end-user interaction). 
+
+Taken from Context.cs, here is the corresponding Schema for a Hotel table:
 
 
     public class Context : DbContext
@@ -181,34 +277,52 @@ from Context.cs, here is the Data Model for a Hotel table:
     }
         
 
-To set up a database, you need to define tables, records and other entities and their relations.
-On the program side, a data structure is created to hold objects (each object is a record in the 
-table). This is followed by a method with specifications and limitatations for every column 
-in the Hotel Table.  
+When any ASP.NET Core program runs normally, EF Core will be sitting between the program and its
+database, translating SQL and database records into C# commands and objects. Provided it has the 
+data model and the schema, EF Core has a map to the layout of any particular database.
 
-Let's talk about the DbSet<T> data structure first. When EF Core converts information from a data 
-source into C# objects it needs two things: a pre-defined model class that can capture the data 
-from each record and a collection to hold these model objects. EF Core converts every record into  
-a new object in a DbSet<T> collection. The fields of each record in the table are copied and 
-assigned to the properties of a new C# object. <T> is usually the name of the model class. For 
-this example, the Hotel class is the model and Hotels is the strongly typed C# collection where 
-Hotel objects are stored after conversion. 
+Let's talk about the schema for the Hotel table; EF Core is going to use it to translate entities 
+from the database into C# objects. When EF Core converts information from a data source into C# 
+objects it needs two things: a pre-defined model class that can represent data from each table 
+and a collection to hold these model objects. 
+
+Let's talk about the Hotels DbSet<Hotel> data structure first. The first thing that is declared in 
+the Context class is a data structure to hold objects as they get converted from records, called 
+Hotels. DbSet<Hotel> is a generic data structure that can contain only Hotel objects. This is due
+to the fact that Hotel is the model class for the Hotels table. 
+
+The purpose of a Schema is to define the specific shape and form of the entities in a table.
+Following the declaration of Hotels DbSet comes the OnModelCreating() method. It lays out 
+specifications and limitatations for every column in the Hotel Table. You'll note that it defines 
+and places some limitations on each property in class Hotel. HasKey() denotes the Id field as the 
+Primary Key of a table. The other properties are defined with the Property() method. The Id, Name, 
+Address and PhoneNumber fields are marked as required fields. The character lengths of each field 
+are also specified. 
+
+As EF Core converts every record into a new object in a DbSet<T> collection, it makes sure that all 
+these requirements are met. The fields of each record in the table are copied and assigned to the 
+properties of a new C# object. Once a new Hotel object is populated with data from a record, it 
+gets stored in the Hotels collection.
  
-You'll note that the OnModelCreating() method defines and places some limitations on each property 
-in class Hotel. HasKey() denotes the Id field as the Primary Key of a table. The other properties 
-are defined with the Property() method. The Id, Name, Address and PhoneNumber fields are marked as 
-required fields. The character lengths of each field is also specified. The purpose of a Data Model 
-is to define the general shape and form of the entities in a table. 
 
-The Data Model is a conceptual framework that places constraints on the contents of the Schema. To 
-generate the SCHEMA, EF Core probably combines type information and data annotation attributes from
-Model classes with the Data Model in the Context class. A Database Schema is a more concrete set of 
-rules that govern the database's entities. 
 
-There are schemas for at least three levels of a database: physical schema (how data blocks are
-stored at the lowest level; this is where database designers work), logical schema (how records
-get stored in data structures; this level is where programmers and DB administrators work) and
-view schemas (which are schemas for end-user interaction). 
+2.5 MIGRATIONS
+
+I'll touch on migrations lightly, but there is another file that deals with this subject in full. 
+
+During the course of developing a database, you will add and remove tables and other entities 
+from it. The relationships between entities may also change. In other words, during the lifetime
+of a database, its topology is in constant flux. A schema can contain only a snapshot of the 
+topology of a database. 
+
+To ensure data integrity, it is a best practice to take a snapshot of a database's topology every
+time a change is made to the schema. Schema snapshots are called MIGRATIONS; migrations serve as 
+version control for a database's schema. You can use migrations to update to or rollback from a 
+version of the database. 
+
+If a database already exists, you can import it into an ASP.NET Core project and 
+generate a schema from the database. For new databases, the schema has to be written by the 
+programmer.
 
 Taken from the file called, '20180128032156_CreateHotelHotelRoomRoomTypeBedTypeRoomReservationTables.cs',
 this is the Logical schema for the Hotel table: 
@@ -243,27 +357,42 @@ this is the Logical schema for the Hotel table:
     }
     
 
-The Hotels collection defined the Data Model is explicitly modeled as the Hotels Table in the 
-schema. This table's columns are given names defined in the Data Model. The schema goes further and
-assigns types to each column, and other properties such as nullability and annotations. Note that
-the character length of the columns are inherited from the Data Model.
+Location: /Migrations/Migrations.txt. This file examines migrations in greater depth.
 
 
 
 3. SETTING UP THE DATABASE
 
 Now that the concepts have been introduced, this section will introduce classes where you have
-to configure the database. 
+to configure the database. Before you can do operations on the database, you must initiate a new 
+session with the database. This will require several pieces of information that must be passed
+to the database. 
+
+The following sections mention some of them, but others may be required: 
 
 
-3.1 Context CLASS
+3.1 CONNECTION STRING
 
-Before you can do operations on the database, you must initiate a new session with the database. 
-Therefore, the first thing to configure is the Context class. A Context class is an important EF 
-Core class that represents a session with the database.  
+What is a connection string?[2]:
 
-According to 'Entity Framework Core: DbContext'[2], DbContext is the class where you can do all of
-these things:
+"Most database providers require some form of connection string to connect to the database. 
+Sometimes this connection string contains sensitive information that needs to be protected. You 
+may also need to change the connection string as you move your application between environments, 
+such as development, testing, and production." 
+
+A connection string is database-related information that you must provide to start a session with
+it. This might include: the hostname of the computer on which the database is running, the 
+database's name, user authentication information and DB configuration data. 
+
+See the second article in the sources section for more information. 
+ 
+
+3.2 CONTEXT CLASS (aka DbContext class)
+
+A Context class is an important EF Core class that represents a session with the database. According 
+to 'Entity Framework Core: DbContext'[3], DbContext is the class where you can do all of these 
+things:
+
     
    * Manage database connection
    * Configure model[s] & relationship[s]
@@ -272,48 +401,104 @@ these things:
    * Configure change tracking
    * Caching
    * Transaction management
+   
 
-To do these things, you need to create a class that contains all the information that a new session
-will need. The main thing that a Context class contains is the DATA MODEL for the database. There
-are two approaches you can take, contingent on whether you have an existing database. If you are 
-starting a greenfield project WITHOUT a database, you go with the CODE FIRST approach. If you have 
-an existing database, and you want to write a program to talk to it, you use the DATABASE FIRST
-approach.
+Aside from representing a session with the database, a Context class also contains the SCHEMA for 
+the database. This is why you need to create a Context class in your project.
 
-
-    CODE FIRST: Create your own Context class (for your new DB).
-    DATABASE FIRST: Generate a Context class from the database via the package manager command line.
+There are two approaches you can take, contingent on whether you have an existing database. If you 
+are starting a greenfield project WITHOUT an existing database, you go with the NEW DATABASE 
+approach. If you have an existing database, and you want to write a program to talk to it, you use 
+the EXISTING DATABASE approach.
 
 
-Let's look at the CODE FIRST approach; you have to create a Context class that inherits from 
-Microsoft.EntityFrameworkCore.DbContext. It can be named Context, DbContext or HotelContext or 
+    1. NEW DATABASE: Write your own Context class for your new database.
+       (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db)
+    2. EXISTING DATABASE: Generate a Context class from the database via the package manager command 
+       line. (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db)
+
+
+Let's look at the NEW DATABASE approach: you have to create a Context class that inherits from 
+Microsoft.EntityFrameworkCore.DbContext. It can be named Context, DbContext, HotelContext or 
 something similar. Just append the word 'Context' to the filename. The Context class for this 
 project can be found in the Context.cs file of the DbContext folder. 
 
-Once you create a new Context class, you can define the data model in it. This includes:
+Once you create a new Context class, you have to define the schema in it. This includes:
 
-* Defining Tables (by declaring a DbSet<T> collection)
-* Defining Relationships between Entities (by declaring them in the OnModelCreating() method) 
+* Defining the program-side equaivalent of a table (by declaring a DbSet<T> collection)
+* Defining relationships between entities (by declaring them in the OnModelCreating() method) 
 
-Go to Context.cs to learn more about the things discussed above. 
-
-
-
-3.2 IDesignTimeDbContextFactory<T> Class
+Go to Context.cs to learn more about these things. 
 
 
-After creating the data model in the Context class, you need to configure a session. In the 
-DbContextFactory folder, you will find MyDbContextFactory.cs. This class has to implement
-IDesignTimeDbContextFactory<TContext>, where TContext is the Context class you wrote in section 3.1.
-Its CreateDbContext() method utilizes the Context class and the PostgreSQL Database Provider to 
-create a fully functional instance of the DbContext class. This object will get passed to your 
-Controllers and other parts of the program, and gets used whenever the database is contacted. 
+3.3 INITIATING A NEW SESSION 
 
-See the MyDbContextFactory.cs file for more information.
+After creating the data model in the Context class, you need to configure a new session. To do 
+this, you have to pass in the connection string to a Context object in a DbContextOptions object.
 
+The Microsoft Docs article, "Configuring a DbContext"[4] gives information on how to configure 
+the DbContextOptions class:
+
+
+    DbContext must have an instance of DbContextOptions in order to perform any work. The 
+    DbContextOptions instance carries configuration information such as:
+    
+    
+        * The database provider to use, typically selected by invoking a method such as 
+          UseSqlServer or UseSqlite
+        * Any necessary connection string or identifier of the database instance, typically passed 
+          as an argument to the provider selection method mentioned above
+        * Any provider-level optional behavior selectors, typically also chained inside the call 
+          to the provider selection method
+        * Any general EF Core behavior selectors, typically chained after or before the provider 
+          selector method
+          
+          
+    The following example configures the DbContextOptions to use the SQL Server provider, a 
+    connection contained in the connectionString variable, a provider-level command timeout, and 
+    an EF Core behavior selector that makes all queries executed in the DbContext no-tracking by 
+    default:
+    
+    
+        optionsBuilder
+            .UseSqlServer(connectionString, providerOptions=>providerOptions.CommandTimeout(60))
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+
+    The DbContextOptions can be supplied to the DbContext by overriding the OnConfiguring method 
+    OR (emphasis mine) externally via a constructor argument. 
+    
+    If both are used, OnConfiguring is applied last and can overwrite options supplied to the 
+    constructor argument.
+    
+    
+There are three ways to configure the Context class, DbContextOptions and the Connection string
+in preparation for a new session:
+
+    1. Override the OnConfiguring() method (in DbContext/Context.cs)
+    
+    2. Structure Context class's constructor to accept an DbContextOptions object: This project
+       uses this approach.
+       
+       Write a separate Context Factory class that inherits from IDesignTimeDbContextFactory<T> 
+       Class. The Context Factory class will pass a DbContextOptions object to class Context, and 
+       then instantiates a Context object.
+       (see DbContextFactory/MyDbContextFactory.cs).
+       
+    3. Dependency Injection: This is done in the ConfigureServices() method of Startup.cs. From 
+       this article[4]: "EF Core supports using DbContext with a dependency injection container. 
+       Your DbContext type can be added to the service container by using the AddDbContext<TContext> 
+       method.         
+                                                                    
+       AddDbContext<TContext> will make both your DbContext type, TContext, and the corresponding 
+       DbContextOptions<TContext> available for injection from the service container."
+
+See the fourth article for information more about these options. 
 
 
 SOURCES
 
 1: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
-2: http://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
+2: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
+3: http://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
+4: https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext
