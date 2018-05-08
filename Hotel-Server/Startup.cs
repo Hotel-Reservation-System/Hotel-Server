@@ -53,9 +53,10 @@ namespace Hotel_Server
         {
             services.AddMvc();
             
-            // It appears that you can add a connection string and instantiate a Context object
-            // in the Startup file. The documented way is do all this in Context.cs and 
-            // MyDbContextFactory.cs. Investigate this further.
+            // See Database Setup.txt, Section 3.3.
+            // If you want to configure configure the Context class, DbContextOptions and the 
+            // Connection string via Dependency Injection, this is the place to do it: 
+
 //            var connectionString = "Host=localhost;" +
 //                                   "Username=postgres;" +
 //                                   "Password=password;" +
