@@ -162,6 +162,10 @@ namespace PostgresEFCore.Providers
         public virtual DbSet<BedType> BedTypes { get; set; }
         
         
+        // If you choose to, you can all Context object instantiation set up in the constructor,
+        // by specifying the sconnection string, DbContextOptions and other DB configuration
+        // information. See Section 3.3 of Database Setup.txt.
+        // 
         // This is a Context class constructor that "initializes a new instance of the 
         // DbContext class using the specified options." In MyDbContextFactory.cs, an object of 
         // type DbContextOptionsBuilder<Context> is created and configured with a connection string.
@@ -174,7 +178,7 @@ namespace PostgresEFCore.Providers
         }
 
 
-        // DECLARING THE DATA MODEL
+        // DECLARING THE SCHEMA
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // This is where the 'O' in ORM (Objects) are defined.
