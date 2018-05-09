@@ -2,29 +2,18 @@
  *
  * To talk to the database, Entity Framework Core needs to start a database session. The session 
  * comes in the form of a Context object. At runtime, EFC will create a Context object which is 
- * fed the Data Model (from DbContext/Context.cs) and other configuration data (from this file).
+ * fed the Schema (from DbContext/Context.cs) and other configuration data (from this file).
  *
- * It is possible to completely perform this class's work in Context class [1], but I will do the 
- * work of specifying connection strings, database providers etc., here in this file. This class,
- * MyDbContextFactory, is a factory that creates such a database session object. This object will
- * be passed to Controllers in the AllController.cs file. Any part of the program that wants to
- * talk to the database will need this Context object.
+ * There are three possible ways of doing this; see Section 3.3 of Database Setup.txt. However, I
+ * will do the work of specifying connection strings, database providers etc., here in this file.
+ * This class, MyDbContextFactory, is a factory that creates such a database session object. This
+ * object will be passed to Controllers in the AllController.cs file. Any part of the program that
+ * wants to talk to the database will need this Context object.
  *
  * The first thing this class does is create a DbContextOptions object, which contains certain
- * information that Context class needs[2]:
+ * information that Context class needs. Copy and/or edit this file to direct Entity Framework to
+ * recognize other databases.
  *
- * 
- *     * The database provider to use, typically selected by invoking a method such as
- *       UseSqlServer or UseSqlite
- *     * Any necessary connection string or identifier of the database instance, typically passed
- *       as an argument to the provider selection method mentioned above
- *     * Any provider-level optional behavior selectors, typically also chained inside the call
- *       to the provider selection method
- *     * Any general EF Core behavior selectors, typically chained after or before the provider
- *       selector method
- *
- * 
- * Copy and/or edit this file to direct Entity Framework to recognize other databases.
  * 
  * SOURCES
  * 1: https://docs.microsoft.com/en-us/ef/core/api/microsoft.entityframeworkcore.dbcontext
@@ -43,7 +32,7 @@ namespace PostgresEFCore.Factories
     {
         public Context CreateDbContext(string[] args)
         {
-            // INSTANTIATING AND CONFIGURING A DbContextOptions CLASS 
+            // INSTANTIATING AND CONFIGURING A DbContextOptions OBJECT
             var builder = new DbContextOptionsBuilder<Context>();
 
 
