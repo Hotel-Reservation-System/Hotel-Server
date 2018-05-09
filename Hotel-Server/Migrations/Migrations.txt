@@ -1,15 +1,13 @@
 ﻿MIGRATIONS
-==========
 
 
-WHAT IS A MIGRATION? 
---------------------
+1. WHAT IS A MIGRATION? 
 
 The Schema is a more specific map to the database than the Data Model. The schema of a database 
 defines tables, specifies columns and their types, and the relationships between tables, i.e. it 
 concretely describes the structure and topology of the database. It also imposes constraints on data 
-that enters the database. Please see DbContext/Context.cs for more on the difference between the 
-Data Model and Schema.
+that enters the database. Please see Section 2.4 of DbContext/Context.cs for more on the difference
+between the Data Model and Schema.
 
 Organizations may have more than one instance of a database. For instance, a company may have a 
 development environment where software is developed, a production environment where stable software 
@@ -25,8 +23,8 @@ do this, we need version control to track changes to the schema. Version control
 schema is called SCHEMA MIGRATIONS or just MIGRATIONS. A Migration file contains a set of changes to 
 a database's current schema. These transformations may include adding, modifying, renaming and 
 deleting/dropping tables and columns or the re-adjustment of table relations. A migration file will 
-also have a way to revert its own changes. A migrations file may also contain scripts to enact 
-transformations and to insert default data into the database by populating tables and columns.
+also have a way to revert its own changes. It may also contain scripts to enact transformations 
+and to insert default data into the database by populating tables and columns.
 
 Migrations are constantly generated in the development stage of an application, because that's when 
 the schema is changing the most. Large architectural changes and feature churn necessitate frequent 
@@ -41,9 +39,8 @@ consistent way.
 This is the workflow for changing the schema and generating migrations:
 
 In the Development Environment:
-1) When you need to add tables or modify relations in the database, edit the Data Model in 
-   Context.cs.
-2) Because the Data Model has been modified, you need to generate a new migrations file.
+1) When you need to add tables or modify relations in the database, edit the Schema in Context.cs.
+2) Because the Schema has been modified, you need to generate a new migrations file.
 3) You run the migration file in the development environment to verify that it works as intended. 
 
 
@@ -53,15 +50,15 @@ In the Production, Demo and other Environments:
 5) Verify that migration has gone smoothly in these environments as well.
 
 
-CONTENTS OF A MIGRATIONS FILE
------------------------------
+2. THE CONTENTS OF A MIGRATIONS FILE
+
 
 Migrations are generated or applied with CLI commands. When the command is given, it appears that 
-Entity Framework Core combines the Data Model with type information from Model classes to generate 
-a migration file. Generating a Migration will create a new file in the Migrations folder. It will 
-contain a a user-named class that is a subclass of Entity Framework Core's Migration class. You may 
-need to manually remove things from either method if it added more than the changes you made to the 
-Data Model. Make sure you read the migration file before applying it.
+Entity Framework Core combines the Schema with type information and data annotations from Model 
+classes to generate a migration file. Generating a Migration will create a new file in the 
+Migrations folder. It will contain a a user-named class that is a subclass of Entity Framework 
+Core's Migration class. You may need to manually remove things from either method if it added more 
+than the changes you made to the Schema. Make sure you read the migration file before applying it.
 
 Every migration file will contain an Up() and Down() method. The Up() method contains 
 transformations to the schema of the Database. The Down() method just rolls back transformations in 
@@ -75,7 +72,7 @@ the last migration. The current state of a database's schema is the result of ca
 methods of all previous Migrations. 
 
 
-Here is a answer from StackOverflow that expounds on migrations:
+Here is a answer from StackOverflow that expounds on migrations[1]:
 
     DB Migrations make changes to your database to reflect the changes made to the Entity Framework 
     Model. These changes are added to the database with the Up method.
@@ -89,33 +86,36 @@ Here is a answer from StackOverflow that expounds on migrations:
     when you change the model of the database. So the Seed method is optional and only necessary 
     when you need to modify existing data or add new data to make the model working.
     
-    - Ric .Net
-    
-Source: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
+    - Ric .Net    
 
 
-GENERATING, APPLYING AND REMOVING MIGRATIONS
---------------------------------------------
+3. GENERATING, APPLYING AND REMOVING MIGRATIONS
 
 A migrations file can be auto-generated on command. 
 
 Migrations files for .NET Core projects can be generated either through .NET Core CLI or terminals
 built into IDEs. Note that Jetbrains Rider cannot and does not support Visual Studio's Package 
-Manager Console commands. Here are two basic commands for generating and using migrations. Check the 
-Entity Framework Core docs for more.
-
-
-1. GENERATING MIGRATIONS: Creates a new migration. The migration name should describe in pascal 
-case, the changes you made to the data model. 
-
-Visual Studio: add-migration <MigrationName> 
-E.g.: add-migration AddUserUserPreferenceUserInformationRoleUserRoleTables
-
-
-2. UPDATING DATABASE TO THE LATEST MIGRATION: Runs the Up() method of all migrations. 
-
-Visual Studio: update-database
+Manager Console commands. Check if this changes in the future.
  
+Here are two basic commands for generating and using migrations. Check the Entity Framework Core 
+docs for more.
+
+
+    1. GENERATING MIGRATIONS: Creates a new migration. The migration name should describe in pascal 
+    case, the changes you made to the data model. 
+    
+    Visual Studio: add-migration <MigrationName> 
+    E.g.: add-migration AddUserUserPreferenceUserInformationRoleUserRoleTables
+    
+    
+    2. UPDATING DATABASE TO THE LATEST MIGRATION: Runs the Up() method of all migrations. 
+    
+    Visual Studio: update-database
+ 
+ 
+SOURCES
+ 
+1: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
  
 
 
