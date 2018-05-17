@@ -181,13 +181,36 @@ namespace PostgresEFCore.Providers
         // DECLARING THE SCHEMA
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // This is where the 'O' in ORM (Objects) are defined.
-            // Declare the Hotel Class. Also see the HotelRoom declaration.
+            // DEFINING THE 'O' in ORM (OBJECTS)
+            // Declare the Hotel Table. Also see the HotelRoom declaration.
+            //
+            // A modelBuilder object was passed in to OnModelCreating. Its Entity method is
+            // being invoked and passed a generic object, Hotel. This method acts like a foreach
+            // loop. It loops over every Hotel objects; each object will be referred to as an 
+            // entity temporarily. On each Hotel object, EF Core will perform the operations
+            // listed in the curly brackets.
             modelBuilder.Entity<Hotel>(entity =>
             {
                 // Declaring columns in the Hotel Table. Recall that columns map on to properties
-                // in a model class. Primary Keys are declared with HasKey(). Other keys are
-                // declared with the Property keyword. 
+                // in a model class. On each entity object, another loop is executed, searching for
+                // the e.x property. When the property is found, you can define some of the
+                // characteristics and put some constraints on these columns and their values.
+                //
+                // You can use methods such as HasMaxLength(), HasColumnType(), and others to do the
+                // same thing as Data Annotation Attributes did in model classes. 
+                //
+                // Note that EF Core will assume that for an entity, any property with the term
+                // 'Id' in it is the Primary Key. Primary Keys can also be explicitly declared with
+                // HasKey(). Other keys are declared with the Property keyword. The IsRequired()
+                // method puts the 'Not Null' constraint on the column; therefore, when a record is
+                // created in this table, fields marked IsRequired() must be filled out or record
+                // creation will fail.
+                //
+                // Aside: If you use the term 'virtual' for a property in a Model class, it tells 
+                // EF Core that this property is a Navigation property. A Navigation property is a 
+                // pointer that leads from one entity to another. You can use dot-notation from the
+                // navigation property of one entity to peek at other entities.
+
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
@@ -209,8 +232,24 @@ namespace PostgresEFCore.Providers
                 entity.Property(x => x.RoomTypeId).IsRequired();
                 entity.Property(x => x.BedTypeId).IsRequired();
 
-                // This is where the 'R' in ORM (Object Relations) are defined. Here, the 
-                // relationship between Hotel and HotelRoom is detailed. 
+                // DEFINING THE 'R' in ORM (OBJECT-RELATIONS)
+                
+                // Here, the relationship between Hotel and HotelRoom objects are detailed.
+                // Let's talk about inter-table relationships. In database lingo, an entity can have
+                // One-to-Many, Many-to-Many and One-to-One relationships to other entities. In 
+                // the next bit of code below, we will be defining these inter-relationships.
+                //
+                // This code block defines the relationship between two entities, Hotel and 
+                // HotelRoom, from the perspective of the HotelRoom entity. (This entity block is
+                // for HotelRoom after all.) 
+                //
+                // The first line affirms that a HotelRoom has a Many-to-One relationship to a
+                // Hotel object, i.e. a Hotel can have many HotelRooms. The second line states 
+                // that a Hotel object has a One-to-Many relationship to HotelRooms. The third 
+                // line declares a HotelRoom object has a foreign key property called HotelId. 
+                // The fourth line specifies what happens when a HotelRoom object is deleted:
+                // all its HotelRoom properties get deleted too.
+                
                 entity.HasOne(e => e.Hotel)             // 1. HotelRoom is declared to be owned by Hotel objects.
                     .WithMany(e => e.HotelRooms)        // 2. A Hotel object will have many HotelRooms.
                     .HasForeignKey(e => e.HotelId)      // 3. The Hotels table has the HotelId foreign key.
