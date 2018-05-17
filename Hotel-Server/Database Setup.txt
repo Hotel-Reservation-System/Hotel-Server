@@ -292,12 +292,13 @@ Hotels. DbSet<Hotel> is a generic data structure that can contain only Hotel obj
 to the fact that Hotel is the model class for the Hotels table. 
 
 The purpose of a Schema is to define the specific shape and form of the entities in a table.
-Following the declaration of Hotels DbSet comes the OnModelCreating() method. It lays out 
-specifications and limitatations for every column in the Hotel Table. You'll note that it defines 
-and places some limitations on each property in class Hotel. HasKey() denotes the Id field as the 
-Primary Key of a table. The other properties are defined with the Property() method. The Id, Name, 
-Address and PhoneNumber fields are marked as required fields. The character lengths of each field 
-are also specified. 
+Following the declaration of Hotels DbSet, comes the OnModelCreating() method. This method is 
+overridden and the schema is defined within; it lays out primary keys for tables and Navigation 
+properties (foreign keys) between entities. Lastly, we can also define field constraints in this 
+method, which are specifications and limitatations for every column in the Hotel Table. For 
+instance, HasKey() denotes the Id field as the Primary Key of a table. The other properties are 
+efined with the Property() method. The Id, Name, Address and PhoneNumber fields are marked as 
+required fields. The character lengths of each field are also specified. 
 
 As EF Core converts every record into a new object in a DbSet<T> collection, it makes sure that all 
 these requirements are met. The fields of each record in the table are copied and assigned to the 
@@ -414,8 +415,10 @@ the EXISTING DATABASE approach.
 
     1. NEW DATABASE: Write your own Context class for your new database.
        (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db)
+       For full details, see this project: ASPNETCore WebApp 4A - Getting Started with a New Database
     2. EXISTING DATABASE: Generate a Context class from the database via the package manager command 
        line. (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db)
+       For full details, see this project: ASPNETCore WebApp 4B - New Project With an Existing Database
 
 
 Let's look at the NEW DATABASE approach: you have to create a Context class that inherits from 
