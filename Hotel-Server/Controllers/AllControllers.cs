@@ -417,12 +417,24 @@ namespace Hotel_Server.Controllers
     {
         /* INSTANCE OF CLASS CONTEXT
          * 
-         * This property is an instance of class Context. Class Context defines the Data Model of 
-         * the database. All endpoints in this class, which are defined in the methods below, talk 
-         * to the database through _context. As this property is readonly, it prevents modification 
-         * of the model relationships in the class when the program is running, but through it, the
+         * The Controller class will issue orders that require reading and writing from the
+         * database. Talking to the database is EF Core's job. To facilitate contact with the
+         * database through EF Core, the Controller will need a copy of the database's Schema.
+         * 
+         * The _context property is an instance of class Context. Class Context defines the schema 
+         * of the database. All endpoints in this class, which are defined in the methods below,  
+         * talk to the database through _context. As this property is readonly, it prevents  
+         * modification of the Context's schema when the program is running, but through it, the
          * AllControllers class can perform Create, Read, Update & Delete (CRUD) operations on the 
          * database.
+         *
+         * EF Core will translate these orders into SQL when sending them to the database, and
+         * converts returned values into C#.
+         *
+         * Note: This is VIOLATES best practices. It's not a good idea to instanstiate an instance
+         * within a Controller class. A better idea would be to use a using statement or even
+         * better yet, use EF Core's Dependency Injection, which offers a very nice solution for 
+         * passing contexts to Controllers. 
          */
         private readonly Context _context;
 
