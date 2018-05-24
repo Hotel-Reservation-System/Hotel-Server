@@ -416,6 +416,8 @@ namespace Hotel_Server.Controllers
     public class AllControllers : Controller
     {
         /* INSTANCE OF CLASS CONTEXT
+         *
+         * WHY DO WE NEED IT?
          * 
          * The Controller class will issue orders that require reading and writing from the
          * database. Talking to the database is EF Core's job. To facilitate contact with the
@@ -431,10 +433,20 @@ namespace Hotel_Server.Controllers
          * EF Core will translate these orders into SQL when sending them to the database, and
          * converts returned values into C#.
          *
-         * Note: This is VIOLATES best practices. It's not a good idea to instanstiate an instance
-         * within a Controller class. A better idea would be to use a using statement or even
-         * better yet, use EF Core's Dependency Injection, which offers a very nice solution for 
-         * passing contexts to Controllers. 
+         * Note: Instantiating a context object within a Controller class like this VIOLATES best
+         * practices like SOLID. A better idea would be to use a using statement or even better
+         * yet, use EF Core's Dependency Injection, which offers a very nice solution for
+         * passing contexts to Controllers.
+         *
+         * CALLING SAVECHANGES()
+         *
+         * After doing any kind of operation that changes database values (Create, Update and
+         * Delete operations from CRUD), you must call the SaveChanges() method on the Context
+         * object. None of the changes you made will be propagated until you call SaveChanges().
+         *
+         * You can wait until after you've completed all operations to call this method, but it
+         * would be a better idea to execute SaveChanges() immediately after Creating, Updating
+         * or Deleting data, provided that you don't impact performance negatively. 
          */
         private readonly Context _context;
 
