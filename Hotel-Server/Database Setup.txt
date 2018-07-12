@@ -415,10 +415,10 @@ the EXISTING DATABASE approach.
 
     1. NEW DATABASE: Write your own Context class for your new database.
        (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db)
-       For full details, see this project: ASPNETCore WebApp 4A - Getting Started with a New Database
+       For full details, see this project: ASPNETCore WebApp 2A - Getting Started with a New Database
     2. EXISTING DATABASE: Generate a Context class from the database via the package manager command 
        line. (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db)
-       For full details, see this project: ASPNETCore WebApp 4B - New Project With an Existing Database
+       For full details, see this project: ASPNETCore WebApp 2B - New Project With an Existing Database
 
 
 Let's look at the NEW DATABASE approach: you have to create a Context class that inherits from 
