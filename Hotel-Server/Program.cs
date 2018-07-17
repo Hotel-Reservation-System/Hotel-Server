@@ -36,8 +36,41 @@
  *      * Deploy to the cloud or on-premises.
  *      * Run on .NET Core or .NET Framework."[1]
  *
- * The wwwroot folder is the root folder of your website. Any files that are part of your web
- * application, such as HTML and JavaScript files, should be put into subfolders of wwwroot.
+ *
+ * SOLUTION STRUCTURE
+ *
+ * The Properties folder comes with a 'launchsettings.json' file. This file contains all settings
+ * the project needs to launch the application. Things like the settings for the server (IIS,
+ * Kestrel etc.), Development and Production Profile settings are declared here. At launch time,
+ * the program will consult this file and load the program as defined here.
+ *
+ * The wwwroot folder is treated as the root folder of your website. This means that
+ * http://yourDomainName.com/ points to this folder. Any files in your web application that are
+ * client facing, such as HTML, CSS JavaScript and Image files, should be put into wwwroot or
+ * one of its subfolders. Files in wwwroot are whitelisted by the server for serving up to 
+ * anyone who requests it. Note that the core code for your web application should not be made
+ * available to the web (via wwwroot). C# code, Razor pages and configuration files should NOT 
+ * sit in wwwroot.
+ *
+ * The Dependencies folder contains all the packages being used by this web application. Right now,
+ * this consists of Nuget packages for server-side dependencies and Bower packages for client-side
+ * dependencies.
+ * 
+ * In 'Solution Explorer' if you right-click 'Hotel-Server' and unload it, you can then choose to
+ * 'Edit Hotel-Server.csproj' file. A .csproj file is where packages and dependencies for a
+ * project are declared:
+ *
+ *     1. TargetFramework: sets the version number of .NET Core and ASP.NET Core. This project sets
+ *        the value to 'netcoreapp2.0'. You can also right-click the project, go to 'Properties'
+ *        and edit these value in the 'Project Properties' window.
+ * 
+ *     2. Nuget Packages: In the .csproj file, you can declare the dependencies you'll need in 
+ *        your project and their version numbers. Usually, you don't have to hand edit this file;
+ *        you add packages with the 'Nuget Package Manager' or 'Package Manager Console' and
+ *        it will automatically update the .csproj file. However, if you choose it, you can declare
+ *        dependencies by hand and Nuget will automatically download and install them to the
+ *        project when you save the .csproj file.
+ * 
  *
  * MIDDLEWARE
  *
@@ -118,9 +151,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Hotel_Server.Database;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Hotel_Server
@@ -129,7 +164,28 @@ namespace Hotel_Server
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = BuildWebHost(args);
+
+            // Creates the scope within which operations are performed.
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    // 1. Get a database context instance from the dependency injection container.
+                    var context = services.GetRequiredService<Context>();
+                    // 2. Call the seed method, passing to it the context.
+                    DatabasePopulator.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+                // 3. Dispose the context when the seed method is done and goes out of scope.
+            }
+
+            host.Run();
         }
 
 
