@@ -197,7 +197,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Common.Models;
-using PostgresEFCore.Providers;
+using Hotel_Server.Database;
 
 
 namespace Hotel_Server.Controllers

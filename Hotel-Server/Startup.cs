@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PostgresEFCore.Providers;
+using Hotel_Server.Database;
 
 using Common.Models;
 

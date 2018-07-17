@@ -147,7 +147,7 @@
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace PostgresEFCore.Providers
+namespace Hotel_Server.Database
 {
     // DbContext is an EF Core class. Your Context class must inherit from it.
     public class Context : DbContext

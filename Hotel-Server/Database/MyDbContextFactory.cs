@@ -23,10 +23,10 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using PostgresEFCore.Providers;
+using Hotel_Server.Database;
 
 
-namespace PostgresEFCore.Factories
+namespace Hotel_Server.D
 {
     public class MyDbContextFactory : IDesignTimeDbContextFactory<Context>
     {
