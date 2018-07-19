@@ -70,6 +70,105 @@
  *        it will automatically update the .csproj file. However, if you choose it, you can declare
  *        dependencies by hand and Nuget will automatically download and install them to the
  *        project when you save the .csproj file.
+ *
+ * 
+ **************************************************************************************************
+ **************************************************************************************************
+ *
+ * THE PROCESS OF BOOTING UP ASP.NET CORE PROGRAMS
+ *
+ * When an ASP.NET Core application is run, it instantiates a Host which turns on a Web server. 
+ *
+ * WHAT IS A WEB HOST?
+ *
+ * A Host is an ASP.NET Core program (part of a program?) responsible for the startup and
+ * lifetime management of ASP.NET Core applications. As such, ASP.NET Core apps require a host
+ * in which to execute. Therefore, one of the first things an ASP.NET Core program does is to
+ * create and build an instance of a host. In fact, the first line of Main() in this program
+ * calls BuildWebHost(), which creates an IWebHost object and then boots it up. When the host
+ * boots up, at a minimum, it will configure a web server and a request processing pipeline. 
+ *
+ * As previously mentioned, Host creation is usually done in Main(). ASP.NET Core hosts must
+ * implement the IWebHost interface. An IWebHost object represents a configured web host. They
+ * are created by the static WebHost class, which "provides convenience methods for creating
+ * instances of IWebHost and IWebHostBuilder with pre-configured defaults."[2] The WebHost class
+ * uses an instance of IWebHostBuilder to construct IWebHost objects. 
+ *
+ * The WebHost class comes with a CreateDefaultBuilder() method, which automatically configures
+ * a default IWebHost object. These are the things it does[3]:
+ *
+ *     * BOOTS UP THE DEFAULT WEBSERVER, KESTREL, AND CONFIGURES IT: Configures Kestrel as the web
+ *       server and configures the server using the app's hosting configuration providers. For
+ *       the Kestrel default options, see Kestrel web server implementation in ASP.NET Core.
+ *
+ *     * Sets the content root to the path returned by Directory.GetCurrentDirectory.
+ * 
+ *     * OPTIONAL CONFIGURATIONS: Loads host configuration from:
+ *         * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
+ *         * Command-line arguments.
+ * 
+ *     * OPTIONAL CONFIGURATIONS: Loads app configuration from:appsettings.json.
+ *         * appsettings.{Environment}.json.
+ *         * User secrets when the app runs in the Development environment using the entry assembly.
+ *         * Environment variables.
+ *         * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
+ *         * Command-line arguments.
+ *
+ *     * ENABLES LOGGING: Configures logging for console and debug output. Logging includes log
+ *       filtering rules specified in a Logging configuration section of an appsettings.json or
+ *       appsettings.{Environment}.json file.
+ *
+ *     * INTEGRATES KESTREL WITH IIS: When running behind IIS, enables IIS integration. 
+ *       Configures the base path and port the server listens on when using the ASP.NET Core 
+ *       Module. The module creates a reverse proxy between IIS and Kestrel. Also configures the
+ *       app to capture startup errors. For the IIS default options, see Host ASP.NET Core on
+ *       Windows with IIS. Sets ServiceProviderOptions.ValidateScopes to true if the app's
+ *       environment is Development. For more information, see Scope validation.
+ *
+ * Some additional notes on Web Hosts and Web Servers are given below[4]. Please note that this
+ * source appears to be out of date, not having been updated since the release of .NET Core 1.0.
+ *
+ *     What is a Host?
+ * 
+ *     ASP.NET Core apps require a host in which to execute. A host must implement the IWebHost
+ *     interface, which exposes collections of features and services, and a Start method. The
+ *     host is typically created using an instance of a WebHostBuilder, which builds and returns
+ *     a WebHost instance. The WebHost references the server that will handle requests.
+ *
+ *     What is the difference between a host and a server?
+ *
+ *     The host is responsible for application startup and lifetime management. The server is
+ *     responsible for accepting HTTP requests. Part of the host’s responsibility includes
+ *     ensuring the application’s services and the server are available and properly configured.
+ *     You can think of the host as being a wrapper around the server. The host is configured
+ *     to use a particular server; the server is unaware of its host.
+ *
+ * 
+ * WHAT IS A WEB SERVER?
+ *
+ *
+ * 
+ * STARTUP.CS
+ * 
+ * Do note that in the process of setting up the Host, the WebHost class's CreateDefaultBuilder()
+ * method calls the UserStartup() method and passes in the Startup class. It is mandatory that this
+ * class be included in every ASP.NET Core application, but it does not have to be called 'Startup'.
+ * What does it do? This class contains crucial configuration information that the Host needs to
+ * know. 
+ *
+ * Recall that the Host will configure and boot up these two things at a bare minimum:
+ *
+ *     1. A Web Server: to handle incoming HTTP requests,
+ *     2. A Middleware Pipeline: to process and respond to these requests.
+ *
+ * The Startup class has two methods:
+ *
+ *     1. ConfigureServices(): This method is called before Configure() by the Web host. In
+ *        this method, you can add and configure Services that you want to add to your
+ *        application. 
+ *     2. Configure(): This method configures the middleware pipeline, determining how the
+ *        application will respond to requests. Any Services that were added in
+ *        ConfigureServices() are availabe for use in Configure().
  * 
  *
  * MIDDLEWARE
@@ -135,6 +234,9 @@
  * SOURCES
  * 
  * 1: https://docs.microsoft.com/en-us/aspnet/core/
+ * 2: https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.webhost?view=aspnetcore-2.1
+ * 3: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-2.1
+ * 4: https://aspnetcore.readthedocs.io/en/stable/fundamentals/hosting.html
  * 
  **************************************************************************************************
  **************************************************************************************************
@@ -158,12 +260,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+
 namespace Hotel_Server
 {
     public class Program
     {
+        // Main() boots up a web server and the host for this project.  
         public static void Main(string[] args)
         {
+            // On the line below, the Host is booted up.
             var host = BuildWebHost(args);
 
             // Creates the scope within which operations are performed.
@@ -189,6 +294,12 @@ namespace Hotel_Server
         }
 
 
+        // This method is where the WebHost is created, supplied with configuration information
+        // and then instantiated. According to the documentation, WebHost "provides convenience
+        // methods for creating instances of IWebHost and IWebHostBuilder with pre-configured
+        // defaults." It is a static class that also contains a variety of Start() methods for
+        // booting up instances of IWebHost. Check the WebHost class and the IWebHost,
+        // IWebHostBuilder interfaces for more details. 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
