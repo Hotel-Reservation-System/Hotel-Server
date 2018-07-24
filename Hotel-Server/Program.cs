@@ -118,12 +118,14 @@
  * instance of IWebHostBuilder to construct IWebHost objects. 
  *
  * A Host only starts an web app and manages it. There is one other important thing that
- * every web application needs: handling incoming HTTP requests and responding to them. Managing
- * HTTP requests is the duty of a WEB SERVER program. Responding to requests is the job of 
- * ASP.NET Core's Middleware Services. 
- * 
- * When the host boots up, at a minimum, it will configure a web server and a request
- * processing pipeline. 
+ * every web application needs: handling incoming HTTP requests and responding to them.
+ * Managing HTTP requests is the duty of a WEB SERVER program. Responding to requests is
+ * the job of ASP.NET Core's Middleware Services (Such services make up the Request
+ * Processing Pipeline). When the host boots up, at a minimum, it will configure a web
+ * server and a request processing pipeline.
+ *
+ * See the section below titled, 'What is a Web Server?' for more about servers. See the
+ * Configure() method of the Startup class to learn how to create the Request Pipeline.
  *
  *
  * THE HOST: THE DEFAULT CONFIGURATION
@@ -143,9 +145,9 @@
  *             .UseKestrel()
  *             .UseContentRoot(Directory.GetCurrentDirectory())
  *             .ConfigureAppConfiguration((Action<WebHostBuilderContext, IConfigurationBuilder>) ((hostingContext, config) =>
- *                 {
- *                     // SETUP CONFIGURATION    
- *                 }))
+ *             {
+ *                 // SETUP CONFIGURATION    
+ *             }))
  *         
  *             .ConfigureLogging((Action<WebHostBuilderContext, ILoggingBuilder>) ((hostingContext, logging) =>
  *             {
@@ -153,13 +155,13 @@
  *             }))
  *             .UseIISIntegration()
  *             .UseDefaultServiceProvider((Action<WebHostBuilderContext, ServiceProviderOptions>) ((context, options) =>
- *              {
- *                  // SETUP THE DEPENDENCY INJECTION CONTAINER FOR USE
- *              }
+ *             {
+ *                 // SETUP THE DEPENDENCY INJECTION CONTAINER FOR USE
+ *             }
  *     }
  *
  *
- * These are the things it does[3]:
+ * These are the things CreateDefaultBuilder() is doing[3]:
  *
  *     * CONFIGURES THE DEFAULT WEBSERVER (KESTREL) AND STARTS IT: Configures Kestrel as the web
  *       server and configures the server using the app's hosting configuration providers. For
