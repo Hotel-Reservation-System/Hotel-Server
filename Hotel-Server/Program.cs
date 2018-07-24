@@ -136,9 +136,11 @@
  * not change between applications or as the application changes over time.
  *
  * The WebHost class comes with a CreateDefaultBuilder() method, which if called, will
- * automatically configure and return a Host object with standard settings. This is
- * what it looks like in ASP.NET Core 2.0:
+ * automatically configure and return an IWebHostBuilder object with standard settings
+ * for the Host. The IWebHostBuilder object will in turn create a Host object. This is
+ * what CreateDefaultBuilder() looks like in ASP.NET Core 2.0:
  *
+ * 
  *     public static IWebHostBuilder CreateDefaultBuilder(string[] args)
  *     {
  *         return new WebHostBuilder()
@@ -148,7 +150,6 @@
  *             {
  *                 // SETUP CONFIGURATION    
  *             }))
- *         
  *             .ConfigureLogging((Action<WebHostBuilderContext, ILoggingBuilder>) ((hostingContext, logging) =>
  *             {
  *                 // CONFIGURE LOGGING 
