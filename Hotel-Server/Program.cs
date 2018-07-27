@@ -6,6 +6,32 @@
  * to be language and program agnostic. In other words, Hotel-Server can talk to clients besides 
  * Hotel-Client, even if they are written in other languages.
  *
+ * TODO: INCORPORATE AND REWRITE THIS BLOCK TO EXPLAIN HOTEL-SERVER'S ROLL AS AN APP SERVER.
+ *
+ *       Application Server: is the server program portion of an application that is divided
+ *       into a multi-tier architecture, as is the case for this project. The application 
+ *       server for this project is called 'Hotel-Server'. An application server is an
+ *       environment that provides all the runtime services your application needs. It hosts
+ *       and exposes the business logic of your application to the client through APIs.
+ *
+ *       The FRONT-END of a multi-tier application is also called the Presentation layer. It
+ *       presents a UI to the user, by which the user issues commands to the application. The
+ *       front-end can be a client application that runs on the users computer, but its equally
+ *       likely to be Web-browser based. The front-end for this project is called 'Hotel-Client'.
+ *
+ *       The middle tier of the application, called the APPLICATION SERVER, contains the
+ *       business logic layer of the application. It sits between the front-end and the backend,
+ *       acting as the intermediary between the database and the users of the application.
+ *       The front-end and back-end talk to the application server via protocols and APIs.
+ *       Application servers usually extend the capabilities of a web server by either 
+ *       encompassing or being paired with a web server. Application servers usually run on
+ *       the user's computer and but they can also run on servers. 
+ *
+ *       The last tier, the BACK-END, is the database and transaction layer. It handles
+ *       communications with the database. Backends usually run on server machines. The
+ *       backend for this project is called 'Hotel-Server'.
+ * 
+ *
  * Hotel-Server is partially structured in the MVC pattern. Specifically, it gets Models (M) from
  * the Common project and implements Controllers (C). As it is a WebAPI project, it should not and
  * does not have Views (V) implemented. That is the business of the Hotel-Client project. See below
@@ -329,23 +355,6 @@
  *       server for this project is called 'Hotel-Server'. An application server is an
  *       environment that provides all the runtime services your application needs. It hosts
  *       and exposes the business logic of your application to the client through APIs.
- *
- *       The FRONT-END of a multi-tier application is also called the Presentation layer. It
- *       presents a UI to the user, by which the user issues commands to the application. The
- *       front-end can be a client application that runs on the users computer, but its equally
- *       likely to be Web-browser based. The front-end for this project is called 'Hotel-Client'.
- *
- *       The middle tier of the application, called the APPLICATION SERVER, contains the
- *       business logic layer of the application. It sits between the front-end and the backend,
- *       acting as the intermediary between the database and the users of the application.
- *       The front-end and back-end talk to the application server via protocols and APIs.
- *       Application servers usually extend the capabilities of a web server by either 
- *       encompassing or being paired with a web server. Application servers usually run on
- *       the user's computer and but they can also run on servers. 
- *
- *       The last tier, the BACK-END, is the database and transaction layer. It handles
- *       communications with the database. Backends usually run on server machines. The
- *       backend for this project is called 'Hotel-Server'.
  *
  *
  * WHAT IS A WEB SERVER?
