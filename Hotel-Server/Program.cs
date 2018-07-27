@@ -104,8 +104,9 @@
  *
  * THE PROCESS OF BOOTING UP ASP.NET CORE PROGRAMS
  *
- * When an ASP.NET Core application is run, what happens? An ASP.NET Core application needs a
- * Webhost, so a host is created, which configures and boots up a Web Server. 
+ * What happens when an ASP.NET Core application is run? All ASP.NET Core applications
+ * need a Host, so a host is created. The host configures and boots up a Web Server and
+ * some middleware to make a Request processing pipeline.  
  *
  * 
  * WHAT IS A WEB HOST?
@@ -113,17 +114,20 @@
  * I can't find a clear definition for a Host. It's an ambiguous term whose meaning varies
  * with context.
  *
- * In the most often-used sense, a web host appears to refer to the bundle of hardware and
- * software required to serve up websites. A host can be a reference to a physical
- * (or virtual) web server that stores files for one or more websites along with other
- * related applications. A host serves websites to those with authorization to access them.
- * A Web Hosting Service leases this bundle to clients who want to host websites. 
+ * In the most often used sense, a web host appears to refer to the bundle of hardware and
+ * software required to serve up websites. The word appears to be synonymous with Web Server.
+ * In this sense, a host seems be a reference to a physical (or virtual) web server that
+ * stores files for one or more websites along with other related applications. In the
+ * typical case, when a user requests a website or a resource via their browser, the request
+ * travels over the internet to the host server, which responds by delivering the requested
+ * content, provided that the user is authorized to receive it. A Web Hosting Service leases
+ * this bundle to clients who want to host websites. 
  *
  * This is related to but different from what the word 'Host' means in .NET/ASP.NET Core
  * terminology. An ASP.NET Core Web Application must run inside, for lack of a better word,
  * a container. This container, called a HOST or Webhost, appears to refer to the program or
  * process that executes the web application. A Host also connects the web app to a web server.
- * This kind of host is the subject of this section.
+ * This section is concerned with this type of host.
  *
  * As the Host is the container for the App, the first thing an ASP.NET Core application does
  * is create and instantiate a Host. This code is from Program.cs of this app; it configures
@@ -138,28 +142,29 @@
  *
  *
  * As you can see above, the first line of Main() in this program calls BuildWebHost(), which
- * creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must implement
- * the IWebHost interface. An IWebHost object represents a configured web host. They are created
- * by the static WebHost class, which "provides convenience methods for creating instances of
- * IWebHost and IWebHostBuilder with pre-configured defaults."[2] The WebHost class uses an
- * instance of IWebHostBuilder to construct IWebHost objects. 
+ * creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must
+ * implement the IWebHost interface. An IWebHost object represents a configured web host. They
+ * are created by the static WebHost class, which "provides convenience methods for creating
+ * instances of IWebHost and IWebHostBuilder with pre-configured defaults."[2] The WebHost
+ * class uses an instance of IWebHostBuilder to construct IWebHost objects. 
  *
  * In ASP.NET Core programs, the host is responsible for application startup and lifetime
- * management. Correctly configuring and turning on an application's services and a web
- * server is another responsibility of the Host. A Host connects a web application to a
- * web server. Why? 
+ * management. Another one of its responsibilities is to correctly configure and turn on
+ * an application's services and a web server. Why does a web application have to be
+ * connected to a web server?
  *
- * Every web application also needs to handle incoming HTTP requests and respond to them. 
- * Managing HTTP requests is the duty of a WEB SERVER program. Responding to requests is
- * the job of ASP.NET Core's Middleware Services (Such services make up the Request
- * Processing Pipeline). When the host boots up, at a minimum, it will configure a web
- * server and a request processing pipeline.
+ * Every web application is network-facing, i.e. it communicates to other programs and
+ * processes over a network. This entails handling incoming HTTP requests and responding
+ * to them. Managing HTTP requests is the duty of a WEB SERVER program. Responding to
+ * requests is the job of ASP.NET Core's Middleware Services (Such services make up the
+ * Request Processing Pipeline). When the host boots up, at a minimum, it will configure
+ * a web server and a request processing pipeline.
  *
- * See the section below titled, 'What is a Web Server?' for more about servers. See the
+ * See the section below titled, 'What is a Server?' for more about servers. See the
  * Configure() method of the Startup class to learn how to create the Request Pipeline.
  *
  *
- * THE HOST: THE DEFAULT CONFIGURATION
+ * THE HOST: CONFIGURATION OPTIONS 
  *
  * By default, when an IWebHost instance is created, it needs to be given configuration
  * parameters. Configuring a web app is complicated because a lot of parameters need to
@@ -194,20 +199,22 @@
  *
  *
  * These are the things CreateDefaultBuilder() is doing[3]:
+ * 
  *
- *     * CONFIGURES THE DEFAULT WEBSERVER (KESTREL) AND STARTS IT: Configures Kestrel as the web
- *       server and configures the server using the app's hosting configuration providers. For
- *       the Kestrel default options, see Kestrel web server implementation in ASP.NET Core.
+ *     * CONFIGURES THE DEFAULT WEBSERVER (KESTREL) AND STARTS IT: Configures Kestrel as
+ *       the web server and configures the server using the app's hosting configuration
+ *       providers. For the Kestrel default options, see Kestrel web server implementation
+ *       in ASP.NET Core.
  *
  *     * CONTENT DIRECTORY: Sets the content root to the path returned by
- *       Directory.GetCurrentDirectory. ["The content root is the base path to any content used
- *       by the app, such as views, Razor Pages, and static assets. By default, the content root
- *       is the same as application base path for the executable hosting the app." ContentRoot
- *       is similar to Web Root (wwwroot), which contains public static resources, such as HTML,
- *       CSS and JavaScript files.
- *       When the Host object is being constructed, by default, the program directory that
- *       contains appsettings.json is set as the Content Root (aka Content Directory) for
- *       that web application.]
+ *       Directory.GetCurrentDirectory. ["The content root is the base path to any content
+ *       used by the app, such as views, Razor Pages, and static assets. By default, the
+ *       content root is the same as application base path for the executable hosting the app."
+ *
+ *       ContentRoot is similar to Web Root (wwwroot), which contains public static resources,
+ *       such as HTML, CSS and JavaScript files. When the Host object is being constructed,
+ *       by default, the program directory that contains appsettings.json is made the Content
+ *       Root (aka Content Directory) for that web application.]
  * 
  *     * OPTIONAL CONFIGURATIONS: Loads host configuration from:
  *         * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
@@ -220,47 +227,51 @@
  *         * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
  *         * Command-line arguments.
  *
- *     * ENABLES LOGGING: Configures logging for console and debug output. Logging includes log
- *       filtering rules specified in a Logging configuration section of an appsettings.json or
- *       appsettings.{Environment}.json file.
+ *     * ENABLES LOGGING: Configures logging for console and debug output. Logging includes
+ *       log filtering rules specified in a Logging configuration section of an
+ *       appsettings.json or appsettings.{Environment}.json file.
  *
- *     * SETS UP KESTREL INTEGRATION WITH IIS: When running behind IIS, enables IIS integration. 
- *       Configures the base path and port the server listens on when using the ASP.NET Core 
- *       Module. The module creates a reverse proxy between IIS and Kestrel. Also configures the
- *       app to capture startup errors. For the IIS default options, see Host ASP.NET Core on
- *       Windows with IIS. Sets ServiceProviderOptions.ValidateScopes to true if the app's
- *       environment is Development. For more information, see Scope validation.
+ *     * SETS UP KESTREL INTEGRATION WITH IIS: When running behind IIS, enables IIS
+ *       integration. Configures the base path and port the server listens on when using the
+ *       ASP.NET Core Module. The module creates a reverse proxy between IIS and Kestrel.
+ *       Also configures the app to capture startup errors. For the IIS default options, see
+ *       Host ASP.NET Core on Windows with IIS. Sets ServiceProviderOptions.ValidateScopes to
+ *       true if the app's environment is Development. For more information, see Scope
+ *       validation.
+ * 
  *
  * If you want a configuration different from CreateDefaultBuilder()'s default configuration,
  * you can make changes by calling other methods and passing in different arguments. See
  * the Microsoft Docs for more information. 
  * 
  * Below, see some additional notes on Web Hosts and Web Servers[4]. Please note that this
- * source appears to be out of date, not having been updated since the release of .NET Core 1.0.
+ * source appears to be out of date, not having been updated since the release of .NET Core
+ * 1.0:
  *
+ * 
  *     What is a Host?
  * 
- *     ASP.NET Core apps require a host in which to execute. A host must implement the IWebHost
- *     interface, which exposes collections of features and services, and a Start method. The
- *     host is typically created using an instance of a WebHostBuilder, which builds and returns
- *     a WebHost instance. The WebHost references the server that will handle requests.
+ *     ASP.NET Core apps require a host in which to execute. A host must implement the
+ *     IWebHost interface, which exposes collections of features and services, and a Start
+ *     method. The host is typically created using an instance of a WebHostBuilder, which
+ *     builds and returns a WebHost instance. The WebHost references the server that will
+ *     handle requests.
  *
  *     What is the difference between a host and a server?
  *
- *     The host is responsible for application startup and lifetime management. The server is
- *     responsible for accepting HTTP requests. Part of the host’s responsibility includes
- *     ensuring the application’s services and the server are available and properly configured.
- *     You can think of the host as being a wrapper around the server. The host is configured
- *     to use a particular server; the server is unaware of its host.
+ *     The host is responsible for application startup and lifetime management. The server
+ *     is responsible for accepting HTTP requests. Part of the host’s responsibility includes
+ *     ensuring the application’s services and the server are available and properly
+ *     configured. You can think of the host as being a wrapper around the server. The host
+ *     is configured to use a particular server; the server is unaware of its host.
  *
  * 
  * WHAT IS A SERVER?
  *
  * In computing, the term server is overloaded and can be used for lots of things. In the
- * context of ASP.NET Core, when I talk about 'servers', note that the term can refer to
- * the physical computer that hosts applications or the actual program that runs on these
- * computers and delivers content to users or the combination of hardware and software
- * working together. 
+ * context of ASP.NET Core, when I talk about 'servers', the term can refer to the physical
+ * computer that hosts applications or the actual program that runs on these computers and
+ * delivers content to users or to the combination of hardware and software working together. 
  *
  * In the hardware sense, what is a server? Here is an explanation from an answer to a
  * question on Quora[5]:
@@ -281,6 +292,7 @@
  *     to run continuously for years at a time in temperature-controlled environments.
  *     Architecturally, server-grade hardware is not that dissimilar to workstation-grade
  *     hardware; it's just engineered for a different level of performance.
+ * 
  *
  * Both physical servers and programs that serve content are called servers, but this section
  * is mostly devoted to studying programs that run on server machines, not the machines
@@ -298,31 +310,31 @@
  *
  * Servers usually don't act on their own; they act in response to client requests. Because
  * servers are designed to respond to queries, a server program spends most of its time
- * waiting for requests. A server program is usually not turned off, often running for months,
- * years or even decades without interruption. This is why they run on special server computers
- * that are designed for reliablity and durability. You rarely see server programs intended
- * for long-term uptime run on phones or desktop computers.  
+ * waiting for requests. A server program is usually not turned off, instead often running
+ * for months, years or even decades without interruption. This is why they run on special
+ * server computers that are designed for reliablity and durability. You rarely see server
+ * programs intended for long-term, uninterrupted uptime run on phones or desktop computers.  
  *
  *
  * TYPES OF SERVERS
  * 
- * There are many kinds of servers. A distinction that should be made here between dedicated
- * and virtual servers. When the bundle of hardware and software on one server machine performs
- * a single task, it is called a DEDICATED SERVER. For instance, email servers are usually
- * dedicated to sending, receiving and storing emails.
+ * There are many kinds of servers. A distinction should be made here between dedicated
+ * and virtual servers. When the bundle of hardware and software in one server machine
+ * performs a single task, it is called a DEDICATED SERVER. For instance, email servers are
+ * usually dedicated to sending, receiving and storing emails.
  * 
  * Servers can also be VIRTUAL, i.e you can use virtualization software to run several virtual
  * operating systems at once. You can install server programs on each of these virtual OSs to
- * maximize the use of the physical server's resources. In this way, you can run dozens of server
- * programs across many virtual OSs on a single server machine. Each server program can now act
- * like a dedicated server; however if too many server programs reside on one machine or if a
- * single ravenous server starts resources, it can negatively impact performance for all
- * virtual servers on that machine.
+ * maximize the use of the physical server's capabilities. In this way, you can run dozens of
+ * server programs across many virtual OSs on a single server machine. Each server program
+ * can now act like a dedicated server. However if too many server programs reside on one
+ * machine or if a single ravenous server starts hogging resources, it can negatively impact
+ * performance for all virtual servers on that machine.
  *
  * Servers can also be categorized according to purpose. Here is a partial list of server types:
  *
  * 
- *     * Email Servers: Mail servers move and store email across the internets and corporate
+ *     * Email Servers: Mail servers move and store email across the internet and corporate
  *       intranets.
  * 
  *     * Proxy Servers: "A proxy server is a server that sits between a client application,
@@ -332,7 +344,7 @@
  *     * Web Servers: "Web servers are computers that deliver (or serve up) Web pages. Every
  *       Web server has an IP address and possibly a domain name. There are many Web server
  *       software applications, including public domain software and commercial packages."[7]
- *       Web servers usually involve a browser (client) and the server communicating over
+ *       Web servers usually involve a browser (the client) and the server communicating over
  *       the HTTP Protocol.
  * 
  *     * Real-Time Communication Server: are sometimes called Chat servers or IRC servers.
@@ -343,30 +355,32 @@
  * 
  *     * Collaboration Server: are used to facilitate collaboration for groupware software.
  *
- *     * Telnet Server: "A Telnet server enables users to log on to a host computer and perform
- *       tasks as if they're working on the remote computer itself."[8]
+ *     * Telnet Server: "A Telnet server enables users to log on to a host computer and
+ *       perform tasks as if they're working on the remote computer itself."[8]
  *
- *     * List Server: "List servers offer a way to better manage mailing lists, whether they
- *       be interactive discussions open to the public or one-way lists that deliver
+ *     * List Server: "List servers offer a way to better manage mailing lists, whether
+ *       they be interactive discussions open to the public or one-way lists that deliver
  *       announcements, newsletters or advertising."
  * 
  *     * Application Server: is the server program portion of an application that is divided
- *       into a multi-tier architecture, as is the case for this project. The application 
- *       server for this project is called 'Hotel-Server'. An application server is an
- *       environment that provides all the runtime services your application needs. It hosts
- *       and exposes the business logic of your application to the client through APIs.
+ *       into a multi-tier architecture, as is the case for this project. Application servers
+ *       host the business logic of your application and expose access to it through APIs to
+ *       clients. An application server is an environment that provides all the runtime
+ *       services your application needs. The application server for this project is called
+ *       'Hotel-Server'.  
  *
  *
  * WHAT IS A WEB SERVER?
  *
- * A Web Server can refer to a physical machine (or a virtual server running on it) and web server
- * software. An Mozilla Developer Network article describes a hardware web server as follows[9]:
+ * A Web Server can refer to a physical machine (or a virtual server running on it) or server
+ * software running on a server machine. An Mozilla Developer Network article describes a
+ * hardware web server as follows[9]:
  *
  * 
- *     On the hardware side, a web server is a computer that stores web server software and
- *     a website's component files (e.g. HTML documents, images, CSS stylesheets, and JavaScript
- *     files). It is connected to the Internet and supports physical data interchange with
- *     other devices connected to the web.
+ *     On the hardware side, a web server is a computer that stores web server software 
+ *     and a website's component files (e.g. HTML documents, images, CSS stylesheets, and
+ *     JavaScript files). It is connected to the Internet and supports physical data
+ *     interchange with other devices connected to the web.
  *
  * 
  * The article describes Web server software like this:
@@ -383,7 +397,7 @@
  *
  * 
  *         +----------------------+                           +---------------------+
- *         |                      |                           |                     |
+ *         |      WEB SERVER      |                           |                     |
  *         | +-------+  +-------+ |        HTTP REQUEST       |                     |
  *         | |       |  |       | | <-----------------------+ |                     |
  *         | |       |  |       | |                           |                     |
@@ -409,8 +423,8 @@
  * As the article explains, there are some rules to communication over the HTTP protocol:
  *
  * 
- *     * Only clients can make HTTP requests, and then only to servers. Servers can only respond
- *       to a client's HTTP request.
+ *     * Only clients can make HTTP requests, and then only to servers. Servers can only
+ *       respond to a client's HTTP request.
  *
  *     * When requesting a file via HTTP, clients must provide the file's URL.
  *
@@ -418,8 +432,8 @@
  * 
  *
  * The article explains the responsibilities of a Web Server. Note that the term 'HTTP Server'
- * is used instead 'Web Server'. There is a distinction between them, but here you can treat
- * HTTP Server as Web Server:
+ * is used instead 'Web Server'. There is a distinction between the terms, but here you can
+ * treat them as the same:
  *
  * 
  *     On a web server, the HTTP server is responsible for processing and answering incoming
@@ -446,10 +460,10 @@
  *     4. Litespeed: 3.4%
  *
  * Microsoft-oriented shops tend to use IIS (Internet Information Server), but it's no longer
- * the default web server for .NET Core/ASP.NET Core so it's market share is declining. Linux
+ * the default web server for .NET Core/ASP.NET Core so its market share is declining. Linux
  * shops tend to favour Apache, Nginx and Litespeed. Apache has been the big dog since 1995, 
  * but it consumes much more memory while being much less performant, so unsurprisingly,
- * it will probably soon lose its crown to Nginx in a few years. 
+ * it will probably soon lose its crown in a few years to the new rising star, Nginx. 
  * 
  * The default web server for ASP.NET Core programs is Kestrel.
  *
@@ -467,10 +481,9 @@
  *     new MVC framework and the Kestrel web server. These new apps can run on full .NET
  *     Framework or .NET Core...
  *
- *     Kestrel is considered a preferred web server for newer ASP.NET applications (see this
- *     post for a comparison to IIS and why you need both). It is based on the libuv library,
- *     the same one used by node.js. Libuv supports an event-driven style of programming.
- *     Some of its core utilities include:
+ *     Kestrel is considered a preferred web server for newer ASP.NET applications... It is
+ *     based on the libuv library, the same one used by node.js. Libuv supports an
+ *     event-driven style of programming. Some of its core utilities include:
  *
  *         * Non-blocking network support
  *         * Asynchronous file system access
@@ -484,13 +497,13 @@
  *     cross-platform support.
  *
  * However, Kestrel is not a fully-featured web server; it does as little as possible. Kestrel
- * developers seem to optimized for speed by leaving out most of IIS's features. In fact,
- * Microsoft recommends using another full-featured web server like Nginx or IIS in front of it
- * for public web applications, as Kestrel cannot handle windows authentication, security and 
- * other such services. When you use another web server in front of Kestrel, that web server is
- * said to be a Reverse Proxy Server.
+ * developers seem to optimized for speed by leaving out most of IIS's features. So, it
+ * sounds as though Kestrel is intended to work as an in-process server, with another fully
+ * featured web server like Nginx or IIS in front of it for public web applications, as Kestrel
+ * cannot handle windows authentication, security and other such services. When you use another
+ * web server in front of Kestrel, that web server is said to be a Reverse Proxy Server.
  *
- * You can configure soem of these options in Configure() method of Startup.cs. See Microsoft
+ * You can configure some of these options in Configure() method of Startup.cs. See Microsoft
  * Docs for more details.
  * 
  * 
