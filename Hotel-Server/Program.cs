@@ -104,7 +104,12 @@
  *
  * THE PROCESS OF BOOTING UP ASP.NET CORE PROGRAMS
  *
- * What happens when an ASP.NET Core application runs?
+ * NOTE: This article will explain code from Program.cs and to a lesser extent,
+ * Startup.cs.
+ * 
+ * When an ASP.NET Core application is started, a lot of things are configured and turned
+ * on. Some of them are parts of .NET Core and ASP.NET Core and others are parts of your
+ * web application.
  *
  * When an ASP.NET Core application starts, the first thing it will do is to execute the
  * Main() method in Program.cs. In any ASP.NET Core project, the first few instructions
@@ -113,22 +118,26 @@
  * things at a bare minimum:
  *
  * 
- *     1. A Web Server: to handle incoming HTTP requests,                     (Program.cs)
- *     2. A Middleware Pipeline: to process and respond to these requests.    (Startup.cs)
+ *     1. A Web Server: to handle incoming HTTP requests,                  (in Program.cs)
+ *     2. A Middleware Pipeline: to process and respond to these requests. (in Startup.cs)
  *
  *
  * The host in turn will have to configure and turn on the web server and middleware
- * services, for which it will need to have configuration information such as:
+ * services, for which it will need to have configuration information for things like:
  *
  * 
- *     * Environment variables of the web app,
- *     * User secrets configuration values,
- *     * the IIS web server config defaults,
+ *     * The web server
+ *     * The ContentRoot and wwwroot directories for the app,
+ *     * Environment variables for the program,
+ *     * .json files with user specified configurations
+ *     * User secrets config values,
  *     * logging config defaults,
+ *     * integrating the IIS web server with the default server (for use as a Reverse Proxy),
  *
  * 
  * plus config information for all the other parts of the application that your web app
- * requires. Therefore, there is a lot of configuration information that the Host needs.
+ * requires. The takeway here is there is a lot of configuration information that the
+ * Host needs.
  *
  * Default configuration data for the things listed above is specified in this static class
  * and method: Webhost.CreateDefaultBuilder(). I believe you can change these defaults by
@@ -250,7 +259,7 @@
  *         * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
  *         * Command-line arguments.
  * 
- *     * OPTIONAL CONFIGURATIONS: Loads app configuration from:appsettings.json.
+ *     * OPTIONAL CONFIGURATIONS: Loads app configuration from: appsettings.json.
  *         * appsettings.{Environment}.json.
  *         * User secrets when the app runs in the Development environment using the entry assembly.
  *         * Environment variables.
