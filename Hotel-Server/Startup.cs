@@ -1,34 +1,29 @@
 ﻿/* STARTUP CLASS
  *
- * When an ASP.NET Core application starts, the first thing it will do in Main() is to boot
- * the Webhost. The host will try to configure the application and to do that, it will look to
- * the Startup Class for host and server configuration information, Middleware Services to 
- * load and the Request Handling Pipeline.
- *
- *
  * 
+ *
+
  * 
- * STARTUP.CS
+ * ConfigureAppConfiguration
+ *  
+ *
+ * The Startup class contains configuration information for the Request Processing Pipeline
+ * and Middleware Services. In Program.cs, when the Host is being configured, the WebHost
+ * class's CreateDefaultBuilder() method calls the UserStartup() method and passes in the
+ * Startup class and all its config data. It is mandatory that this class be included in
+ * very ASP.NET Core application, but it does not have to be called 'Startup', but by
+ * convention, that is the file name.
  * 
- * Do note that in the process of setting up the Host, the WebHost class's CreateDefaultBuilder()
- * method calls the UserStartup() method and passes in the Startup class. It is mandatory that this
- * class be included in every ASP.NET Core application, but it does not have to be called 'Startup'.
- * What does it do? This class contains crucial configuration information that the Host needs to
- * know. 
- *
- * Recall that the Host will configure and boot up these two things at a bare minimum:
- *
- *     1. A Web Server: to handle incoming HTTP requests,
- *     2. A Middleware Pipeline: to process and respond to these requests.
- *
  * The Startup class has two methods:
  *
  *     1. ConfigureServices(): This method is called before Configure() by the Web host. In
  *        this method, you can add and configure Services that you want to add to your
- *        application. 
- *     2. Configure(): This method configures the middleware pipeline, determining how the
- *        application will respond to requests. Any Services that were added in
- *        ConfigureServices() are availabe for use in Configure().
+ *        application. This method is optional.
+ *     
+ *     2. Configure(): Startup class must include this method. This method configures the
+ *        middleware pipeline, determining how the application will respond to requests.
+ *        Any Services that were added in ConfigureServices() are available for use in
+ *        Configure().
  * 
  *
  * MIDDLEWARE

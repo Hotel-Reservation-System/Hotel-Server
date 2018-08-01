@@ -104,9 +104,36 @@
  *
  * THE PROCESS OF BOOTING UP ASP.NET CORE PROGRAMS
  *
- * What happens when an ASP.NET Core application is run? All ASP.NET Core applications
- * need a Host, so a host is created. The host configures and boots up a Web Server and
- * some middleware to make a Request processing pipeline.  
+ * What happens when an ASP.NET Core application runs?
+ *
+ * When an ASP.NET Core application starts, the first thing it will do is to execute the
+ * Main() method in Program.cs. In any ASP.NET Core project, the first few instructions
+ * in Main() configure and start a Host for the program. The Host is container in which a
+ * program executes. After initializing, the Host will configure and boot up these two
+ * things at a bare minimum:
+ *
+ * 
+ *     1. A Web Server: to handle incoming HTTP requests,                     (Program.cs)
+ *     2. A Middleware Pipeline: to process and respond to these requests.    (Startup.cs)
+ *
+ *
+ * The host in turn will have to configure and turn on the web server and middleware
+ * services, for which it will need to have configuration information such as:
+ *
+ * 
+ *     * Environment variables of the web app,
+ *     * User secrets configuration values,
+ *     * the IIS web server config defaults,
+ *     * logging config defaults,
+ *
+ * 
+ * plus config information for all the other parts of the application that your web app
+ * requires. Therefore, there is a lot of configuration information that the Host needs.
+ *
+ * Default configuration data for the things listed above is specified in this static class
+ * and method: Webhost.CreateDefaultBuilder(). I believe you can change these defaults by
+ * making changes in Program.cs. In Startup.cs, you can specify the the Middleware services
+ * you want to add to your application and also configure the Request Processing Pipeline.
  *
  * 
  * WHAT IS A WEB HOST?
@@ -129,10 +156,10 @@
  * process that executes the web application. A Host also connects the web app to a web server.
  * This section is concerned with this type of host.
  *
- * As the Host is the container for the App, the first thing an ASP.NET Core application does
- * is create and instantiate a Host. This code is from Program.cs of this app; it configures
- * a Host and turns it on. Some variation of it must run at the start of every ASP.NET Core
- * program:
+ * As the Host is the container for the Web app, creating and instantiating a Host is the
+ * first thing an ASP.NET Core application does. This code is the BuildWebHost() method in
+ * Program.cs of this application; it loads configuration information into a Host and turns
+ * it on. Some variation of it must run at the start of every ASP.NET Core program:
  *
  * 
  *         public static IWebHost BuildWebHost(string[] args) =>
@@ -141,12 +168,15 @@
  *                 .Build();
  *
  *
- * As you can see above, the first line of Main() in this program calls BuildWebHost(), which
- * creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must
- * implement the IWebHost interface. An IWebHost object represents a configured web host. They
- * are created by the static WebHost class, which "provides convenience methods for creating
- * instances of IWebHost and IWebHostBuilder with pre-configured defaults."[2] The WebHost
- * class uses an instance of IWebHostBuilder to construct IWebHost objects. 
+ * As you can see above, the first line of Main() in this program calls BuildWebHost(),
+ * which creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must
+ * implement the IWebHost interface. An IWebHost object represents a configured web host.
+ * They are created by the static WebHost class, which "provides convenience methods for
+ * creating instances of IWebHost and IWebHostBuilder with pre-configured defaults."[2]
+ *
+ * The WebHost class uses an instance of IWebHostBuilder to construct IWebHost objects.
+ * Webhost.CreateDefaultBuilder() will load default configuration information into an
+ * IWebHostBuilder object. IWebHostBuilder will return a IWebHost object.
  *
  * In ASP.NET Core programs, the host is responsible for application startup and lifetime
  * management. Another one of its responsibilities is to correctly configure and turn on
@@ -555,7 +585,7 @@ namespace Hotel_Server
         // Main() boots up a web server and the host for this project.  
         public static void Main(string[] args)
         {
-            // On the line below, the Host is declared.
+            // On the line below, the Host is declared and turned on. 
             var host = BuildWebHost(args);
 
             // Creates the scope within which operations are performed.
