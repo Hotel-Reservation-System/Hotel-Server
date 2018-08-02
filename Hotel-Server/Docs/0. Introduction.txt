@@ -1,0 +1,231 @@
+INTRODUCTION TO THE HOTEL RESERVATION PROJECT
+
+CHALLENGE: Hotel Reservation System - Create a reservation system which books hotel rooms. 
+It charges various rates for particular rooms of the hotel. Example, hotel rooms have 
+penthouse suites which cost more. Keep track of when rooms will be available and can be 
+scheduled.
+
+
+THE BREAKDOWN OF THE HOTEL RESERVATION PROJECT: A DISCUSSION ON PROGRAM STRUCTURES & ARCHITECTURES
+
+THE CLIENT-SERVER MODEL
+
+This project requires a client and a server, so it is structured in an application structure
+called the CLIENT-SERVER MODEL[1]. The wikipedia article on this architecture gives this 
+explanation:
+
+
+    The client–server model is a distributed application structure that partitions tasks or 
+    workloads between the providers of a resource or service, called servers, and service 
+    requesters, called clients. Often clients and servers communicate over a computer network 
+    on separate hardware, but both client and server may reside in the same system. A server 
+    host runs one or more server programs which share their resources with clients. A client 
+    does not share any of its resources, but requests a server's content or service function. 
+    Clients therefore initiate communication sessions with servers which await incoming 
+    requests. Examples of computer applications that use the client–server model are Email, 
+    network printing, and the World Wide Web.
+    
+    
+This project, Hotel Reservation System Project (HRSP), is divided into 3 separate projects:
+
+
+    1. Hotel-Client,            (Client Frontend)
+    2. Hotel-Server, and        (Application Server)
+    3. Common                   (Shared Library)
+
+
+Hotel-Client is the client program, Hotel-Server is the Application Server and Common is a 
+library that stores files shared by these two programs. 
+
+
+MULTITIER ARCHITECTURE
+
+Client-Server structures are usually implemented in the MULTITIER ARCHITECTURE (AKA N-TIER
+ARCHITECTURE).[2] Multitier architectures can be implemented with a variable number of tiers
+and layers to meet project needs. 
+
+What's the difference between layers and tiers? Scott Hanselman explains the distinction as 
+follows: "...a 'Tier' is a unit of deployment, while a 'Layer' is a logical separation of 
+responsibility within code."[3]. Another way of putting it is that "...a layer is a logical 
+structuring mechanism for the elements that make up the software solution, while a tier is 
+a physical structuring mechanism for the system infrastructure."[2]
+
+We know that client-server programs usually use multitier architecture to organize code, 
+the most common variation being a three-layer architecture. The three layers are usually:
+
+
+    1. Presentation Layer:   This is User Interface layer. It is the highest layer in the
+                             three-layer stack. It contains all code related to the UI. 
+                             This Layer will accept User commands and pass them to the 
+                             layer below (the Business Logic Layer) for execution. 
+                             
+    2. Business Logic Layer: This is the domain logic layer. It contains code that responds
+                             to user input by performing operations on data in the Data 
+                             Access Layer. The Business Logic Layer will return the results 
+                             of these operations to the Presentation Layer, which will then
+                             display them to the User. Note that the Business Logic Layer
+                             sits in the middle of the stack, communicating to the UI layer
+                             above and the Data Access Layer below. 
+                             
+    3. Data Access Layer:    This layer is the bottom of the stack and it's concerned with 
+                             storing and retrieving information. It exposes APIs to the 
+                             Business Logic Layer that it can use to manipulate data: 
+                             Creating, Reading, Updating and Deleting data stored on this 
+                             layer. 
+                             
+ 
+Layers refer to the logical separation of code. Software is divided into layers to separate
+concerns and ordganize your code by function. For the 3-layer architecture, you are trying to
+separate User Interface code from Business Logic code and Data Access and Processing code.  
+Failure to separate code as described means that UI code is mixed in with business logic and
+the Data Access layer. In a codebase like this, changing a UI feature may produce unintended
+cascade effects in Business Logic and Data Access code. Thus, separating concerns along domain 
+lines prevents the codebase from turning into a spaghetti codebase.
+
+Tiers are
+
+
+
+
+
+                         FRONTEND                                 BACKEND
+                    +----------------+                      +----------------+
+                    |                | <------------------+ |                |
+                    |  HOTEL-CLIENT  |                      |  HOTEL-SERVER  |
+                    |                | +------------------> |                |
+                    +----------------+                      +----------------+
+                    
+                            +                                       +
+                            |                                       |
+                            |              SHARED FILES             |
+                            |          +------------------+         |
+                            |          |                  |         |
+                            +--------> |      COMMON      | <-------+
+                                       |                  |
+                                       +------------------+
+
+
+
+It is broken down into a multi-tier architecture to separate the Presentation, Business 
+logic and Data Access tiers. 
+
+
+
+ARCHITECTURE OF THE HOTEL-SERVER PROJECT
+
+TODO: Write an introduction to the major concepts and frameworks of this project.
+
+1. Introduce the Hotel Reservation System Project and its component programs: Hotel-Client,
+Hotel-Server and Common. Explain their breakdown (
+
+2. Introduce these concepts: ASP.NET Core, Entity Framework, Migrations, Application server, 
+MVC architecture etc. Explain them and connect them holistically.    
+
+This project encapsulates the Data Access Layer and the Controllers of the Hotel Reservation
+System Project. It is an ASP.NET Core WebAPI project intended to be a standalone program that 
+runs on a server. This project's intended client is the Hotel-Client project, but it is designed
+to be language and program agnostic. In other words, Hotel-Server can talk to clients besides 
+Hotel-Client, even if they are written in other languages.
+
+TODO: INCORPORATE AND REWRITE THIS BLOCK TO EXPLAIN HOTEL-SERVER'S ROLL AS AN APP SERVER.
+
+      Application Server: is the server program portion of an application that is divided
+      into a multi-tier architecture, as is the case for this project. The application 
+      server for this project is called 'Hotel-Server'. An application server is an
+      environment that provides all the runtime services your application needs. It hosts
+      and exposes the business logic of your application to the client through APIs.
+
+      The FRONT-END of a multi-tier application is also called the Presentation layer. It
+      presents a UI to the user, by which the user issues commands to the application. The
+      front-end can be a client application that runs on the users computer, but its equally
+      likely to be Web-browser based. The front-end for this project is called 'Hotel-Client'.
+
+      The middle tier of the application, called the APPLICATION SERVER, contains the
+      business logic layer of the application. It sits between the front-end and the backend,
+      acting as the intermediary between the database and the users of the application.
+      The front-end and back-end talk to the application server via protocols and APIs.
+      Application servers usually extend the capabilities of a web server by either 
+      encompassing or being paired with a web server. Application servers usually run on
+      the user's computer and but they can also run on servers. 
+
+      The last tier, the BACK-END, is the database and transaction layer. It handles
+      communications with the database. Backends usually run on server machines. The
+      backend for this project is called 'Hotel-Server'.
+
+
+Hotel-Server is partially structured in the MVC pattern. Specifically, it gets Models (M) from
+the Common project and implements Controllers (C). As it is a WebAPI project, it should not and
+does not have Views (V) implemented. That is the business of the Hotel-Client project. See below
+for a discussion about this architecture.
+
+This project has a lot of notes that are essential to learning how this project is structured
+and how it operates. Topics include: How the MVC architecture works, Database Setup,
+Database Providers, Data Models, the Schema, Migrations, Controllers, Endpoints, REST
+architecture, HTTP Requests, Route Variables and more. Read the notes in this order:
+
+    1. WHAT IS MVC?:                    MVC Architecture.txt (Hotel-Server folder)
+    2. DATABASE SETUP AND CONCEPTS:     Database Setup.txt (Hotel-Server folder)
+    3. ALL ABOUT MIGRATIONS:            Migrations.txt (Migrations folder)
+    4. CONTROLLERS & ENDPOINTS:         HotelController.cs (Controllers folder)
+
+
+****************************************************************************************************
+****************************************************************************************************
+
+
+INTRODUCTION TO ASP.NET CORE
+
+"ASP.NET Core is a cross-platform, high-performance, open-source framework for building modern,
+cloud-based, Internet-connected applications. With ASP.NET Core, you can:
+
+    Build web apps and services, IoT apps, and mobile backends.
+    Use your favorite development tools on Windows, macOS, and Linux.
+    Deploy to the cloud or on-premises.
+    Run on .NET Core or .NET Framework."[1]
+
+
+SOLUTION STRUCTURE
+
+The Properties folder comes with a 'launchsettings.json' file. This file contains all settings
+the project needs to launch the application. Things like the settings for the server (IIS,
+Kestrel etc.), Environment Variable settings (Development, Production etc.), Project settings
+as well as your Application's URL are declared here. At launch time, the program will consult
+this file and load the program as defined here.
+
+The wwwroot folder is treated as the root folder of your website. This means that
+http://yourDomainName.com/ points to this folder. Any files in your web application that are
+client facing, such as HTML, CSS JavaScript and Image files, should be put into wwwroot or
+one of its subfolders. Files in wwwroot are whitelisted by the server for serving up to 
+anyone who requests it. Note that the core code for your web application should not be made
+available to the web (via wwwroot). C# code, Razor pages and configuration files should NOT 
+sit in wwwroot.
+
+The Dependencies folder contains all the packages being used by this web application. Right now,
+this consists of Nuget packages for server-side dependencies and Bower packages for client-side
+dependencies.
+
+In 'Solution Explorer' if you right-click 'Hotel-Server' and unload it, you can then choose to
+'Edit Hotel-Server.csproj' file. A .csproj file is where packages and dependencies for a
+project are declared:
+
+    1. TargetFramework: sets the version number of .NET Core and ASP.NET Core. This project sets
+       the value to 'netcoreapp2.0'. You can also right-click the project, go to 'Properties'
+       and edit these value in the 'Project Properties' window.
+
+    2. Nuget Packages: In the .csproj file, you can declare the dependencies you'll need in 
+       your project and their version numbers. Usually, you don't have to hand edit this file;
+       you add packages with the 'Nuget Package Manager' or 'Package Manager Console' and
+       it will automatically update the .csproj file. However, if you choose it, you can declare
+       dependencies by hand and Nuget will automatically download and install them to the
+       project when you save the .csproj file.
+
+
+****************************************************************************************************
+****************************************************************************************************
+
+
+SOURCES
+
+1: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
+2: https://en.wikipedia.org/wiki/Multitier_architecture
+3: https://www.hanselman.com/blog/AReminderOnThreeMultiTierLayerArchitectureDesignBroughtToYouByMyLateNightFrustrations.aspx
