@@ -1,4 +1,4 @@
-INTRODUCTION TO THE HOTEL RESERVATION PROJECT
+INTRODUCTION TO THE HOTEL RESERVATION SYSTEM PROJECT (HRSP)
 
 CHALLENGE: Hotel Reservation System - Create a reservation system which books hotel rooms. 
 It charges various rates for particular rooms of the hotel. Example, hotel rooms have 
@@ -6,7 +6,7 @@ penthouse suites which cost more. Keep track of when rooms will be available and
 scheduled.
 
 
-THE BREAKDOWN OF THE HOTEL RESERVATION PROJECT: A DISCUSSION ON PROGRAM STRUCTURES & ARCHITECTURES
+BREAKING DOWN THE HRSP: A DISCUSSION ON PROGRAM STRUCTURES & ARCHITECTURES
 
 THE CLIENT-SERVER MODEL
 
@@ -40,11 +40,107 @@ library that stores files shared by these two programs.
 
 MULTITIER ARCHITECTURE
 
-Client-Server structures are usually implemented in the MULTITIER ARCHITECTURE (AKA N-TIER
-ARCHITECTURE).[2] Multitier architectures can be implemented with a variable number of tiers
-and layers to meet project needs. 
+Note that HRSP was divided into three pieces. For reasons that will be explored in this 
+section, software tends to be broken into different modules. In a software project that is 
+structured in a client-server model, like this one, it is usually organized using the 
+MULTITIER ARCHITECTURE (AKA N-TIER ARCHITECTURE).[2] The multi-tier architecture separates 
+software along two axes, layers and tiers. The number of layers and tiers is variable and 
+depends on the project's size and needs. 
 
-What's the difference between layers and tiers? Scott Hanselman explains the distinction as 
+What does that mean? Let's discuss tiers first. 
+
+
+
+A software project is broken up into 
+independent modules called TIERS based on the hardware platform to which they are deployed.
+Traditionally, there are three tiers, but the actual number of tiers should depend on 
+your software project's needs. Here are the traditional tiers:  
+ 
+ 
+    1. Presentation Tier:   On this tier, you would deploy the software module that 
+                            presents information to and receives input from Users. This
+                            module is frequently called the CLIENT or the FRONTEND.
+                            For websites and web apps like the kind you'd develop in 
+                            ASP.NET Core, frequently the web browser is the medium, making 
+                            WEB SERVERS the most common presentation tier. Let's take 
+                            the example of Amazon.com, a website which must be available 
+                            at all times and most platforms. The Amazon.com web servers 
+                            must present the website to all the browsers that request it. 
+                            
+                            The browser is a standard frontend, so it's relatively easy 
+                            to develop for. If we talk about the Kindle reading app instead 
+                            of the Amazon.com website, then the presentation tier is no 
+                            longer the web server, it becomes the all the hardware platforms
+                            on which the apps runs: PCs and mobile devices; Windows, Android 
+                            and iOS operating systems. Developing a frontends for all of 
+                            these hardware platforms is much harder than developing a web
+                            frontend and server. 
+
+                            In HRSP, the frontend role falls to Hotel-Client, which is a 
+                            program that let the user communicate to HRSP application. Users 
+                            will issue orders and make requests of HRSP through Hotel-Client, 
+                            which will pass them on to the heart of the application, 
+                            the Hotel-Server program. If HRSP were deployed in the real world, 
+                            many copies of Hotel-Client would run on desktop and laptop 
+                            computers that serve Hotel front desk clerks and their managers.
+                            Therefore, the presentation tier for Hotel-Client is intended to
+                            be PCs.
+                          
+    2. Business Logic Tier: On this tier, you would deploy the software module that does 
+                            most of the processing. This software module, usually called the
+                            APPLICATION SERVER, is the brains of every project organized into 
+                            a multitier architecture: it receives User requests from the 
+                            Frontend and responds by leaping into action. If the requests 
+                            require creating, reading, updating or deleting data, the 
+                            Application Server will issue these orders to the the Data Tier. 
+                            When the Data Tier returns the results, the app server will process
+                            it and pass them on to the presentation tier, so that the User 
+                            can see the final results.  
+
+                            In HRSP, Hotel-Server is the Application Server. The Business 
+                            Logic Tier's hardware platform is usually a physical 
+                            (or virtual) SERVER. App Server programs run on these servers, 
+                            listening for incoming requests. Client frontends pass User 
+                            requests over the internet to the App Server program to do the
+                            processing.
+                            
+                            If HRSP were deployed in the real world, Hotel-Server and perhaps 
+                            the physical server it ran on would be managed by the company 
+                            that sold HRSP to the Hotels as a solution to manage their guests.
+                            
+    3. Data Tier:           On this tier, you would deploy the software module that does
+                            DATA ACCESS duties. It comprises things like the data, databases 
+                            and related features like reporting and logging. Technically, 
+                            the hardware for this tier would be a DATABASE SERVER, but 
+                            dedicated database servers are rare except in large institutions
+                            that deal with a huge volume. The App Server
+                            would send 
+
+
+It is a console application that presents text-based 
+                            UI to the User. It uses a dummy authentication system to determine
+                            the level of access a User has to the rest of HRSP. Once 
+                            authenticated, the User can communicate the core of HRSP through 
+                            Hotel-Client.  
+
+
+
+
+
+
+ 
+ Within a block of software that was divided by 
+tier, 
+
+will be internally structured to 
+separate blocks of code with one function from blocks of code with another function. 
+
+Client-Server structures are usually implemented in the  Multitier architectures can be implemented 
+
+What's the difference between layers and tiers? Layers are used to separate software by
+function whereas tiers separate software by the hardware platforms they run on. 
+
+Scott Hanselman explains the distinction as 
 follows: "...a 'Tier' is a unit of deployment, while a 'Layer' is a logical separation of 
 responsibility within code."[3]. Another way of putting it is that "...a layer is a logical 
 structuring mechanism for the elements that make up the software solution, while a tier is 
@@ -73,16 +169,20 @@ the most common variation being a three-layer architecture. The three layers are
                              Creating, Reading, Updating and Deleting data stored on this 
                              layer. 
                              
- 
+
+Note that a layer exists independently of the layers above it, but depends on the 
+functionality provided by the layers below it. 
+
 Layers refer to the logical separation of code. Software is divided into layers to separate
 concerns and ordganize your code by function. For the 3-layer architecture, you are trying to
 separate User Interface code from Business Logic code and Data Access and Processing code.  
-Failure to separate code as described means that UI code is mixed in with business logic and
-the Data Access layer. In a codebase like this, changing a UI feature may produce unintended
+Failure to separate code into layers would mean that UI code is mixed in with business logic 
+and Data Access code. In a codebase like this, changing a UI feature may produce unintended
 cascade effects in Business Logic and Data Access code. Thus, separating concerns along domain 
 lines prevents the codebase from turning into a spaghetti codebase.
 
-Tiers are
+Layers separate code along functional lines. Tiers separate code by the physical devices that 
+they run on. 
 
 
 
