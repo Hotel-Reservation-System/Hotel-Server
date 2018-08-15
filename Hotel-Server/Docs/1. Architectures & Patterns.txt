@@ -1,5 +1,34 @@
-AN INTRODUCTION TO PROGRAM STRUCTURES & ARCHITECTURES
+1.0 INTRODUCTORY REMARKS
 
+Web projects like HRSP structure the project by implementing certain architectures and 
+patterns, which have been found to make these programs simpler to develop, maintain and 
+extend and easier to debug. This article will discuss architectural concepts that one needs 
+to know to develop web applications. This a list of topics that will be covered:
+
+
+  1. Architectural Styles
+  2. Architectural Patterns
+  3. Layers, Tiers and Abstractions
+  4. The Client-Server Model
+  5. Multitier Architecture
+  6. The MVC Architectural Pattern
+
+
+After introducing these concepts, I will discuss the structure and architecture of 
+Hotel-Reservation-System.
+
+Other topics like Enabling Techniques are included but you should pay particular attention 
+to the topics listed above. 
+
+
+This is a web application, so it draws inspiration from the Multitier architecture's concepts 
+of tiers when it separates the application into separate applications and libraries. 
+
+
+2.1 AN INTRODUCTION TO PROGRAM STRUCTURES & ARCHITECTURES
+
+From Robert Hanmer's book Pattern-Oriented Software Architecture For Dummies, here's a 
+definition of Software Architecture, Page 9[1]:
 
 
     Every system has an architecture — some high-level structure that underlies the whole 
@@ -12,9 +41,8 @@ AN INTRODUCTION TO PROGRAM STRUCTURES & ARCHITECTURES
     later.
 
 
-There are two things that you will use repeatedly in a software architecture. From Robert
-Hanmer's book Pattern-Oriented Software Architecture For Dummies, here are the definitions 
-(from Page 25)[1]:
+There are two things that you will use repeatedly in a software architecture, services 
+and components. Hanmer defines them on Page 25[1]:
 
 
     1.  COMPONENTS: are the building blocks of the system — the parts of software or the 
@@ -25,11 +53,45 @@ Hanmer's book Pattern-Oriented Software Architecture For Dummies, here are the d
         of the system into components, you’re also defining what services each component 
         provides. The services can be internal or external to the system.
 
+When designing an application's architecture, Hanmer suggests considering these factors; 
+Pg 10[1]:
 
-ARCHITECTURAL STYLES
+    ✓ Goals and philosophy of the system: The architecture explains the goals and 
+      describes the purpose of the system, as well as who uses it and what problem it 
+      solves.
+
+    ✓ Architectural assumptions and dependencies: The architecture explains the assumption 
+      made about the environment and about the system itself. The architecture also explains 
+      any dependencies on other systems or on the builders of the system.
+
+    ✓ Architecturally significant requirements: The architecture points to the most 
+      significant requirements that shaped it.
+
+    ✓ Packaging instructions for subsystems and components: The architecture explains how 
+      the parts of the system are deployed on computing platforms and how the parts must 
+      be combined for proper functioning. The subsystems and components are the building 
+      blocks of the architecture.
+
+    ✓ Critical subsystems and layers: The architecture explains the different views and 
+      parts of the system and how they relate. It also explains the most critical 
+      subsystems in detail.
+
+    ✓ References to architecturally significant design elements: The architecture 
+      describes the most prominent and significant parts of the design. 
+      
+    ✓ Critical system interfaces: The architecture describes the interfaces of the system, 
+      with special attention to the interfaces that are critical to meet the system’s 
+      requirements.
+
+    ✓ Key scenarios that describe critical behavior of the system: The architecture
+      explains the most important scenarios that illustrate and explain how the system 
+      will be used.
+
+
+2.2 ARCHITECTURAL STYLES
 
 Architectural styles define the general shape of a software system. Hanmer explains the 
-concept of architectural styles on Page 25:
+concept of architectural styles on Page 25[1]:
 
 
     As I mention in Chapter 1, architectural style is like the style of a house. It may 
@@ -45,11 +107,16 @@ concept of architectural styles on Page 25:
     Chapter 13). The choice of appropriate style is important to your system’s success.
 
 
-ARCHITECTURAL PATTERNS
+The architectural style of a program determines the choice of the main architectural 
+pattern. The next section will introduce the idea of Architectural Styles and their
+corresponding Architectural Patterns.
+
+
+2.3 ARCHITECTURAL PATTERNS
 
 Architectural patterns are specific expressions of architectural styles. On page 26, 
 Hanmer provides a table that lists a few basic architectural styles and their 
-corresponding patterns:
+corresponding patterns[1]:
 
 
     ARCHITECTURAL STYLE         PATTERNS
@@ -61,66 +128,72 @@ corresponding patterns:
     Adaptable Systems           Microkernel (Chapter 15), Reflection (Chapter 16)
 
 
-ENABLING TECHNIQUES
+At this point, just note that HRSP's architectural style is called Interative Systems and 
+implements an architectural pattern called MVC. This architectural style and pattern is
+very common in web world, which is why the rest of the article explains it in detail.
+
+
+2.4 ENABLING TECHNIQUES
 
 On page 30-31, Hanmer also discusses some enabling techniques that empower the developer to
-create good software, independent of architectures and development methodologies:
+create good software, independent of architectures and development methodologies[1]:
 
-    * Abstraction: Abstraction is the ability to extract the common, general parts from a 
+    ✓ Abstraction: Abstraction is the ability to extract the common, general parts from a 
       particular entity. You use abstraction to define a common component that will be 
       adapted to several specific situations in your system. This technique is exactly what 
       I discuss in the preceding section.
 
-    * Encapsulation: Encapsulation is grouping related elements to preserve the boundaries
+    ✓ Encapsulation: Encapsulation is grouping related elements to preserve the boundaries
       of the abstraction. You use encapsulation to keep related functionality together 
       instead of mixing unrelated functionalities.
 
-    * Information hiding: Information hiding keeps information that clients don’t need 
+    ✓ Information hiding: Information hiding keeps information that clients don’t need 
       to know hidden from them so that it’s protected and the clients don’t misuse it. 
       Encapsulation is frequently used to implement information hiding.
 
-    * Modularization: Modularization handles system complexity by breaking the system 
+    ✓ Modularization: Modularization handles system complexity by breaking the system 
       into parts with well-defined boundaries. This technique is especially useful as 
       you design software architectures because they frequently are too big to be 
       implemented efficiently as single entities. Modules can contain one or more 
       components, as I talk about elsewhere.
 
-    * Separation of concerns: Within the system, unrelated responsibilities should be 
+    ✓ Separation of concerns: Within the system, unrelated responsibilities should be 
       separated. You use separation of concerns to define elements that perform specific 
       functions rather than elements that perform a variety of functions.
 
-    * Coupling and cohesion: Coupling is how different modules in the system relate to 
+    ✓ Coupling and cohesion: Coupling is how different modules in the system relate to 
       one another. Cohesion is a measure of how related the objects and functions within 
       a module are to each other. High cohesion and low coupling lead to systems that are 
       easy to modularize and build.
 
-    * Sufficiency and completeness: Every component should be sufficient to include all 
+    ✓ Sufficiency and completeness: Every component should be sufficient to include all 
       the characteristics that are needed for useful and efficient interaction with other 
       components. Every component should also capture all the important characteristics
       making it complete.
 
-    * Separation of policy and implementation: Keeping the implementation of algorithms 
+    ✓ Separation of policy and implementation: Keeping the implementation of algorithms 
       free of system-context-related information simplifies reuse. You use this technique 
       to design parts of the system to deal with contextrelated, or policy, information 
       and other parts to implement abstract algorithms.
 
-    * Separation of interface and implementation: This technique separates the interface 
+    ✓ Separation of interface and implementation: This technique separates the interface 
       that clients use from the implementation of the functionality that the clients expect. 
       It makes reusing the implementation easier and promotes information hiding (discussed 
       earlier in this list).
 
-    * Single point of reference: Avoid inconsistency by defining the items within the 
+    ✓ Single point of reference: Avoid inconsistency by defining the items within the 
       software architecture only once. Achieving a single point of reference depends on your 
       programming environment, because some languages, like C++, make achieving this principle 
       difficult. Although C++ also requires a single point of definition, it needs 
       declarations to appear in several places.
 
-    * Divide and conquer: Divide a problem or solution into smaller parts that are easier 
+    ✓ Divide and conquer: Divide a problem or solution into smaller parts that are easier 
       to solve or implement. You use this technique often as you work with large problems.
 
 
-On page 32, Hanmer lists a few more architectural patterns, this time in relation to 
-the fundamental techniques they enable:
+The architectural pattern you choose is determined by the enabling technique you want to
+optimize for in your program design. On page 32, Hanmer lists a few more architectural 
+patterns, this time in relation to the fundamental techniques they enable[1]:
 
 
     ENABLING TECHNIQUE              PATTERN
@@ -147,35 +220,57 @@ Software, by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides
 (Addison-Wesley Professional).
 
 
-LAYERS, TIERS AND ABSTRACTIONS
+2.5 THE ART OF ABSTRACTION: SEPARATING SOFTWARE INTO LAYERS AND TIERS
 
-There are some fundamental architectural principles which can be used to structure software.
-Software can be separated into modules, libraries and components based on layers and tiers. 
+There are some fundamental architectural principles which can be used to structure 
+software. Instead of developing monolithic applications that are a huge tangled bundle of 
+interconnected components, software can be separated into modules, libraries and 
+components using the architectural principles of layers and tiers. 
+
 What does that mean? 
 
 LAYERS separate software by their function; in a software solution, a developer would find 
 software elements with similar or related functions and collect them together, in a few 
-files and/or folders. A collection of similar software elements that is working towards 
-the same goal makes up a layer. Developers working on the project will know, for instance 
-that the Controllers folder contains controllers, the Models folder models and the Views 
-folder a number of views. Separating software elements with the same goal from the rest 
-of the project and concentrating them into layers let's you impose logical structures 
-on the project.
+files and/or folders. When a collection of similar software elements that are working 
+towards the same goal are separated from the main program into folders and/or files, it 
+is called a layer. 
 
-TIERS separate software by the hardware platforms to which they are deployed. Tiers are a 
-more fundamental form of division than layers. Where layers involve collecting similar
-files together, tiers usually break software up into separate programs, libraries or 
-modules, depending on where that piece of software is going to run. For example, let's 
-assume that you have a program with a client-server structure. The server program can run 
-on server machines that you own, but if this program has a software module that must run 
-on your customer's PC, then your software project needs to carve out a separate client 
-program for this role. In this example then, there are two tiers, the frontend client 
-running on customer computers and the servers running on your backend machines.
+This project partially uses the MVC pattern to separate the project into three layers: 
+Models, Views and Controllers. Developers working on an MVC project will know that the 
+Controllers folder will contain only controller files, the Models folder model class files
+and the Views folder will hold HTML, CSS and Javascript files. 
+
+Each layer has its own set of responsibilities: The Model layer contains classes that 
+define the program's data elements, Views are responsible for displaying information to 
+the user and the Controller layer responds to user requests by issuing orders to the other
+two layers. Separating software elements with the same goal from the rest of the project 
+and concentrating them into layers let's you separate concerns to prevent unneccessary 
+entanglements between elements of differing functions and imposes a logical structure on
+the project.
+
+TIERS separate software by the hardware platforms to which a software component is 
+deployed. Tiers are a more fundamental form of division than layers. Where layers involve
+collecting similar files together into folders, tiers usually break software up into 
+separate programs, libraries or modules, depending on where that piece of software is going
+to run. 
+
+For example, let's assume that you have a web application, which has a client-server 
+architecture (More on this later.). Such an application has to divide itself into two 
+parts:
+
+
+    * The Client App that that runs on your customer's PC, displaying information, and
+    * The App Server portion of the application, which runs on a server, responding to 
+      the client's requests.
+
+
+In this example, there are two tiers, the frontend client, which runs on a customer's 
+computer and the Backend, which runs on a server.
 
 
 ABSTRACTIONS
 
-Hanmer defines the concept of Abstraction on Page 30:
+Hanmer defines the concept of Abstraction on Page 30[1]:
 
 
     Abstraction is the ability to extract the common, general parts from a particular 
@@ -205,10 +300,99 @@ and then explains how tiers and layers are abstractions. Why do we need abstract
     processing or storage needs, and the boundary of an abstraction can be drawn around 
     the layers.
 
-    Being able to abstract the essence of a functionality and project it onto the solution 
-    are important skills that you must have as a software architect.
+    Being able to abstract the essence of a functionality and project it onto the 
+    solution are important skills that you must have as a software architect.
 
 
+DISTRIBUTED COMPUTING
+
+This program is a web app, which means that it works over the internet. This involves the
+concept of Distributed Computing. Here is a definition for it[]: (https://en.wikipedia.org/wiki/Distributed_computing)
+
+    Distributed computing is a field of computer science that studies distributed systems. 
+    A distributed system is a system whose components are located on different networked 
+    computers, which then communicate and coordinate their actions by passing messages to 
+    each other. The components interact with each other in order to achieve a common 
+    goal... Examples of distributed systems... [include] ...massively multiplayer online 
+    games to peer-to-peer applications. 
+
+    A computer program that runs within a distributed system is called a distributed 
+    program (and distributed programming is the process of writing such programs). There 
+    are many different types of implementations for the message passing mechanism, 
+    including pure HTTP, RPC-like connectors and message queues.
+
+When you have to design software that works over any network, such as the internet, you 
+cannot design a single monolithic application. You have to give the application a 
+distributed architecture. A web application with a distributed architecture would have
+a design with several distinct software components, most of which run on their own 
+separate networked machine. The software components will communicate over the network to 
+coordinate and work towards the purpose of the web app.
+
+Distributed Computing has several basic architectures. The wikipedia article on this topic
+provides brief explanation for several of them[]:
+
+
+    * CLIENT-SERVER: architectures where smart clients contact the server for data then 
+      format and display it to the users. Input at the client is committed back to the 
+      server when it represents a permanent change.
+
+    * THREE-TIER: architectures that move the client intelligence to a middle tier so 
+      that stateless clients can be used. This simplifies application deployment. Most 
+      web applications are three-tier.
+
+    * N-TIER: architectures that refer typically to web applications which further forward 
+      their requests to other enterprise services. This type of application is the one 
+      most responsible for the success of application servers.
+
+    * Peer-to-peer: architectures where there are no special machines that provide a 
+      service or manage the network resources. Instead all responsibilities are uniformly
+      divided among all machines, known as peers. Peers can serve both as clients and as
+      servers.
+
+
+This 
+requires web applications to use Distributed application architectures. 
+Web 
+applications are typically divided into two or more tiers, separating software by the 
+hardware they are intended to run on. At this point, note that that most web applications 
+recognize that they have at least three major functions:
+
+
+    * User Interface
+    * Application processing
+    * Data management
+
+
+At the very least, the user interface portion of the program will run on its own distinct 
+tier, while the other two share a single tier. However, some web applications are complex 
+enough to warrant three distinct tiers.  
+
+HRSP needs two tiers, a client and an application server, so it is structured in an 
+application structure called the CLIENT-SERVER MODEL[3]. The wikipedia article on this architecture 
+provides this explanation:
+
+
+    The client–server model is a distributed application structure that partitions tasks or 
+    workloads between the providers of a resource or service, called servers, and service 
+    requesters, called clients. Often clients and servers communicate over a computer network 
+    on separate hardware, but both client and server may reside in the same system. A server 
+    host runs one or more server programs which share their resources with clients. A client 
+    does not share any of its resources, but requests a server's content or service function. 
+    Clients therefore initiate communication sessions with servers which await incoming 
+    requests. Examples of computer applications that use the client–server model are Email, 
+    network printing, and the World Wide Web.
+
+
+This requires this program to be divided into  Note that projects rarely completely 
+conform to architectures like N-Tier or patterns like MVC. Reality rarely deigns to be that
+cooperative, so you'll have to adapt architectures and patterns to fit your problem. 
+
+This project is not an exception; it uses the concept of tiers from the Multi-tier 
+architecture and its layers are modeled after MVC.
+
+
+    
+    
 THE MULTITIER ARCHITECTURE
 
 For web projects that are structured in a client-server model, like this one, they are
@@ -301,33 +485,18 @@ software project's needs. Here are the traditional tiers:
                             frontend/GUI apps for all of these hardware platforms is a much
                             harder undertaking than developing a web frontend and server. 
 
-                            In HRSP, the frontend role falls to Hotel-Client, which is a 
-                            program that let the user communicate to HRSP application. Users 
-                            will issue orders and make requests of HRSP through Hotel-Client, 
-                            which will pass them on to the heart of the application, 
-                            the Hotel-Server program. If HRSP were deployed in the real world, 
-                            many copies of Hotel-Client would run on desktop and laptop 
-                            computers that serve Hotel front desk clerks and their managers.
-                            Therefore, the presentation tier for Hotel-Client is intended to
-                            be PCs.
-                          
+            
     2. Business Logic Tier: On this tier, you would deploy the software module that does 
-                            most of the processing. This software module, usually called the
-                            APPLICATION SERVER, is the brains of every project organized into 
-                            a multitier architecture: it receives User requests from the 
-                            Frontend and responds by leaping into action. If the requests 
-                            require creating, reading, updating or deleting data, the 
-                            Application Server will issue these orders to the the Data Tier. 
-                            When the Data Tier returns the results, the app server will 
-                            process it and pass them on to the presentation tier, so that 
-                            it can display the final results to the user.  
-
-                            In HRSP, Hotel-Server is the Application Server. The Business 
-                            Logic Tier's hardware platform is usually a physical 
-                            (or virtual) SERVER. App Server programs run on these servers, 
-                            listening for communications from the frontend. Client 
-                            frontends pass User requests over the internet to the App 
-                            Server program to do the processing.
+                            most of the processing. This software module, usually called 
+                            the APPLICATION SERVER or the API, is the brains of every 
+                            project organized into a multitier architecture: it receives 
+                            User requests from the Frontend and responds by leaping into 
+                            action. If the requests require creating, reading, updating 
+                            or deleting data, the Application Server will issue these 
+                            orders to the the Data Tier. When the Data Tier returns the 
+                            results, the app server will process it and pass them on to 
+                            the presentation tier, so that it can display the final results 
+                            to the user.  
 
                             
     3. Data Tier:           On this tier, you would deploy the software module that does
@@ -338,9 +507,6 @@ software project's needs. Here are the traditional tiers:
                             update, create or change data to the Data Tier. This tier
                             comprises things like the data, databases and related features 
                             like reporting and logging. 
-
-                            For this project, Hotel-Server also contains the Data Access 
-                            Tier. 
 
 
 The goal of using tiers, if it's not already clear, is to carve out code from the main
@@ -441,6 +607,8 @@ In a 1-tier application, all software layers run on the same machine:
 |                                                                                            |
 +--------------------------------------------------------------------------------------------+
 
+                                    RUNS ON A SINGLE MACHINE
+
 
 A 1-tier application is a monolith. The Presentation, Business Logic and Data Access 
 Layers live in the same tier. This makes the layers in this application tightly connected. 
@@ -470,7 +638,7 @@ a client and a server. These programs run on two separate machines:
 | +--------------------------------------------+ | | +---------------------+                 |
 +------------------------------------------------+ +-----------------------------------------+
 
-        RUNS ON USER'S PC OR 
+        RUNS ON USER'S PC OR WEB SERVER                RUNS ON APPLICATION/DATABASE SERVER
 
 
 In this variation of the 2-tier application, the Presentation and Business Logic layers are
@@ -489,7 +657,7 @@ backend will run on a Database Server:
 
 
 +--------------------+  +-------------------------------------------+  +----------------------+
-| CLIENT APPLICATION |  |             APP SERVER/API                |  |    DATABASE SERVER   |
+| CLIENT APPLICATION |  |             APP SERVER/API                |  |    REPOSITORY/ORM    |
 |                    |  |                                           |  |                      |
 |  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
 |  |              |  |  |  |              |        |             |  |  |    |            |    |
@@ -512,47 +680,6 @@ backend will run on a Database Server:
 In this case, each layer has its own tier, and thus, each layer runs on its own machine. All
 layers are completely uncoupled from each other, making it easier to refactor and expand all
 elements of the application.
-
-
-THE APPLICATION OF SOFTWARE ARCHITECTURE AND PATTERNS
-
-THE CLIENT-SERVER MODEL
-
-This program is a web app, which means that it communicates over the internet. This requires
-this program to be divided into two or more parts. Note that projects rarely completely 
-conform to architectures like N-Tier or patterns like MVC. Reality rarely deigns to be that
-cooperative, so you'll have to adapt architectures and patterns to fit your problem. 
-
-This project is not an exception; it uses the concept of tiers from the Multi-tier 
-architecture and its layers are modeled after MVC.
-
-This project needs a client and an application server, so it is structured in an application 
-structure called the CLIENT-SERVER MODEL[3]. The wikipedia article on this architecture 
-provides this explanation:
-
-
-    The client–server model is a distributed application structure that partitions tasks or 
-    workloads between the providers of a resource or service, called servers, and service 
-    requesters, called clients. Often clients and servers communicate over a computer network 
-    on separate hardware, but both client and server may reside in the same system. A server 
-    host runs one or more server programs which share their resources with clients. A client 
-    does not share any of its resources, but requests a server's content or service function. 
-    Clients therefore initiate communication sessions with servers which await incoming 
-    requests. Examples of computer applications that use the client–server model are Email, 
-    network printing, and the World Wide Web.
-    
-    
-This project, Hotel Reservation System Project (HRSP), is divided into 3 separate projects:
-
-
-    1. Hotel-Client,            (Client Frontend)
-    2. Hotel-Server, and        (Application Server)
-    3. Common                   (Shared Library)
-
-
-Hotel-Client is the client program, Hotel-Server is the Application Server and Common is a 
-library that stores files shared by these two programs. A copy of Common will be shipped 
-with all copies of Hotel-Client and Hotel-Server.
 
 
 AN ARCHITECTURAL PATTERN: MODEL-VIEW-CONTROLLER (MVC)
@@ -595,6 +722,10 @@ where MVC comes in: It appears to be an architectural pattern that best suited t
 organizing the layers in an interactive application. All interactive applications are 
 similar, but not identical to one another. 
 
+MVC is often used to structure the presentation tier in larger applications, but in 
+smaller applications, it can be used to structure the presentation, business logic and
+data access layers.
+
 
 THE COMPONENTS OF MODEL-VIEW-CONTROLLER 
 
@@ -605,12 +736,21 @@ distinct layers:
     2. View
     3. Controller
 
-In the multi-tier architecture, communication goes linearly through layers/tiers: the 
-client tier must cannot directly communicate with the Data Access tier, it has to pass 
-messages through the Business logic tier. However, in MVC, the layers interact in a 
-triangular structure. Below, see the diagram that explains this pattern. To fully 
-understand it, read the explanations below the diagram. To decipher the diagram, start 
-with the User. 
+The Model defines data and stores it, the View presents data to the user, and the 
+Controller handles requests and returns responses.
+
+It's important to note that MVC's layers do not directly correspond to the Multitier
+architecture's layers, i.e. Model, View and Controller do not directly map on to the 
+Presentation layer, Business Logic Layer and Data Access Layer. Keep this is mind to 
+avoid confusion. 
+
+MVC has other differences to the Multitier Architecture. In the multi-tier architecture, 
+communication goes linearly through layers/tiers: the client tier cannot directly 
+communicate with the Data Access tier, it has to pass messages through the Business logic 
+tier. However, in MVC, the layers interact in a triangular structure, as shown below.
+
+The diagram below portrays the functioning of the MVC pattern. To fully understand it, 
+read the explanations below the diagram. To decipher the diagram, start with the User:
 
 
                                      +-------------------------------------------------------------------------+
@@ -640,7 +780,7 @@ with the User.
                                      |     | Database      |                           | request by     |      |
                                      |     | change, the   |     DATA ACCESS LAYER     | operating on   |      |
                                      |     | View gets     |                           | Model objects  |      |
-                                     |     | updated       |     +---------------+     | in the Database|      |
+                                     |     | auto-updated  |     +---------------+     | in the Database|      |
                                      |     +-------------+ |     | MODEL OBJECTS |     | <--------------+      |
                                      |                     |     |    (IN THE    |     |                       |
                                      |                     |     |   DATABASE)   |     |                       |
@@ -655,51 +795,59 @@ ASP.NET Core projects. Note that the explanation below is tailored to ASP.NET Co
 MVC frameworks may be different.
 
 
-1. Model: The model layer is probably the simplest layer in MVC. When it comes to models,
-   there is distinction to be made between Model classes and model objects. The former 
-   are templates for the latter. Model classes live in the Models folder whereas Model 
-   objects live in the Data Access layer of a project.
+1. Model: The model layer is probably the simplest layer in MVC. The model represents the
+   data, but does nothing else. The model is independent of the View and the Controller.
+   When it comes to models, there is distinction to be made between Model classes and
+   Model objects. Be aware of the difference between the two terms. Model classes are 
+   templates for Model objects. Model objects contain most of the business-related data 
+   in an MVC appliation. Model classes and Model object live separately; Model classes are 
+   defined in the Models folder of the Common project, whereas Model objects live in a Data 
+   Store such as a Database or File system. 
 
-   Model classes are classes that define important business entities for your application. 
-   A model class represents the knowledge that the application needs to know about a 
-   certain business entity. Therefore, a Model class needs to be designed to capture 
-   information important to to each entity. At this stage, it's important to be selective 
-   about the information you capture.
+   Model classes are Plain Old Class Objects (POCO) that define important business entities 
+   for your application. A model class represents the knowledge that the application needs 
+   to know about a certain business entity. Therefore, a Model class needs to be designed 
+   to capture information important to each entity. When designing a model class, it's 
+   important to be selective about the information you capture.
    
    In a Calendar program, things like the Day, Alarms, Contacts etc. would be the Business 
    entities. To a Day class, things like Date, Day of the Week, Scheduled events etc., 
    would qualify as important information. So, these things will be represented as class 
    properties. What kind of information should be left out? Here's a rather extreme 
    example: you probably won't need a property that captures how many days have passed 
-   since the death of Julius Caesar. It would not make much sense in a Calendar app; your 
-   users probably don't care about this piece of information.
+   since the death of Julius Caesar. It would not make much sense in a Calendar app as 
+   your users probably don't care about this piece of information.
    
    In a model class, you can choose to add Data Annotations to each property to place 
    limitations on the values accepted by a property. For example, you can use C#'s 
    [PhoneNumber] annotation to ensure that all values for the PhoneNumber property follow 
-   the standard. All objects instantiated from this class have restrictions on the value 
-   for the phone number: it is limited a certain length, and allows only integers, brackets 
-   and dashes.
+   the standard. All model objects instantiated from this class have restrictions on the 
+   value for the phone number: it is limited a certain length, and allows only integers, 
+   brackets and dashes.
    
    Model classes do very little besides serve as a template for business entities. When
-   the business logic layer of an MVC application, the Controller layer, is instructed by
-   a user or its internal logic to create business entities, it will use the pre-defined 
-   Model classes as templates for these objects. The Controller typically stores these 
-   newly created objects in a database. Model objects will live there, and when needed, 
-   the Controller layer will consult or modify them.
+   the Controller layer, is instructed by a user or its internal logic to create business 
+   entities, it will use the pre-defined Model classes as templates for these objects. 
    
-   The Common library contains the Models layer for HRSP.
+   Once these model objects have been created, they are passed back and forth between the 
+   Views, Controllers and Database. Therefore, Model objects are the drops of water in a 
+   river of data that flows throughout the application. To display information to the user, 
+   the Controller will send model objects to the View layer. To persistently store data, 
+   the Controller will send model objects to the program's database/file system. Model 
+   objects will live there, and when needed, the Controller layer will consult or modify them.
+   
+   The Common library contains the Model classes for HRSP.
    
 
 2. View: "A view is a (visual) representation of its model. It would ordinarily highlight
    certain attributes of the model and suppress others. It is thus acting as a presentation
    filter."[5] 
    
-   The View layer is the presentation layer i.e. it controls how data from model objects are
+   The View layer is the presentation layer; it controls how data from model objects are
    formatted and presented to the user. The View provides a variety of ways to present data 
-   it receives from Model objects. The user can direct the View to display information about 
-   model(s).  With this information, the user use the UI (the View) to issue orders to the 
-   program. The View can be an HTML webpage, a GUI, a text-based UI, Razor Views etc.
+   it receives from Model objects, subject to user direction. With information it receives 
+   from the View, the user use the UI (the View) to issue orders to the program. The View 
+   can be an HTML webpage, a GUI, a text-based UI, Razor Views etc.
 
    HRSP does not use standard ASP.NET Core Views due to the fact that it uses the Console
    to display text-based information to the user instead of HTML-based web pages. 
@@ -740,15 +888,25 @@ MVC frameworks may be different.
 
 
 4. Controller: The controller layer is the brain of the application. It consists of 
-   controller class(es) whose methods respond to incoming requests. Business rules and 
-   the business logic of the application are defined and applied in controller class 
-   methods. 
+   controller class(es) whose methods respond to incoming requests. Also, the business 
+   rules and the business logic of the application are sometimes defined and applied in 
+   controller class methods. 
    
    When a user makes a request via the View, it gets passed to a controller whose 
    method is designated to respond to that particular request. Controllers will process, 
-   interpret and validate incoming requests. Once that is done, it is their job to query 
-   and modify model objects in the database and create or update Views to fulfill the 
-   user request. By doing these things, this layer controls and directs application flow.  
+   interpret and validate incoming requests. In ASP.NET Core, Controllers do much of the 
+   in-program communication and handling of data by doing things like routing, 
+   authentication, authorization, request validation and redirection, response handling, 
+   model formatting and generation etc.  Once that is done, it is their job to query and 
+   modify model objects in the database and create or update Views to fulfill the user 
+   request. By doing these things, this layer controls and directs application flow.
+
+   To compare the Controller layer to Multier Architecture's layers for a moment, the 
+   Controller layer seems to combine Multitier's Business Logic and Data Access Layers.
+   That might be a okay for small applications, but for mid-to-large sized applications, 
+   combining two layers like that will lead to confusion and complexity. For more complex
+   programs, you'll want to keep your Controllers rather lean and move your business logic
+   into a separate software component, such as the Model layer. 
 
 
 PROS AND CONS OF THE MVC PATTERN
@@ -829,19 +987,135 @@ Dummies'[1]:
 
 ARCHITECTURE OF THE HOTEL-SERVER PROJECT
 
+This project pairs the ideas of tiers from the Multitier Architecture with layers from the
+MVC architectural pattern. This is not unusual, as N-Tier Architecture is often used in 
+conjunction with the MVC pattern for client-server applications.
 
-                         FRONTEND                                 BACKEND
-                    +----------------+                      +----------------+
-                    |                | <------------------+ |                |
-                    |  HOTEL-CLIENT  |                      |  HOTEL-SERVER  |
-                    |                | +------------------> |                |
-                    +----------------+                      +----------------+
-                    
-                            +                                       +
-                            |                                       |
-                            |              SHARED FILES             |
-                            |          +------------------+         |
-                            |          |                  |         |
-                            +--------> |      COMMON      | <-------+
-                                       |                  |
-                                       +------------------+
+This project, Hotel Reservation System Project (HRSP), is divided into 2 tiers and a 
+library component:
+
+
+    1. Hotel-Client,            (Client Frontend)
+    2. Hotel-Server, and        (Application Server)
+    3. Common                   (Shared Library)
+
+
+Hotel-Client is the client program, Hotel-Server is the Application Server and Common is a 
+library that stores files shared by these two programs. A copy of Common will be shipped 
+with all copies of Hotel-Client and Hotel-Server.
+
+Here is a diagram that portrays HRSP's structure: 
+
+
+                                   RUNS ON USER'S PC
+
+                                +---------------------+
+                                | CLIENT APPLICATION  |
+                                |                     |
+                                |  +---------------+  |
+                                |  |    COMMON     |  |
+                                |  |               |  |
+                                |  | Model Classes |  |
+                                |  +---------------+  |
+                                |                     |
+                                |       ^    +        |
+                                |       |    |        |
+                                |       +    v        |
+                                |                     |
+                                |  +---------------+  |
+                                |  | HOTEL-CLIENT  |  |
+                                |  |               |  |
+                                |  |  View Layer   |  |
+                                |  +---------------+  |
+                                |                     |
+                                |       +    ^        |
+                                +---------------------+
+                                        |    |
+                                        |    |
+                                        |    |
+                                +-------------------------------------------+
+                                |       v    +                              |
+                                |                                           |
+                                |  +---------------+     +---------------+  |
+                                |  | HOTEL-SERVER  | +-> |    COMMON     |  |
+                                |  |               |     |               |  |
+                                |  |  Controllers  | <-+ | Model Classes |  |
+                                |  +---------------+     +---------------+  |
+                                |                                           |
+                                |       +    ^                              |
+                                |       |    |                              |
+                                |       v    +             APP SERVER       |
+                                |                           PROGRAM         |
+                                |  +---------------+                        |
+                                |  |   DATABASE    |                        |
+                                |  |               |                        |
+                                |  | Model Objects |                        |
+                                |  +---------------+                        |
+                                |                                           |
+                                +-------------------------------------------+
+
+                                         RUNS ON APPLICATION SERVER
+
+
+Let's take a look at the structure of this project:
+
+TIERS
+
+1. Presentation Tier
+
+In HRSP, the frontend role falls to Hotel-Client, which is a program that let the user 
+communicate to HRSP application. Users will issue orders and make requests of HRSP through 
+Hotel-Client, which will pass them on to the heart of the application, the Hotel-Server 
+program. If HRSP were deployed in the real world, many copies of Hotel-Client would run on
+desktop and laptop computers that serve Hotel front desk clerks and their managers. 
+Therefore, the presentation tier for Hotel-Client is intended to be PCs.
+
+2. API/App Server
+
+In HRSP, Hotel-Server is the Application Server. The Business Logic Tier's hardware platform 
+is usually a physical (or virtual) SERVER. App Server programs run on these servers, 
+listening for communications from the frontend. Client frontends pass User requests over 
+the internet to the App Server program to do the processing.
+
+3. Data Tier
+
+For this project, Hotel-Server also contains the Data Access Tier. 
+
+
+LAYERS
+
+This project uses a modified MVC pattern to structure the layers of the application. More
+specifically, it uses Models and Controllers but does away with traditional Views. Instead
+of HTML/CSS/Javascript Views, HRSP deploys a console application to the user's PC. Here 
+are the three layers in HRSP:
+
+1. Models
+
+Model classes are contained in the library called Common. It will be compiled down to a 
+library which will be shipped with both Hotel-Client and Hotel-Server. Model objects will 
+be stored in a PostgreSQL database. 
+
+
+2. Views
+
+This layer is contained in Hotel-Client. It authenticates users, accepts user input, 
+validates it and passes it on to Hotel-Server for processing. 
+
+3. Controllers
+
+The Controller layer can be found in Hotel-Server. It does both business logic and 
+
+
+This layer and the Data Access Layer is part of Hotel-Server. The BLL recieves requests 
+from the presentation layer and responds to user input by doing all the processing needed 
+to fulfill their requests. It makes calls to the Data Access Layer if it needs to make
+changes to persistent data. 
+
+3. Data Access Layer
+
+The DAL contains the Database and code that 
+
+
+MISCELLANEOUS TIPS FOR DESIGNING ARCHITECTURES
+
+
