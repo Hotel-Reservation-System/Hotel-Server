@@ -383,33 +383,37 @@ client and server and does processing on the local machine. The results of its w
 be shared across a network to peers running on other machines. 
 
 
-3.2 CLIENT-SERVER MODEL
+3.1.1 CLIENT-SERVER MODEL
+
+The wikipedia article on the CLIENT-SERVER MODEL architecture[3] provides this 
+explanation:
 
 
-HRSP needs two tiers, a client and an application server, so it is structured in an 
-application structure called the CLIENT-SERVER MODEL[3]. The wikipedia article on this architecture 
-provides this explanation:
+    The client–server model is a distributed application structure that partitions tasks 
+    or workloads between the providers of a resource or service, called servers, and 
+    service requesters, called clients. Often clients and servers communicate over a 
+    computer network on separate hardware, but both client and server may reside in the
+    same system. A server host runs one or more server programs which share their 
+    resources with clients. A client does not share any of its resources, but requests 
+    a server's content or service function. Clients therefore initiate communication 
+    sessions with servers which await incoming requests. Examples of computer 
+    applications that use the client–server model are Email, network printing, and the 
+    World Wide Web.
 
 
-    The client–server model is a distributed application structure that partitions tasks or 
-    workloads between the providers of a resource or service, called servers, and service 
-    requesters, called clients. Often clients and servers communicate over a computer network 
-    on separate hardware, but both client and server may reside in the same system. A server 
-    host runs one or more server programs which share their resources with clients. A client 
-    does not share any of its resources, but requests a server's content or service function. 
-    Clients therefore initiate communication sessions with servers which await incoming 
-    requests. Examples of computer applications that use the client–server model are Email, 
-    network printing, and the World Wide Web.
+Programs with a client-server architecture have two parts:
+
+    * CLIENT: The client is the frontend; it's the user interface through which the user
+      interacts with the application. When the user wants a resource or wants the program
+      to do something, she can pass these instructions to the client. The client will 
+      send these requests to the server. 
+
+    * SERVER: The server will respond to client requests by sending back resources or 
+      doing the operation that the user asked for.
 
 
-This requires this program to be divided into  Note that projects rarely completely 
-conform to architectures like N-Tier or patterns like MVC. Reality rarely deigns to be that
-cooperative, so you'll have to adapt architectures and patterns to fit your problem. 
-
-This project is not an exception; it uses the concept of tiers from the Multi-tier 
-architecture and its layers are modeled after MVC.
-
-
+HRSP needs two tiers, a client and an application server, so it is structured in a 
+client-server architecture. 
     
     
 THE MULTITIER ARCHITECTURE
