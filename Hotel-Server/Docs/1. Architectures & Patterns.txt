@@ -304,10 +304,10 @@ and then explains how tiers and layers are abstractions. Why do we need abstract
     solution are important skills that you must have as a software architect.
 
 
-DISTRIBUTED COMPUTING
+3.1 DISTRIBUTED COMPUTING
 
-This program is a web app, which means that it works over the internet. This involves the
-concept of Distributed Computing. Here is a definition for it[]: (https://en.wikipedia.org/wiki/Distributed_computing)
+This program is a web app, which means that it works over the internet. This brings in 
+the concept of Distributed Computing. Here is a definition for it[]: (https://en.wikipedia.org/wiki/Distributed_computing)
 
     Distributed computing is a field of computer science that studies distributed systems. 
     A distributed system is a system whose components are located on different networked 
@@ -321,51 +321,70 @@ concept of Distributed Computing. Here is a definition for it[]: (https://en.wik
     are many different types of implementations for the message passing mechanism, 
     including pure HTTP, RPC-like connectors and message queues.
 
-When you have to design software that works over any network, such as the internet, you 
-cannot design a single monolithic application. You have to give the application a 
-distributed architecture. A web application with a distributed architecture would have
-a design with several distinct software components, most of which run on their own 
-separate networked machine. The software components will communicate over the network to 
-coordinate and work towards the purpose of the web app.
+When you have to design software that works over any network, such as the internet, it 
+usually cannot be designed as a single monolithic application. Why? Because the work is
+being done on many computers. You have to design the application with a distributed
+architecture, i.e. a program broken up into several components. Some of these components
+will run on separate machines (tiers) and communicate over a network to coordinate 
+towards accomplishing the application's purpose. Other will be layers that live within
+a tier.
 
-Distributed Computing has several basic architectures. The wikipedia article on this topic
-provides brief explanation for several of them[]:
+Web applications are typically divided into two or more tiers, separating software by 
+their intended hardware. At this point, note that that most web applications recognize
+that they have at least three major functions:
+
+
+    * User Interface
+    * Application Processing
+    * Data Management
+
+
+When choosing a distributed architecture for your program, you will have to choose how 
+to separate these functions into layers and tiers. There are several ways of dividing up
+a distributed application. The wikipedia article on this topic provides a brief 
+explanation for a number of basic architectures[]. The list of distributed architectures
+below distinguishes between them on the basis of the number of tiers they have:
 
 
     * CLIENT-SERVER: architectures where smart clients contact the server for data then 
       format and display it to the users. Input at the client is committed back to the 
-      server when it represents a permanent change.
+      server when it represents a permanent change. [2-tier architecture]
 
     * THREE-TIER: architectures that move the client intelligence to a middle tier so 
       that stateless clients can be used. This simplifies application deployment. Most 
-      web applications are three-tier.
+      web applications are three-tier. [3-tier architecture]
 
     * N-TIER: architectures that refer typically to web applications which further forward 
       their requests to other enterprise services. This type of application is the one 
-      most responsible for the success of application servers.
+      most responsible for the success of application servers. [3+-tier architecture]
 
-    * Peer-to-peer: architectures where there are no special machines that provide a 
+    * PEER-TO-PEER: architectures where there are no special machines that provide a 
       service or manage the network resources. Instead all responsibilities are uniformly
       divided among all machines, known as peers. Peers can serve both as clients and as
-      servers.
+      servers. [This architecture is different from the other three. It can potentially
+      have millions of peers.]
 
 
-This 
-requires web applications to use Distributed application architectures. 
-Web 
-applications are typically divided into two or more tiers, separating software by the 
-hardware they are intended to run on. At this point, note that that most web applications 
-recognize that they have at least three major functions:
+Client-Server is a 2-tier architecture, where the application is split into two parts.
+Multitier/N-Tier is a distributed architecture that is divided into 3 or more parts. 
+Three-tier architecture is considered a variant of Multitier architecture. 
+
+P2P architectures are unlike the other three architectures. In the other three traditional
+architectures, the consumption of resources and supply of duties is divided by tier. This
+means that every part of an application has a special duty, a role that only it can 
+perform for the application. In a client-server architecture, the client acts as a 
+conduit, displaying information and taking requests from the user. The server's duty is
+do the processing and data management. 
+
+A P2P application is different; it is a monolithic program that contains all or most 
+modules of the application. Therefore, every P2P peer has the same capabilities and 
+responsibilities. P2P peers are said to be equally privileged. A peer can act as both 
+client and server and does processing on the local machine. The results of its work can
+be shared across a network to peers running on other machines. 
 
 
-    * User Interface
-    * Application processing
-    * Data management
+3.2 CLIENT-SERVER MODEL
 
-
-At the very least, the user interface portion of the program will run on its own distinct 
-tier, while the other two share a single tier. However, some web applications are complex 
-enough to warrant three distinct tiers.  
 
 HRSP needs two tiers, a client and an application server, so it is structured in an 
 application structure called the CLIENT-SERVER MODEL[3]. The wikipedia article on this architecture 
