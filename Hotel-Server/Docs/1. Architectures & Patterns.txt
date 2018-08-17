@@ -9,24 +9,24 @@ architectural concepts required to develop web applications.
 First, basic architectural concepts will be discussed:
 
 
-    1. Architectural Styles
-    2. Architectural Patterns
-    3. Enabling Techniques
-    4. Layers and Tiers
+    1. Introduction to Structures and Architectures
+    2. Architectural Styles
+    3. Architectural Patterns
+    4. Enabling Techniques
+    5. Layers and Tiers
 
 
-Then these concepts will be applied by examining architectures best-suited to web 
-applications:
+Then the arcticle will move on to examining architectures best-suited to web applications:
 
 
-    1. Distributed Computing and an Introduction DC Architectures
-    2. The Client-Server Model (2-Tier Architecture)
-    3. Multitier Architecture (3+ Tier Architecture)
-    4. The MVC Architectural Pattern
+    1. Distributed Computing and an Introduction to DC Architectures
+    2. A 2-Tier Distributed Architecture: The Client-Server Model
+    3. A 3+ Tier Distributed Architecture: Multitier/N-Tier
+    4. An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
 
 
-Finally, after discussing distributed computing architectures, I will analyze and discuss
-the structure and architecture, and architectural patterns used in 
+Finally, after discussing distributed computing architectures and the MVC pattern, I will
+analyze and discuss the structure and architecture, and architectural patterns used in 
 Hotel-Reservation-System.
 
 
@@ -46,8 +46,8 @@ definition of Software Architecture, Page 9[1]:
     later.
 
 
-There are two things that you will use repeatedly in a software architecture, services 
-and components. Hanmer defines them on Page 25[1]:
+When a programmer designs a software solution's architecture, she is dividing it into
+services and components. Hanmer defines them on Page 25[1]:
 
 
     1.  COMPONENTS: are the building blocks of the system — the parts of software or the 
@@ -58,6 +58,7 @@ and components. Hanmer defines them on Page 25[1]:
         of the system into components, you’re also defining what services each component 
         provides. The services can be internal or external to the system.
 
+
 When designing an application's architecture, Hanmer suggests considering these factors; 
 Pg 10[1]:
 
@@ -65,9 +66,9 @@ Pg 10[1]:
       describes the purpose of the system, as well as who uses it and what problem it 
       solves.
 
-    ✓ Architectural assumptions and dependencies: The architecture explains the assumption 
-      made about the environment and about the system itself. The architecture also explains 
-      any dependencies on other systems or on the builders of the system.
+    ✓ Architectural assumptions and dependencies: The architecture explains the 
+      assumption made about the environment and about the system itself. The architecture 
+      also explains any dependencies on other systems or on the builders of the system.
 
     ✓ Architecturally significant requirements: The architecture points to the most 
       significant requirements that shaped it.
@@ -133,15 +134,24 @@ corresponding patterns[1]:
     Adaptable Systems           Microkernel (Chapter 15), Reflection (Chapter 16)
 
 
-At this point, just note that HRSP's architectural style is called Interative Systems and 
-implements an architectural pattern called MVC. This architectural style and pattern is
-very common in web world, which is why the rest of the article explains it in detail.
+At this point, just note that HRSP uses two architectural styles and their corresponding
+patterns:
+
+
+    Distributed Systems: Client-Server Model
+    Interactive Systems: Model-View-Controller
+
+
+Yes, a project can combine two architectural styles/patterns. These two styles and 
+patterns are very common in web world, which is why the rest of the article will explore
+these topics in some detail. 
 
 
 2.4 ENABLING TECHNIQUES
 
 On page 30-31, Hanmer also discusses some enabling techniques that empower the developer to
 create good software, independent of architectures and development methodologies[1]:
+
 
     ✓ Abstraction: Abstraction is the ability to extract the common, general parts from a 
       particular entity. You use abstraction to define a common component that will be 
@@ -196,8 +206,8 @@ create good software, independent of architectures and development methodologies
       to solve or implement. You use this technique often as you work with large problems.
 
 
-The architectural pattern you choose is determined by the enabling technique you want to
-optimize for in your program design. On page 32, Hanmer lists a few more architectural 
+The architectural patterns you choose are determined by the enabling technique you want 
+to optimize for in your program design. On page 32, Hanmer lists a few more architectural 
 patterns, this time in relation to the fundamental techniques they enable[1]:
 
 
@@ -229,16 +239,16 @@ Software, by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides
 
 There are some fundamental architectural principles which can be used to structure 
 software. Instead of developing monolithic applications that are a huge tangled bundle of 
-interconnected components, software can be separated into modules, libraries and 
-components using the architectural principles of layers and tiers. 
+interconnected components, software can be separated into modules, libraries and other
+components by using the architectural principles of layers and tiers. 
 
 How do they work?
 
 LAYERS separate software by their function. In a software solution, a developer would find 
 software elements with similar or related functions and collect them together, in a few 
 files and/or folders. When a collection of similar software elements that are working 
-towards the same goal are separated from the main program into folders and/or files, it 
-is called a layer. 
+towards the same goal are separated from the main program into dedicated folders and/or 
+files, it is called a layer. 
 
 If a project implements the MVC architectural pattern, its functions are separated into
 three layers: Models, Views and Controllers. Developers working on an MVC project will 
@@ -253,7 +263,7 @@ and concentrating them into layers let's you separate concerns to prevent unnecc
 entanglements between elements of differing functions and imposes a logical structure on
 the project.
 
-TIERS separate software by the hardware platforms to which a software component is 
+TIERS separate software by the hardware platforms to which a software component is to be
 deployed. Tiers are a more fundamental form of division than layers. Where layers involve
 collecting files with similar functions together into folders, tiers usually break 
 software up into separate programs, modules or libraries, depending on where that piece 
@@ -267,8 +277,9 @@ which runs on a customer's computer and the Server, which runs on a server machi
 
 3.1 DISTRIBUTED COMPUTING
 
-This program is a web app, which means that it works over the internet. This brings in 
-the concept of Distributed Computing. Here is a definition for it[]: (https://en.wikipedia.org/wiki/Distributed_computing)
+HRSP is a web application, which means that it works over the internet. This brings up 
+the concept of Distributed Computing. Here is a definition for it[2]:
+
 
     Distributed computing is a field of computer science that studies distributed systems. 
     A distributed system is a system whose components are located on different networked 
@@ -282,17 +293,29 @@ the concept of Distributed Computing. Here is a definition for it[]: (https://en
     are many different types of implementations for the message passing mechanism, 
     including pure HTTP, RPC-like connectors and message queues.
 
-When you have to design software that works over any network, such as the internet, it 
-usually cannot be designed as a single monolithic application. Why? Because the work is
-being done on many computers. You have to design the application with a distributed
-architecture, i.e. a program broken up into several components. Some of these components
-will run on separate machines (tiers) and communicate over a network to coordinate 
-towards accomplishing the application's purpose. Other will be layers that live within
-a tier.
 
-Web applications are typically divided into two or more tiers, separating software by 
-their intended hardware. At this point, note that that most web applications recognize
-that they have at least three major functions:
+When one has to design software that works over any network, such as the internet, it 
+usually cannot be designed as a single monolithic application. Why? Because in such 
+programs, work is not being done by single monolithic program that runs on a single 
+computer. Rather, web applications are often comprised of two, three or more 
+sub-components (layers and tiers), and some of these are standalone programs designed to 
+run on separate machines. This should bring to mind the concept of tiers. That's right, 
+web applications are typically designed with multiple-tier architectures. Clients, 
+App Servers and Database Servers can all be part of the same application, but run on 
+different machines if needed.
+
+The sub-programs are usually installed on separate machines (tiers) and communicate over
+the network (the internet, institutional intranets etc.) to coordinate towards 
+accomplishing the application's purpose. Others will be layers that live within a tier.
+
+As a web application tends to have multiple layers and tiers that are spread out over 
+multiple machines, its resources and duties are distributed over multiple devices. Hence,
+the name distributed computing. Therefore, when a programmer designs a web application, 
+she has to design the application with a distributed architecture. That is to say, a 
+program that is broken up into multiple layers and sub-programs.
+
+At this point, let's talk about functional layers. Most web applications recognize that 
+they have at least three major groupings of functions (layers):
 
 
     * User Interface
@@ -301,9 +324,9 @@ that they have at least three major functions:
 
 
 When choosing a distributed architecture for your program, you will have to choose how 
-to separate these functions into layers and tiers. There are several ways of dividing up
-a distributed application. The wikipedia article on this topic provides a brief 
-explanation for a number of basic architectures[]. The list of distributed architectures
+to collect or separate these functions into layers and tiers. There are several ways of 
+dividing up a distributed application. The wikipedia article on this topic provides a brief 
+explanation for a number of basic architectures[2]. The list of distributed architectures
 below distinguishes between them on the basis of the number of tiers they have:
 
 
@@ -317,7 +340,7 @@ below distinguishes between them on the basis of the number of tiers they have:
 
     * N-TIER: architectures that refer typically to web applications which further forward 
       their requests to other enterprise services. This type of application is the one 
-      most responsible for the success of application servers. [3+-tier architecture]
+      most responsible for the success of application servers. [3+ tier architecture]
 
     * PEER-TO-PEER: architectures where there are no special machines that provide a 
       service or manage the network resources. Instead all responsibilities are uniformly
@@ -326,27 +349,29 @@ below distinguishes between them on the basis of the number of tiers they have:
       have millions of peers.]
 
 
-Client-Server is a 2-tier architecture, where the application is split into two parts.
-Multitier/N-Tier is a distributed architecture that is divided into 3 or more parts. 
-Three-tier architecture is considered a variant of Multitier architecture. 
+Client-Server is a 2-tier architecture, where the application is split into two parts, 
+Client and Server. Multitier/N-Tier is a distributed architecture that is divided into 
+3 or more parts. Three-tier architecture is considered a variant of Multitier 
+architecture. They usually have these three tiers: UI Server, App Server and Database
+Server.
 
 P2P architectures are unlike the other three architectures. In the other three traditional
 architectures, the consumption of resources and supply of duties is divided by tier. This
-means that every part of an application has a special duty, a role that only it can 
-perform for the application. In a client-server architecture, the client acts as a 
-conduit, displaying information and taking requests from the user. The server's duty is
-do the processing and data management. 
+means that every part of an N-tier application, regardless of whether it has 2, 3 or more
+tiers, has a special duty, a role that only it can perform for the application. In a 
+client-server architecture, the client acts as a conduit, displaying information and 
+taking requests from the user. The server's duty is do the processing and data management. 
 
 A P2P application is different; it is a monolithic program that contains all or most 
-modules of the application. Therefore, every P2P peer has the same capabilities and 
-responsibilities. P2P peers are said to be equally privileged. A peer can act as both 
-client and server and does processing on the local machine. The results of its work can
-be shared across a network to peers running on other machines. 
+modules of the application. Therefore, P2P peers are said to be equally privileged 
+because every peer has the same capabilities and responsibilities. A peer can act as 
+both client and server and does processing on the local machine. The results of its work 
+can be shared across a network to peers running on other machines. 
 
 
 3.1.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
-The wikipedia article on the CLIENT-SERVER MODEL architecture[3] provides this 
+The wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
 explanation:
 
 
@@ -366,7 +391,7 @@ Programs with a client-server architecture have two parts:
 
     * CLIENT: The client is the frontend; it's the user interface through which the user
       interacts with the application. When the user wants a resource or wants the program
-      to do something, she can pass these instructions to the client. The client will 
+      to do something, she will pass these instructions to the client. The client will 
       send these requests to the server. 
 
     * SERVER: The server will respond to client requests by sending back resources or 
@@ -1221,6 +1246,9 @@ changes to persistent data.
 The DAL contains the Database and code that 
 
 
-MISCELLANEOUS TIPS FOR DESIGNING ARCHITECTURES
 
+SOURCES
 
+1: Pattern-Oriented Software Architecture For Dummies (Robert Hanmer, 2013)
+2: https://en.wikipedia.org/wiki/Distributed_computing
+3: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
