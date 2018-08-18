@@ -407,15 +407,17 @@ client-server architecture.
 
 Programs with three or more tiers usually use the multitier architecture to organize 
 code. The multi-tier architecture separates software along two axes, namely layers 
-and tiers, which were discussed earlier. Recall that:
+and tiers. Recall that:
 
-Tier: A tier physically divides software  into modules, components or libraries.
+Tier: A tier physically divides software into modules, components or libraries.
 Layer: A layer logically organizes software elements by function. 
 
 This section will explain the layers and tiers in the traditional three-layer and 
-three-tier architecture of web apps. As this is a traditional structure, it only serves 
-as a guideline. Reality rarely deigns to completely conform to architectural theories,
-so you'll have to adapt architectures and patterns when designing your software solution.
+three-tier architecture of web applications. In this architecture, the layers are tiers, 
+i.e. each layer in the application is a separate tier. As this is a traditional 
+structure, it only serves as a guideline. Reality rarely deigns to completely conform to 
+architectural theories, so you'll have to adapt architectures and patterns when designing 
+your software solution.
 
 
 LAYERS 
@@ -426,28 +428,28 @@ Note that a layer exists independently of the layers above it, but depends on th
 functionality provided by the layers below it. The three traditional layers are:
 
 
-    1. Presentation Layer:   This is the User Interface layer. It is the highest layer in
-                             the three-layer stack. It contains all code related to the
-                             UI. This Layer will accept User commands and pass them to 
-                             the layer below (the Business Logic Layer) for execution. 
+    1. PRESENTATION LAYER
+    This is the User Interface layer. It is the highest layer in the three-layer stack. 
+    It contains all code related to the UI. This layer is charge of displaying program 
+    data to the user and in turn, accepting their commands and passing them to the layer
+    below (the Business Logic Layer) for execution. 
                              
                              
-    2. Business Logic Layer: This is the domain logic layer. This is the layer that 
-                             contains business logic for your application. The BLL does 
-                             the work of processing user requests by performing operations 
-                             on data stored in the Data Access Layer. The Business Logic 
-                             Layer will return the results of these operations to the 
-                             Presentation Layer, which will then display them to the 
-                             User. Note that the Business Logic Layer sits in the middle 
-                             of the layer stack, communicating to the UI layer above and 
-                             the Data Access Layer below. 
+    2. BUSINESS LOGIC LAYER
+    This is the domain logic layer; it contains business logic for your application. 
+    The BLL does the work of processing user requests by performing operations on data 
+    stored in the Data Access Layer. The Business Logic Layer will return the results of 
+    these operations to the Presentation Layer, which will then display them to the user. 
+    Note that the Business Logic Layer sits in the middle of the layer stack, communicating 
+    to the UI layer above and the Data Access Layer below. 
                              
-    3. Data Access Layer:    This layer is the bottom of the stack and it's concerned with 
-                             storing and retrieving persistent data. It has the duty of 
-                             managing the database or the file system. It exposes APIs to 
-                             the Business Logic Layer that it can use to manipulate data: 
-                             Creating, Reading, Updating and Deleting data stored on this 
-                             layer. 
+    3. DATA ACCESS LAYER
+    This layer is the bottom of the stack and its job is to interface with a data source,
+    such as a database or file system, to store, modify or retrieve persistent data.
+    Upon request by the other two layers, it is DAL's job to convert data from a row of 
+    fields in a database table into objects for their consumption. The DAL exposes APIs 
+    to the Business Logic Layer that it can use to manipulate stored data, letting the 
+    BLL Create, Read, Update and Delete data stored on this layer. 
 
                              
 The goal of layers is to separate functionalities from each other. Presentation logic
@@ -456,73 +458,78 @@ should not entangled with Business logic or Data Management logic.
 
 TIERS
 
-Traditionally, there are three tiers, but the actual number of tiers should depend on 
-your software project's needs. Here are the traditional tiers:  
+Traditionally, there are three tiers, but once again, the actual number of tiers in your
+project should depend on its scope and needs. Here are the traditional tiers:  
  
  
-    1. Presentation Tier:   On this tier, you would deploy the software module that 
-                            presents information to and receives input from Users. This
-                            module is frequently called the CLIENT or the FRONTEND.
+    1. PRESENTATION TIER
+    On this tier, you would deploy the sub-program that presents information to and 
+    receives input from Users. This module is frequently called the CLIENT or the 
+    FRONT-END. It contains the presentation layer of the project; it is concerned with
+    presenting information to the user and accepting directions from them via some type 
+    of user interface (E.g. Graphical User Interface (GUI), Text-based User Interface 
+    (TUI) etc.) 
 
-                            The client or frontend's native hardware platform is the
-                            WEB SERVER or PRESENTATION SERVER. This is a server machine 
-                            typically owned by a business or rented from a cloud services 
-                            provider (Amazon Web Services, Google Cloud Platform, 
-                            Microsoft Azure etc.). As the web is ubiquitous these days, 
-                            WEB SERVERS are the most common presentation tier. ASP.NET 
-                            Core web apps, would host their frontend on a web server. 
+    The client or frontend's native hardware platform (tier) is the PRESENTATION SERVER. 
+    This is a server machine typically owned by the business or rented from a cloud 
+    services provider (Amazon Web Services, Google Cloud Platform, Microsoft Azure etc.). 
+    As the web is ubiquitous these days, WEB SERVERS are the most common presentation 
+    tier. ASP.NET Core web apps would probably host their frontend on a web server. 
                             
-                            For web apps (websites), the web browser is typically the 
-                            display medium. If a user requests your website, the client 
-                            will respond by sending them the resource/website that they're
-                            looking for. If the user makes changes that need to persist,
-                            such as making a post on a forum or asking for an insurance 
-                            quote, the browser sends this information back to the web 
-                            server. However, as the web server (in a three-tier program)
-                            only handles user interface related responsibilities, the 
-                            presentation layer on the web server passes on the user 
-                            request to the real brain of any three-tier program, the 
-                            Application Server Tier.
-                            
-                            For a website, say Amazon.ca, Amazon's web servers will 
-                            handle requests to load Amazon.ca webpages. The browser is a
-                            standard frontend, so it's relatively easy to develop for. If
-                            we talk about the Kindle reading app instead, then the 
-                            presentation tier is no longer the web server, it becomes the
-                            all the hardware platforms on which the apps runs: PCs and 
-                            mobile devices; Windows, Android and iOS operating systems. 
-                            Developing a frontend/GUI apps for all of these hardware 
-                            platforms is a much harder undertaking than developing a web 
-                            frontend. 
+    For web applications (websites), the web browser is typically the delivery mechanism. 
+    If a user opens a browser and requests your website, that request will be forwarded 
+    to your presentation server (a web server). The web server will pass on the request 
+    to next tier, the App Server, which will return requested website data to the web 
+    server. The web server will convert this data into a graphical interface and send it 
+    back to the browser where it will be displayed to the user.
+
+    The browser is a standards-based way to deliver web content, making it (relatively) 
+    easy to develop for. The Amazon.com website's presentation tier are the web servers 
+    that tasked with deliving this website to browsers. However, the web is only one of 
+    many possible ways to display information to the user. Other presentation tiers 
+    exist; if we talk about the Amazon Kindle reading app instead, then the presentation 
+    tier is no longer the web server, it becomes the all the hardware platforms on which 
+    the apps runs: PCs and mobile devices. This hardware runs a mix of Windows, MacOS, 
+    Linux, Android, iOS and other operating systems, which further complicates the 
+    development effort. Developing client GUI apps for all of these hardware platforms 
+    and their respective OSs is a much harder undertaking than developing a web frontend,
+    which explains why desktop development has been surpassed by the web for the last
+    decade or so. 
 
             
-    2. Application Server   On this tier, you would deploy the software module that does 
-       Tier:                most of the processing. This software module, usually called 
-                            the APPLICATION SERVER or the API, is the brains of every 
-                            project organized into a multitier architecture: it receives 
-                            user requests from the Frontend and responds by leaping into 
-                            action. If the requests require creating, reading, updating 
-                            or deleting data, the Application Server will issue these 
-                            orders to the the Data Tier. When the Data Tier returns the 
-                            results, the app server will process it and pass them on to 
-                            the presentation tier, so that it can display the final 
-                            results to the user.  
+    2. APPLICATION SERVER TIER 
+    On this tier, you would deploy the sub-program that does most of the processing in 
+    the application. This sub-program is usually called the APP SERVER or the API and its 
+    tier is called (confusingly enough) the APPLICATION SERVER. This tier is also either 
+    owned by the business itself or rented from a cloud services company. The App Server 
+    contains the Business Logic Layer, which is the brains of every project that is 
+    architected with 3 or more tiers. Note that in most applications, the App Server also 
+    contains the Data Access Layer.
+    
+    When the App Server receives user requests from the presentation server, it leaps 
+    into action. If the requests require creating, reading, updating or deleting data, 
+    the App Server will issue these orders to the the Data Access Layer. When the DAL 
+    consults the data source and returns information, the App Server will process it and 
+    pass on the final results on to the presentation tier, so that it can displayed to 
+    the user.
 
-                            
-    3. Data Management      On this tier, you would deploy the software module that does
-       Tier:                DATA MANAGEMENT duties. Technically, in a three-tier 
-                            application, the hardware for this tier would be a DATABASE 
-                            SERVER, but dedicated database servers are rare except in 
-                            large institutions or for complex applications. This tier 
-                            consists of things like the application's data, databases, 
-                            filesystems and related features like reporting and logging.
-                            When App Server sends orders to retrieve or change data to 
-                            the Data Management Tier, it complies and returns any
-                            requested information.
+                              
+    3. DATA MANAGEMENT TIER     
+    On this tier, you would deploy the primary data sources for the application and the
+    sub-program that is responsible for DATA MANAGEMENT. The sub-program is often called 
+    the DATABASE APPLICATION and runs on a tier called the DATABASE SERVER. The tier may
+    also be called a REPOSITORY. The Database Application is probably commercial RDBMS 
+    software like Microsoft SQL Server, SQLite or PostgreSQL, or an application that acts 
+    as an abstraction layer over a database or a filesystem.
+    
+    Technically, in a three-tier application, the hardware for this tier would be a 
+    DATABASE SERVER, but dedicated database servers are rarely used except in large 
+    institutions or for complex applications. The Database Server is almost completely 
+    passive; it waits for instructions from the DAL in the App Server.
 
 
 If it's not already clear, the goal of using tiers,  is to carve out code from the main
-project and tailor it to run a specific hardware platform.
+project and tailor it to run a specific hardware or software platform.
 
 
 AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
@@ -643,9 +650,9 @@ MVC frameworks may be different.
    When it comes to models, there is distinction to be made between Model classes and
    Model objects. Be aware of the difference between the two terms. Model classes are 
    templates for Model objects. Model objects contain most of the business-related data 
-   in an MVC appliation. Model classes and Model object live separately; Model classes are 
-   defined in the Models folder of the Common project, whereas Model objects live in a Data 
-   Store such as a Database or File system. 
+   in an MVC application. Model classes and Model object live separately; Model classes 
+   are defined in the Models folder of the Common project, whereas Model objects live in 
+   a Data Store such as a Database or File system. 
 
    Model classes are Plain Old Class Objects (POCO) that define important business entities 
    for your application. A model class represents the knowledge that the application needs 
@@ -1089,7 +1096,7 @@ backend will run on a Database Server:
 
 
 +--------------------+  +-------------------------------------------+  +----------------------+
-| CLIENT APPLICATION |  |             APP SERVER/API                |  |    REPOSITORY/ORM    |
+| CLIENT APPLICATION |  |             APP SERVER/API                |  | DATABASE APPLICATION |
 |                    |  |                                           |  |                      |
 |  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
 |  |              |  |  |  |              |        |             |  |  |    |            |    |
@@ -1100,7 +1107,7 @@ backend will run on a Database Server:
 |  |              |  |  |  |              |        |             |  |  |    |            |    |
 |  | PRESENTATION | <----+ |   BUSINESS   | <----+ | DATA ACCESS | <------+ |            |    |
 |  |    LOGIC     |  |  |  |    LOGIC     |        |    LOGIC    |  |  |    |            |    |
-|  |              |  |  |  |              |        |             |  |  |    |            |    |
+|  |              |  |  |  |              |        |   (+ ORM)   |  |  |    |            |    |
 |  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
 |                    |  |                                           |  |                      |
 +--------------------+  +-------------------------------------------+  +----------------------+
