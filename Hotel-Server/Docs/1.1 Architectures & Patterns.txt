@@ -1,22 +1,79 @@
-1. INTRODUCTORY REMARKS
+1. INTRODUCTORY REMARKS: WHY DO WE NEED ARCHITECTURES AND PATTERNS?
+
+Look at the architectural diagram below. It depicts the architecture, or to put it 
+better, the complete lack thereof, in a poorly designed monolithic application. 
+Applications that are poorly designed tend to have major components mixed together into
+an incoherent mess.
+
+
+    +--------------------------------------------------------------------------------------------+
+    |                                                                                            |
+    |           MONOLITHIC APPLICATION WITH TERRIBLE ARCHITECTURE                                |
+    |                                                                                            |
+    |  +--------------------------------------------------------------------+                    |
+    |  |            +----------+                                            |    +------------+  |
+    |  |  PRESENTATION         v                                            |    |            |  |
+    |  |     ^ LAYER BUSINESS LOGIC+-----------------------------+          |    |            |  |
+    |  |     |       LAYER ^                                     v          |    |            |  |
+    |  |     +----------+  |                                DATA ACCESS+-------> |  DATABASE  |  |
+    |  |                   |                                   LAYER  <--------+ |            |  |
+    |  |                   +-------------------------------------+          |    |            |  |
+    |  |                                                                    |    |            |  |
+    |  |                                                                    |    +------------+  |
+    |  +--------------------------------------------------------------------+                    |
+    |                                                                                            |
+    +--------------------------------------------------------------------------------------------+
+
+                                      RUNS ON A SINGLE MACHINE
+
+
+Jason Ables explains the situation:[] (https://www.ethode.com/blog/fixing-spaghetti-how-to-work-with-legacy-code)
+
+    Legacy code is software that generates value for a business but is difficult for 
+    developers to change. The terms "code rot" and "spaghetti code" refer to legacy code 
+    that is tangled up in poor quality. Over time, as "get it done now" is continually 
+    favored over "get it done right", the code base decays by avoiding industry best 
+    practices, making it tightly coupled, difficult to test, and increasingly prone to 
+    defects.
+
+    The longer this goes on, the more frustrated customers get with the software due to 
+    quirky defects, bad user experiences and long lead times for changes. Developers are 
+    afraid to make changes due to the "Jenga effect" -- as one piece of code is changed 
+    or removed, it often leads to new defects being introduced in the system in sometimes 
+    seemingly unrelated places. This compounds into what is known as "technical debt".
+    
+    Just like financial debt, technical debt is sometimes a calculated risk. For example, 
+    you may incur technical debt in order to get a software product to market faster. 
+    However, just like financial debt, the longer this goes unpaid, especially if it 
+    continues to grow, the more it hinders your technical flow. Just like cash flow, 
+    technical flow is critical to the health of an organization. Technical flow is the 
+    ability for developers to respond quickly to change.
+
+
+There are many failures that lead to a spaghetti codebase, and this article will discuss
+one aspect: Architectures and Patterns. At the start of every project, the developer 
+(team) needs to carefully choose architectural designs for it. The architectural styles
+and patterns used to structure a project will in large part determine its quality. A 
+program with a good design will have built-in resistance to decaying. 
 
 Web projects like the Hotel-Reservation-System Project (HRSP) are structured into 
-sub-components by implementing certain architectures and architectural patterns. 
-Dividing code into clearly demarcated modules has been found to make programs simpler
-to develop, maintain and extend, and easier to debug. This article will discuss 
-architectural concepts required to develop web applications.
+sub-components by implementing certain architecture styles and patterns. Dividing code 
+into clearly demarcated modules has been found to make programs simpler to develop, 
+maintain and extend, and easier to debug. This article will discuss architectural 
+concepts required to develop web applications.
 
 First, basic architectural concepts will be discussed:
 
 
-    1. Introduction to Structures and Architectures
+    1. Introduction to Software Architectures
     2. Architectural Styles
     3. Architectural Patterns
     4. Enabling Techniques
-    5. Layers and Tiers
+    5. Architectural Principles: Layers and Tiers
 
 
-Then the arcticle will move on to examining architectures best-suited to web applications:
+Then the arcticle will move on to examining architectures that are well suited to web 
+applications:
 
 
     1. Distributed Computing and an Introduction to DC Architectures
@@ -61,6 +118,7 @@ services and components. Hanmer defines them on Page 25[1]:
 
 When designing an application's architecture, Hanmer suggests considering these factors; 
 Pg 10[1]:
+
 
     ✓ Goals and philosophy of the system: The architecture explains the goals and 
       describes the purpose of the system, as well as who uses it and what problem it 
@@ -119,6 +177,37 @@ corresponding Architectural Patterns.
 
 
 2.3 ARCHITECTURAL PATTERNS
+
+F. Buschmann and company explain the idea of an architectural pattern[]: (Pattern-Oriented Software Architecture, Volume 1 - A System of Patterns (F. Buschmann, H. Rohnert, P. Sommerlad, 1996))
+
+    Abstracting from specific problem-solution pairs and distilling out common factors 
+    leads to patterns: These problem-solution pairs tend to fall into families of similar 
+    problems and solutions with each family exhibiting a pattern in both the problems and 
+    the solutions'. In his book The Timeless Way of Building (Ale791 (p. 247), the 
+    architect Christopher Alexander defines the term pattern as follows: 
+
+
+        Each pattern is a three-part rule, which expresses a relation between a certain 
+        context, a problem, and a solution. 
+
+        As an element in the world, each pattern is a relationship between a certain 
+        context, a certain system of forces which occurs repeatedly in that context, and 
+        a certain spatial configuration which allows these forces to resolve themselves.
+        
+        As an element of language, a pattern is an instruction, which shows how this 
+        spatial configuration can be used, over and over again, to resolve the given 
+        system of forces, wherever the context makes it relevant. 
+
+        The pattern is, in short, at the same time a thing, which happens in the world, 
+        and the rule which tells us how to create that thing, and when we must create it. 
+        It is both a process and a thing: both a description of a thing which is alive, 
+        and a description of the process which will generate that thing. We also find 
+        many patterns in software architecture. 
+
+        
+    Experts in software engineering know these patterns from practical experience and 
+    follow them in developing applications with specific properties. They use them to 
+    solve design problems both effectively and elegantly.
 
 Architectural patterns are specific expressions of architectural styles. On page 26, 
 Hanmer provides a table that lists a few basic architectural styles and their 
@@ -275,6 +364,143 @@ parts, the Client and the Server. In this example, there are two tiers, the clie
 which runs on a customer's computer and the Server, which runs on a server machine.
 
 
+CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
+
+Hanmer explains how tiers and layers are abstractions. Why do we need abstractions?
+
+
+    What these different ways of layering the system [Tiers and Layers] have in common is 
+    that they’re abstractions. An abstraction is a way of describing something in general 
+    terms that leaves out the details of any specific implementation. In the examples in 
+    the preceding section, the abstraction is a general layer that doesn’t describe how the 
+    functionality is implemented or even precisely what it does; those details are 
+    abstracted away.
+
+    ...you see that abstraction is one of the important techniques that help you build 
+    better architecture. Abstractions are important to software architecture because they 
+    allow you to talk about what the system does in general terms before you’ve worked 
+    out all the low-level details. 
+
+    In the same way, the three-tier architecture separates the functionality by 
+    abstractly grouping the presentation server and keeping its functionality separate 
+    from the functionality of the database servers. This is done because they have 
+    different processing or storage needs, and the boundary of an abstraction can be 
+    drawn around the layers.
+
+    Being able to abstract the essence of a functionality and project it onto the 
+    solution are important skills that you must have as a software architect.
+
+
+Layers and tiers are used to deliberately create a structure for the project. If this 
+is done correctly, changes made to a layer affect only that layer and the same applies to 
+tiers. In software projects with no planned architecture, there really isn't any 
+structure. In such programs, what should be distinct functions, features, layers and tiers 
+are jumbled into a tangled web of code. The architecture of such projects is called a 
+'Big Ball of Mud', aka 'Spaghetti Code'. Changing UI code can cause unpredictable failures
+in Business Logic or Data Access code. This what happens to a project that does not plan 
+out its structure, architecture, architectural style, the specific architectural pattern 
+and other such details during the Design phase of the project.
+
+
+HOW DO LAYERS AND TIERS HELP?
+
+The number of layers and tiers in a software project is variable and depends on the 
+project's size and needs, but the number of layers and tiers usually increase with a 
+program's size and complexity. 
+
+What's the point of using layers and tiers? Rockford Lhotka explains[3]:
+
+    Why do we layer software? Primarily to gain the benefits of logical organization and 
+    grouping of like functionality. Translated to tangible outcomes, logical layers offer 
+    reuse, easier maintenance and shorter development cycles. In the final analysis, proper 
+    layering of software reduces the cost to develop and maintain an application. Layering 
+    is almost always a wonderful thing! 
+
+    Why do we deploy layers onto multiple tiers? Primarily to obtain a balance between 
+    performance, scalability, fault tolerance and security. While there are various other 
+    reasons for tiers, these four are the most common. The funny thing is that it is almost 
+    impossible to get optimum levels of all four attributes – which is why it is always a 
+    trade-off between them.
+
+He continues in the article and makes a few practical comments about tiers:
+
+    Tiers imply process and/or network boundaries. A 1-tier model has all the layers running 
+    in a single memory space (process) on a single machine. A 2-tier model has some layers
+    running in one memory space and other layers in a different memory space. At the very 
+    least these memory spaces exist in different processes on the same computer, but more 
+    often they are on different computers. Likewise, a 3-tier model has two boundaries. 
+    In general terms, an n-tier model has n-1 boundaries.
+    
+    Crossing a boundary is expensive. It is on the order of 1000 times slower to make a 
+    call across a process boundary on the same machine than to make the same call within 
+    the same process. If the call is made across a network it is even slower. It is very 
+    obvious then, that the more boundaries you have the slower your application will run, 
+    because each boundary has a geometric impact on performance.
+
+    Worse, boundaries add raw complexity to software design, network infrastructure, 
+    manageability and overall maintainability of a system. In short, the more tiers in an 
+    application, the more complexity there is to deal with – which directly increases the 
+    cost to build and maintain the application.
+    
+    This is why, in general terms tiers should be minimized. Tiers are not a good thing, 
+    they are a necessary evil required to obtain certain levels of scalability, fault 
+    tolerance or security.
+    
+    As a good architect you should be dragged kicking and screaming into adding tiers to 
+    your system. But there really are good arguments and reasons for adding tiers, and 
+    it is important to accommodate them as appropriate.
+    
+    The reality is that almost all systems today are at least 2-tier. Unless you are using 
+    an Access or dBase style database your Data layer is running on its own tier – typically 
+    inside of SQL Server, Oracle or DB2. So for the remainder of my discussion I’ll primarily 
+    focus on whether you should use a 2-tier or 3-tier model...
+
+    ...the question remains whether to configure an application for 2 or 3 tiers. 
+    
+    Ultimately this question can only be answered by doing a cost-benefit analysis for 
+    your particular environment. You need to weigh the additional complexity and cost of 
+    a 3-tier deployment against the benefits it might bring in terms of scalability, fault 
+    tolerance or security.
+
+
+HOW LAYERS AND TIERS ARE USED IN APPLICATIONS
+
+This is a diagram of a monolithic application:
+
+
++--------------------------------------------------------------------------------------------+
+|                                                                                            |
+|                                    THE APPLICATION                                         |
+|                                                                                            |
+|  +--------------------------------------------------------------------+                    |
+|  |                                                                    |    +------------+  |
+|  |                          APPLICATION COMPONENTS                    |    |            |  |
+|  |                                                                    |    |            |  |
+|  |   +--------------+       +---------------+     +---------------+   |    |            |  |
+|  |   | PRESENTATION | +---> |   BUSINESS    | +-> |  DATA ACCESS  | +----> |  DATABASE  |  |
+|  |   |    LAYER     | <---+ |     LAYER     | <-+ |     LAYER     | <----+ |            |  |
+|  |   +--------------+       +---------------+     +---------------+   |    |            |  |
+|  |                                                                    |    |            |  |
+|  |                                                                    |    +------------+  |
+|  +--------------------------------------------------------------------+                    |
+|                                                                                            |
++--------------------------------------------------------------------------------------------+
+
+                                    RUNS ON A SINGLE MACHINE
+
+
+To avoid spaghetti code, the program's code has been partitioned into three layers, 
+modelled after the layers in N-tier. However, all layers are tightly coupled and live on
+the same machine. All three layers are packaged in a single executable and run on the 
+same machine. That makes this application's architecture 1-tier.
+
+In such a tightly integrated application, changing one layer will probably require changes 
+to the other layers. As the program is designed for a single machine, scaling the number of
+processors is probably not possible. For the same reason, the portability factor of this 
+design is low. Nevertheless, it may make sense to use this design for small applications
+that don't handle much traffic or need much resources.
+
+
 3.1 DISTRIBUTED COMPUTING
 
 HRSP is a web application, which means that it works over the internet. This brings up 
@@ -349,11 +575,11 @@ below distinguishes between them on the basis of the number of tiers they have:
       have millions of peers.]
 
 
-Client-Server is a 2-tier architecture, where the application is split into two parts, 
-Client and Server. Multitier/N-Tier is a distributed architecture that is divided into 
-3 or more parts. Three-tier architecture is considered a variant of Multitier 
-architecture. They usually have these three tiers: UI Server, App Server and Database
-Server.
+Multitier/N-Tier is a distributed architecture that is divided into two or more parts. 
+The Client-Server and Three-Tier architectures are considered variants of Multitier 
+architecture. Client-Server is a 2-tier architecture, where the application is split into
+two parts, Client and Server.  Three-Tier architecture usually has these three tiers: 
+UI Server, App Server and Database Server.
 
 P2P architectures are unlike the other three architectures. In the other three traditional
 architectures, the consumption of resources and supply of duties is divided by tier. This
@@ -453,7 +679,7 @@ functionality provided by the layers below it. The three traditional layers are:
 
                              
 The goal of layers is to separate functionalities from each other. Presentation logic
-should not entangled with Business logic or Data Management logic. 
+should not entangled with Business logic or Data Management logic. LOOSE COUPLING
 
 
 TIERS
@@ -499,12 +725,13 @@ project should depend on its scope and needs. Here are the traditional tiers:
             
     2. APPLICATION SERVER TIER 
     On this tier, you would deploy the sub-program that does most of the processing in 
-    the application. This sub-program is usually called the APP SERVER or the API and its 
-    tier is called (confusingly enough) the APPLICATION SERVER. This tier is also either 
-    owned by the business itself or rented from a cloud services company. The App Server 
-    contains the Business Logic Layer, which is the brains of every project that is 
-    architected with 3 or more tiers. Note that in most applications, the App Server also 
-    contains the Data Access Layer.
+    the application. This sub-program is usually called the APP SERVER or the API 
+    (short for 'Application Programming Interface', because this program exposes an API) 
+    and its tier is called (confusingly enough) the APPLICATION SERVER. This tier is also 
+    either owned by the business itself or rented from a cloud services company. The 
+    App Server contains the Business Logic Layer, which is the brains of every project 
+    that is architected with 3 or more tiers. Note that in most applications, the 
+    App Server also contains the Data Access Layer.
     
     When the App Server receives user requests from the presentation server, it leaps 
     into action. If the requests require creating, reading, updating or deleting data, 
@@ -532,7 +759,7 @@ If it's not already clear, the goal of using tiers,  is to carve out code from t
 project and tailor it to run a specific hardware or software platform.
 
 
-AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
+4. AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
 
 Model-View-Controller (MVC) is an architectural pattern that is widely used in web
 programming. This project uses ASP.NET Core for building web pages; ASP.NET Core makes use 
@@ -646,7 +873,8 @@ MVC frameworks may be different.
 
 
 1. Model: The model layer is probably the simplest layer in MVC. The model represents the
-   data, but does nothing else. The model is independent of the View and the Controller.
+   data, but does nothing else. The model is independent of the View and the Controller,
+   i.e. specific output representations and or programmed responses to user requests.
    When it comes to models, there is distinction to be made between Model classes and
    Model objects. Be aware of the difference between the two terms. Model classes are 
    templates for Model objects. Model objects contain most of the business-related data 
@@ -923,141 +1151,7 @@ https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstra
     components to achieve a common goal.
 
 
-CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
 
-Hanmer explains how tiers and layers are abstractions. Why do we need abstractions?
-
-
-    What these different ways of layering the system [Tiers and Layers] have in common is 
-    that they’re abstractions. An abstraction is a way of describing something in general 
-    terms that leaves out the details of any specific implementation. In the examples in 
-    the preceding section, the abstraction is a general layer that doesn’t describe how the 
-    functionality is implemented or even precisely what it does; those details are 
-    abstracted away.
-
-    ...you see that abstraction is one of the important techniques that help you build 
-    better architecture. Abstractions are important to software architecture because they 
-    allow you to talk about what the system does in general terms before you’ve worked 
-    out all the low-level details. 
-
-    In the same way, the three-tier architecture separates the functionality by 
-    abstractly grouping the presentation server and keeping its functionality separate 
-    from the functionality of the database servers. This is done because they have 
-    different processing or storage needs, and the boundary of an abstraction can be 
-    drawn around the layers.
-
-    Being able to abstract the essence of a functionality and project it onto the 
-    solution are important skills that you must have as a software architect.
-
-
-Layers and tiers are used to deliberately create a structure for the project. If this 
-is done correctly, changes made to a layer affect only that layer and the same applies to 
-tiers. In software projects with no pre-planned architecture, there really isn't any 
-structure. In such programs, what should be distinct functions, features, layers and tiers 
-are jumbled into a tangled web of code. The architecture of such projects is called a 
-'Big Ball of Mud', aka 'Spaghetti Code'. Changing UI code can cause unpredictable failures
-in Business Logic or Data Access code. This what happens to a project that does not plan 
-out its structure, architecture, architectural style, the specific architectural pattern 
-and other such details during the Design phase of the project.
-
-
-HOW DO LAYERS AND TIERS HELP?
-
-The number of layers and tiers in a software project is variable and depends on the 
-project's size and needs, but the number of layers and tiers usually increase with a 
-program's size and complexity. 
-
-What's the point of using layers and tiers? Rockford Lhotka explains[3]:
-
-    Why do we layer software? Primarily to gain the benefits of logical organization and 
-    grouping of like functionality. Translated to tangible outcomes, logical layers offer 
-    reuse, easier maintenance and shorter development cycles. In the final analysis, proper 
-    layering of software reduces the cost to develop and maintain an application. Layering 
-    is almost always a wonderful thing! 
-
-    Why do we deploy layers onto multiple tiers? Primarily to obtain a balance between 
-    performance, scalability, fault tolerance and security. While there are various other 
-    reasons for tiers, these four are the most common. The funny thing is that it is almost 
-    impossible to get optimum levels of all four attributes – which is why it is always a 
-    trade-off between them.
-
-He continues in the article and makes a few practical comments about tiers:
-
-    Tiers imply process and/or network boundaries. A 1-tier model has all the layers running 
-    in a single memory space (process) on a single machine. A 2-tier model has some layers
-    running in one memory space and other layers in a different memory space. At the very 
-    least these memory spaces exist in different processes on the same computer, but more 
-    often they are on different computers. Likewise, a 3-tier model has two boundaries. 
-    In general terms, an n-tier model has n-1 boundaries.
-    
-    Crossing a boundary is expensive. It is on the order of 1000 times slower to make a 
-    call across a process boundary on the same machine than to make the same call within 
-    the same process. If the call is made across a network it is even slower. It is very 
-    obvious then, that the more boundaries you have the slower your application will run, 
-    because each boundary has a geometric impact on performance.
-
-    Worse, boundaries add raw complexity to software design, network infrastructure, 
-    manageability and overall maintainability of a system. In short, the more tiers in an 
-    application, the more complexity there is to deal with – which directly increases the 
-    cost to build and maintain the application.
-    
-    This is why, in general terms tiers should be minimized. Tiers are not a good thing, 
-    they are a necessary evil required to obtain certain levels of scalability, fault 
-    tolerance or security.
-    
-    As a good architect you should be dragged kicking and screaming into adding tiers to 
-    your system. But there really are good arguments and reasons for adding tiers, and 
-    it is important to accommodate them as appropriate.
-    
-    The reality is that almost all systems today are at least 2-tier. Unless you are using 
-    an Access or dBase style database your Data layer is running on its own tier – typically 
-    inside of SQL Server, Oracle or DB2. So for the remainder of my discussion I’ll primarily 
-    focus on whether you should use a 2-tier or 3-tier model...
-
-    ...the question remains whether to configure an application for 2 or 3 tiers. 
-    
-    Ultimately this question can only be answered by doing a cost-benefit analysis for 
-    your particular environment. You need to weigh the additional complexity and cost of 
-    a 3-tier deployment against the benefits it might bring in terms of scalability, fault 
-    tolerance or security.
-
-
-HOW LAYERS AND TIERS ARE USED IN APPLICATIONS
-
-This is a diagram of a monolithic application:
-
-
-+--------------------------------------------------------------------------------------------+
-|                                                                                            |
-|                                    THE APPLICATION                                         |
-|                                                                                            |
-|  +--------------------------------------------------------------------+                    |
-|  |                                                                    |    +------------+  |
-|  |                          APPLICATION COMPONENTS                    |    |            |  |
-|  |                                                                    |    |            |  |
-|  |   +--------------+       +---------------+     +---------------+   |    |            |  |
-|  |   | PRESENTATION | +---> |   BUSINESS    | +-> |  DATA ACCESS  | +----> |  DATABASE  |  |
-|  |   |    LOGIC     | <---+ |     LOGIC     | <-+ |     LOGIC     | <----+ |            |  |
-|  |   +--------------+       +---------------+     +---------------+   |    |            |  |
-|  |                                                                    |    |            |  |
-|  |                                                                    |    +------------+  |
-|  +--------------------------------------------------------------------+                    |
-|                                                                                            |
-+--------------------------------------------------------------------------------------------+
-
-                                    RUNS ON A SINGLE MACHINE
-
-
-To avoid spaghetti code, the program's code has been partitioned into three layers, 
-modelled after the layers in N-tier. However, all layers are tightly coupled and live on
-the same machine. All three layers are packaged in a single executable and run on the 
-same machine. That makes this application's architecture 1-tier.
-
-In such a tightly integrated application, changing one layer will probably require changes 
-to the other layers. As the program is designed for a single machine, scaling the number of
-processors is probably not possible. For the same reason, the portability factor of this 
-design is low. Nevertheless, it may make sense to use this design for small applications
-that don't handle much traffic or need much resources.
 
 In a a 2-tier application, the program is usually separated into two halves:
 a client and a server. These programs run on two separate machines:
