@@ -1,0 +1,13 @@
+Then the arcticle will move on to examining architectures that are well suited to web 
+applications:
+
+
+    1. Distributed Computing and an Introduction to DC Architectures
+    2. A 2-Tier Distributed Architecture: The Client-Server Model
+    3. A 3+ Tier Distributed Architecture: Multitier/N-Tier
+    4. An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
+
+
+Finally, after discussing distributed computing architectures and the MVC pattern, I will
+analyze and discuss the structure and architecture, and architectural patterns used in 
+Hotel-Reservation-System.
