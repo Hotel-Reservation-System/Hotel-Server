@@ -289,3 +289,4 @@ __pycache__/
 
 # ghostwriter
 *.md.backup
+Hotel-Server/Docs/.vscode/settings.json

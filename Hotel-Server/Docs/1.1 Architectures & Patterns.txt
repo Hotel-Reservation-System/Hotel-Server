@@ -59,8 +59,7 @@ program with a good design will have built-in resistance to decaying.
 Web projects like the Hotel-Reservation-System Project (HRSP) are structured into 
 sub-components by implementing certain architecture styles and patterns. Dividing code 
 into clearly demarcated modules has been found to make programs simpler to develop, 
-maintain and extend, and easier to debug. This article will discuss architectural 
-concepts required to develop web applications.
+maintain and extend, and easier to debug. 
 
 First, basic architectural concepts will be discussed:
 
@@ -72,10 +71,10 @@ First, basic architectural concepts will be discussed:
     5. Architectural Principles: Layers and Tiers
 
 
-2.1 AN INTRODUCTION TO PROGRAM STRUCTURES & ARCHITECTURES
+2.1 AN INTRODUCTION TO ARCHITECTURES
 
-From Robert Hanmer's book Pattern-Oriented Software Architecture For Dummies, here's a 
-definition of Software Architecture, Page 9[1]:
+From Robert Hanmer's book Pattern-Oriented Software Architecture For Dummies, he offers a 
+simple definition of Software Architecture, Page 9[1]:
 
 
     Every system has an architecture — some high-level structure that underlies the whole 
@@ -88,8 +87,38 @@ definition of Software Architecture, Page 9[1]:
     later.
 
 
+Here's a more elaborate definition:[] https://www.ou.nl/documents/40554/349790/IM0203_01.pdf
+
+    An architecture embodies information about components and their interaction, but 
+    omits information about components that does not pertain to their interaction. Thus, 
+    an architecture is foremost an abstraction of a system that suppresses details of 
+    components that do not affect the use, the relations and interactions of components. 
+    Private details of components, details that have to do solely with internal 
+    implementation and are not externally visible, are not architectural. In short, an 
+    architecture determines how components interact, not how they are implemented.
+
+
+Here's a third definition that explains another aspect of architectures:[] https://www.codeproject.com/Articles/1064240/Introduction-to-Software-Architecture
+
+    Software architecture encompasses the set of significant decisions about the 
+    organization of a software system including the selection of the structural elements 
+    and their interfaces by which the system is composed; behavior as specified in 
+    collaboration among those elements; composition of these structural and behavioral 
+    elements into larger subsystems; and an architectural style that guides this 
+    organization. Software architecture also involves functionality, usability, 
+    resilience, performance, reuse, comprehensibility, economic and technology 
+    constraints, tradeoffs and aesthetic concerns.
+
+
+To reiterate, it's critical to think through the architecture of your program before 
+writing the first line of code. Spend a lot of time designing the architecture, because 
+it sets the tone for how your project will turn out.
+
+
+2.1.1 PARTS OF AN ARCHITECTURE
+
 When a programmer designs a software solution's architecture, she is dividing it into
-services and components. Hanmer defines them on Page 25[1]:
+Services and Components. Hanmer defines them on Page 25[1]:
 
 
     1.  COMPONENTS: are the building blocks of the system — the parts of software or the 
@@ -100,6 +129,13 @@ services and components. Hanmer defines them on Page 25[1]:
         of the system into components, you’re also defining what services each component 
         provides. The services can be internal or external to the system.
 
+
+As you plan your architecture, you will need to break up your application into various
+components - libraries, modules, layers, tiers, sub-programs. Keep track of these 
+components, along with the services that they provide to other components. 
+
+
+2.1.2 BEST PRACTICES AND FACTORS OF ARCHITECTURE DESIGN
 
 When designing an application's architecture, Hanmer suggests considering these factors; 
 Pg 10[1]:
@@ -135,6 +171,30 @@ Pg 10[1]:
     ✓ Key scenarios that describe critical behavior of the system: The architecture
       explains the most important scenarios that illustrate and explain how the system 
       will be used.
+
+
+These are some best practices to follow when designing your architecture:[] https://dzone.com/articles/an-introduction-to-software-architecture-what-you
+
+
+    Best Practices in Software Architecture
+    There are a number of principles on which a good software architecture is anchored:
+    
+        * Instead of being built to last, it is built to change.
+
+        * Before any components can be designed, the software architect must clearly 
+          understand the needs of the user and the domain.
+
+        * The software architect must identify the subsystems in the product after which
+          he should consider components and layers and abstract them so as to identify 
+          every key interface therein.
+
+        * Using an iterative and incremental approach to designing the software 
+          architecture is a great idea.  
+
+        * Use lessons learned from history, record every decision you make and 
+          conclusively mitigate major risks.
+
+        * Underinvesting in software architecture is not an option.
 
 
 2.2 ARCHITECTURAL STYLES
@@ -217,7 +277,7 @@ patterns:
 
 
 Yes, a project can combine two architectural styles/patterns. These two styles and 
-patterns are very common in web world, which is why the rest of the article will explore
+patterns are very common in web world, which is why the following articles will explore
 these topics in some detail. 
 
 
@@ -262,7 +322,7 @@ create good software, independent of architectures and development methodologies
 
     ✓ Separation of policy and implementation: Keeping the implementation of algorithms 
       free of system-context-related information simplifies reuse. You use this technique 
-      to design parts of the system to deal with contextrelated, or policy, information 
+      to design parts of the system to deal with context related, or policy, information 
       and other parts to implement abstract algorithms.
 
     ✓ Separation of interface and implementation: This technique separates the interface 
@@ -307,6 +367,71 @@ patterns, this time in relation to the fundamental techniques they enable[1]:
 * This pattern is available in Design Patterns: Elements of Reusable Object-Oriented 
 Software, by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides 
 (Addison-Wesley Professional).
+
+
+2.4.1 USING ENABLING TECHNIQUES
+
+Section 2.4 listed a lot of enabling techniques. How can you use them?
+
+Well, the first thing you might want to use is the Divide and Conquer technique to
+break up your big software problem into smaller ones. When you start designing your
+program's architecture, it's a big problem in your head and it's probably fuzzy and 
+somewhat incoherent. DIVIDE AND CONQUER helps you to break up the solution into 
+components. You can divide you components into interfaces and classes. 
+
+You should enforce the SEPARATION OF INTERFACE AND IMPLEMENTATION by using interfaces
+to connect components together. This prevents a component from being dependent on 
+another component's internals. This is one way to enforce LOOSE COUPLING and also helps
+with MODULARIZATION. 
+
+
+2.4.2 HIGH COHESION AND LOOSE COUPLING
+
+The definitions for cohesion and coupling are taken from this StackOverflow question.[] https://stackoverflow.com/questions/14000762/what-does-low-in-coupling-and-high-in-cohesion-mean#
+
+Cohesion is concerned with members WITHIN a particular module or class. COHESION refers 
+to the degree to which the members of a module or class belong together. Ideally, when 
+you put elements into a module/class, they should be very closely related to each other. 
+A module with members that are very closely related is said to be HIGHLY COHESIVE. There 
+are several kinds of cohesion, but the best kind is functional cohesion, i.e. the members 
+are put into a module because they all contribute to main task of the module. That task
+should be well-defined. High cohesion is the opposite of Low cohesion. 
+
+COUPLING is concerned with the relationship BETWEEN modules/classes. It refers to the 
+degree to which modules or classes depend on each other. Ideally, there should be as 
+little dependency between modules and classes as possible, because this makes it easy to 
+change or swap out a module/class without causing unrelated effects in the rest of the 
+program. This ideal level of dependency is called LOOSE COUPLING. A loosely coupled 
+system is one in which each of its components has little or no knowledge of the internal 
+implementation details of other components. In such a system, different modules, 
+components and classes are as independent as possible from other components. Loose 
+coupling is the opposite of tight coupling. In a tightly coupled system, components are 
+so tied together that changing one component will require changing the other.
+
+In software architectures, it's a good idea for components to be HIGHLY COHESIVE AND 
+LOOSELY COUPLED. As Hanmer noted, "High cohesion and low coupling lead to systems that 
+are easy to modularize and build." In architectures that suffer from low cohesion or tight
+coupling or both, components tend to too interdependent. Changing one component tends to 
+cause bugs or behavioural changes in other components. If you recall, this is a telltale 
+sign of a spaghetti codebase. When you design a program's architecture, you will want to 
+choose loose coupling between components and high cohesion within a component. 
+
+Think of how to design a class with high cohesion and low coupling. A class ought to have
+a single goal. Some of its members are public and others private. You have to use 
+ENCAPSULATION to group related related information together in that class. If all the 
+members of the class are closely related and work towards the same goal, the class can be
+said to be HIGHLY COHESIVE. With the use of INFORMATION HIDING, you can shield the 
+class's internal implementation from external actors. Public properties and methods 
+abstract away implementation details and expose only members the consumer needs to know. 
+In other words, the public members of a class comprise an ABSTRACTION LAYER that 
+conceals irrelevant details. All of these things together help to MODULARIZE a class from
+other classes so that there is a SEPARATION OF CONCERNS. 
+
+If these techniques are applied at the architectural level, you can achieve the same 
+effect. Putting all related members in specialized modules and designing the modules to 
+have as little dependency on each other as possible lets the systems designer build an 
+architecture that be changed easily in response to business requirements. Loose coupling
+even lets you work on modules independently. 
 
 
 2.5 LAYERS AND TIERS
