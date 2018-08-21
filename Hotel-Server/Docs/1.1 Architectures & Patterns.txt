@@ -434,91 +434,64 @@ architecture that be changed easily in response to business requirements. Loose 
 even lets you work on modules independently. 
 
 
-2.5 LAYERS AND TIERS
+2.5.1 LAYERS AND TIERS
 
-There are some fundamental architectural principles which can be used to structure 
-software. Instead of developing monolithic applications that are a huge tangled bundle of 
-interconnected components, software can be separated into modules, libraries and other
-components by using the architectural principles of layers and tiers. 
+The previous section talked about using enabling techniques to design a system with high
+cohesion and loose coupling. This section is about a set of fundamental architectural 
+concepts which can be used to divide your application into components. Instead of 
+developing monolithic applications, software can be separated into modules, libraries 
+and other components by using the architectural principles of layers and tiers. Layers 
+and tiers are the where Enabling Techniques are applied to create good architectures.
 
 How do they work?
 
-LAYERS separate software by their function. In a software solution, a developer would find 
-software elements with similar or related functions and collect them together, in a few 
-files and/or folders. When a collection of similar software elements that are working 
-towards the same goal are separated from the main program into dedicated folders and/or 
-files, it is called a layer. 
+LAYERS separate software by their function. In a software solution, a developer would 
+find software elements with similar or related functions and collect them together, in a
+few files and/or folders. When a collection of similar software elements that are 
+working towards the same goal are separated from the main program into dedicated folders 
+and/or files, it is called a layer.
 
 If a project implements the MVC architectural pattern, its functions are separated into
 three layers: Models, Views and Controllers. Developers working on an MVC project will 
 know that the Controllers folder will contain only controller files, the Models folder 
-model class files and the Views folder will hold HTML, CSS and Javascript files. 
+model class files and the Views folder will hold HTML, CSS and JavaScript files. 
 
 Each layer has its own set of responsibilities: The Model layer contains classes that 
 define the program's data elements, Views are responsible for displaying information to 
-the user and the Controller layer responds to user requests by issuing orders to the other
-two layers. Separating software elements with the same goal from the rest of the project 
-and concentrating them into layers let's you separate concerns to prevent unneccessary 
-entanglements between elements of differing functions and imposes a logical structure on
-the project.
+the user and the Controller layer responds to user requests by issuing orders to the 
+other two layers. Separating software elements with the same goal from the rest of the 
+project and concentrating them into layers let's you enforce separation of concerns to 
+prevent unnecessary entanglements between elements of differing functions and imposes a 
+logical structure on the project. The act of creating layers should bring the idea of 
+cohesion to mind: gathering together like elements and consolidating them in one layer 
+increases cohesion. Thus, creating good quality layers brings high cohesion to your
+module/library/sub-program. 
 
 TIERS separate software by the hardware platforms to which a software component is to be
 deployed. Tiers are a more fundamental form of division than layers. Where layers involve
 collecting files with similar functions together into folders, tiers usually break 
 software up into separate programs, modules or libraries, depending on where that piece 
-of software is going to run. 
+of software is going to run. Tiers help to avoid a monolithic architecture, because the
+act of designing software for a tier requires severing the whole into independent parts.
+This should bring the concept of coupling to mind. A multitier architecture decreases 
+coupling in your application. Hence, the use of tiers in your program architecture helps 
+to bring a degree of loose coupling. 
 
 For example, let's assume that you have a web application, which has a client-server 
-architecture (More on this later.). Such an application is divided itself into two 
-parts, the Client and the Server. In this example, there are two tiers, the client, 
-which runs on a customer's computer and the Server, which runs on a server machine.
+architecture (More on this in the next article.). Such an application is divided itself
+into two parts, the Client and the Server. In this example, there are two tiers, the 
+Client, which runs on a customer's computer and the Server, which runs on a server 
+machine.
 
 
-CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
-
-Hanmer explains how tiers and layers are abstractions. Why do we need abstractions?
-
-
-    What these different ways of layering the system [Tiers and Layers] have in common is 
-    that they’re abstractions. An abstraction is a way of describing something in general 
-    terms that leaves out the details of any specific implementation. In the examples in 
-    the preceding section, the abstraction is a general layer that doesn’t describe how the 
-    functionality is implemented or even precisely what it does; those details are 
-    abstracted away.
-
-    ...you see that abstraction is one of the important techniques that help you build 
-    better architecture. Abstractions are important to software architecture because they 
-    allow you to talk about what the system does in general terms before you’ve worked 
-    out all the low-level details. 
-
-    In the same way, the three-tier architecture separates the functionality by 
-    abstractly grouping the presentation server and keeping its functionality separate 
-    from the functionality of the database servers. This is done because they have 
-    different processing or storage needs, and the boundary of an abstraction can be 
-    drawn around the layers.
-
-    Being able to abstract the essence of a functionality and project it onto the 
-    solution are important skills that you must have as a software architect.
-
-
-Layers and tiers are used to deliberately create a structure for the project. If this 
-is done correctly, changes made to a layer affect only that layer and the same applies to 
-tiers. In software projects with no planned architecture, there really isn't any 
-structure. In such programs, what should be distinct functions, features, layers and tiers 
-are jumbled into a tangled web of code. The architecture of such projects is called a 
-'Big Ball of Mud', aka 'Spaghetti Code'. Changing UI code can cause unpredictable failures
-in Business Logic or Data Access code. This what happens to a project that does not plan 
-out its structure, architecture, architectural style, the specific architectural pattern 
-and other such details during the Design phase of the project.
-
-
-HOW DO LAYERS AND TIERS HELP?
+2.5.2 WHAT DO LAYERS AND TIERS DO FOR YOUR APPLICATION?
 
 The number of layers and tiers in a software project is variable and depends on the 
 project's size and needs, but the number of layers and tiers usually increase with a 
 program's size and complexity. 
 
 What's the point of using layers and tiers? Rockford Lhotka explains[3]:
+
 
     Why do we layer software? Primarily to gain the benefits of logical organization and 
     grouping of like functionality. Translated to tangible outcomes, logical layers offer 
@@ -532,7 +505,9 @@ What's the point of using layers and tiers? Rockford Lhotka explains[3]:
     impossible to get optimum levels of all four attributes – which is why it is always a 
     trade-off between them.
 
+
 He continues in the article and makes a few practical comments about tiers:
+
 
     Tiers imply process and/or network boundaries. A 1-tier model has all the layers running 
     in a single memory space (process) on a single machine. A 2-tier model has some layers
@@ -573,9 +548,143 @@ He continues in the article and makes a few practical comments about tiers:
     tolerance or security.
 
 
-HOW LAYERS AND TIERS ARE USED IN APPLICATIONS
+2.5.3 CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
 
-This is a diagram of a monolithic application:
+In section 2.5.1, it was established that layers bring high cohesion to your application,
+while tiers bring loose coupling. But what was not discussed is how they bring these 
+benefits to your application. The answer is that layers and tiers are used to create 
+abstraction layers in your application, which in turn bring the stated benefits. 
+
+Hanmer explains how tiers and layers are used to create abstraction layers in your 
+application:[]
+
+
+    What these different ways of layering the system [Tiers and Layers] have in common is 
+    that they’re abstractions. An abstraction is a way of describing something in general 
+    terms that leaves out the details of any specific implementation. In the examples in 
+    the preceding section, the abstraction is a general layer that doesn’t describe how 
+    the functionality is implemented or even precisely what it does; those details are 
+    abstracted away.
+
+    ...you see that abstraction is one of the important techniques that help you build 
+    better architecture. Abstractions are important to software architecture because they 
+    allow you to talk about what the system does in general terms before you’ve worked 
+    out all the low-level details. 
+
+    In the same way, the three-tier architecture separates the functionality by 
+    abstractly grouping the presentation server and keeping its functionality separate 
+    from the functionality of the database servers. This is done because they have 
+    different processing or storage needs, and the boundary of an abstraction can be 
+    drawn around the layers.
+
+    Being able to abstract the essence of a functionality and project it onto the 
+    solution are important skills that you must have as a software architect.
+
+
+Before getting into Abstraction Layers, let's take a closer look at the definition of 
+Abstraction again. Hanmer defines Abstraction on Page 30[]:
+
+
+    Abstraction is the ability to extract the common, general parts from a particular 
+    entity. You use abstraction to define a common component that will be adapted to 
+    several specific situations in your system.
+
+
+From this idea, comes the concept of abstraction layers. The Wikipedia article on 
+Abstraction Layer explains it as follows[]: https://en.wikipedia.org/wiki/Abstraction_layer  
+
+
+    In computing, an abstraction layer or abstraction level is a way of hiding the 
+    implementation details of a particular set of functionality, allowing the separation 
+    of concerns to facilitate interoperability and platform independence. Examples of 
+    software models that use layers of abstraction include the OSI model for network 
+    protocols, OpenGL and other graphics libraries.
+    
+    In computer science, an abstraction layer is a generalization of a conceptual model 
+    or algorithm, away from any specific implementation. These generalizations arise from
+    broad similarities that are best encapsulated by models that express similarities 
+    present in various specific implementations. The simplification provided by a good 
+    abstraction layer allows for easy reuse by distilling a useful concept or design 
+    pattern so that situations where it may be accurately applied can be quickly 
+    recognized.
+    
+    A layer is considered to be on top of another if it depends on it. Every layer can 
+    exist without the layers above it, and requires the layers below it to function. 
+    Frequently abstraction layers can be composed into a hierarchy of abstraction levels. 
+    The OSI model comprises seven abstraction layers. Each layer of the model 
+    encapsulates and addresses a different part of the needs of digital communications, 
+    thereby reducing the complexity of the associated engineering solutions. 
+
+
+Layers and tiers are used to deliberately create a architecture for the project by 
+cutting up the project into meaningful components. Creating components is an opportunity 
+increase cohesion to separate concerns by collecting together like software elements into 
+components like modules and sub-programs. You can also deploy the concepts of 
+encapsulation, information hiding and abstraction to create black box components that 
+conceal implementation details while exposing official interfaces. 
+
+A module designed in this manner exposes official interfaces through an abstraction 
+layer. Doing this decreases the chances of other modules using the internal 
+implementations of a module. This should help to create a system with loose coupling
+between modules and sub-programs. All this will take your project on a direction that 
+leads away from spaghetti codebases.
+
+What does an abstraction layer look like in practice? gb2d offers a concrete example of 
+an abstraction layer[]:
+https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstraction-layer
+
+
+    Often an abstraction layer is commonly used to 'abstract' away detail.
+    
+    Say you had a program for moving money around between different banks. There is a 
+    function for moving money to BankA, and a different function for moving money to 
+    BankB and so on. The different functions might exist because the information that 
+    different banks request varies (As a simple example maybe one requests the senders 
+    first name and surname, and another requests the senders first initial and surname).
+
+    Your functions might be:
+
+    
+        MoveMoneyToBankA(amount, accountNo, senderFirstName, senderSurname)
+        {
+            ... Code to move money to bank A
+        }
+        
+        MoveMoneyToBankB(amount, accountNo, senderFirstInitial, senderSurname)
+        { 
+            ... Code to move money to bank A
+        }
+
+
+    To abstract away all the different things a program needs to think about when 
+    communicating with different banks, an abstration layer might be implemented by 
+    adding the function 'MoveMoneyToBank':
+    
+    
+        MoveMoneyToBank(amount, accountNo, senderFirstName, senderSurname, bankName)
+        {   
+            ... If bank name = 'BankA' call MoveMoneyToBankA
+            ... If bank name = 'BankB', find senderFirstInitial using senderFirstName, 
+                and call 'MoveMoneyToBankB'
+        }
+
+
+    So what you have done here is abstracted away the detail that needs to be managed 
+    when communicating with two different banks. A programmer can now just use the 
+    general MoveMoneyToBank function, and not have to think about the different 
+    requirements of each bank.
+    
+    In reality, this might not just be functions with in the same program, but even 
+    different projects within the same solution, or a new software project that draws in 
+    lots of components and deals with the complexity of working with all the separate 
+    components to achieve a common goal.
+
+
+3. A BETTER DESIGNED ARCHITECTURE
+
+Finally, let's take a look at diagrams of a better designed application. Contrasted with
+the mess from section 1, this is a diagram of a monolithic application with layers that 
+successfully separate concerns:
 
 
 +--------------------------------------------------------------------------------------------+
@@ -599,14 +708,83 @@ This is a diagram of a monolithic application:
                                     RUNS ON A SINGLE MACHINE
 
 
-To avoid spaghetti code, the program's code has been partitioned into three layers, 
-modelled after the layers in N-tier. However, all layers are tightly coupled and live on
-the same machine. All three layers are packaged in a single executable and run on the 
-same machine. That makes this application's architecture 1-tier.
+To avoid spaghetti code, the program's code has been partitioned into three distinct 
+layers, modelled after the layers in N-tier architecture. However, it's probably not 
+modular enough, because all the layers run on the same machine. That makes this a 1-tier 
+architecture.
 
-In such a tightly integrated application, changing one layer will probably require changes 
-to the other layers. As the program is designed for a single machine, scaling the number of
+All three layers are packaged in a single executable and run on the same machine. The 
+absence of tiers means that is program's architecture is tightly coupled. In such a 
+tightly integrated application, changing one layer will probably require changes to the 
+other layers. As the program is designed for a single machine, scaling the number of
 processors is probably not possible. For the same reason, the portability factor of this 
 design is low. Nevertheless, it may make sense to use this design for small applications
 that don't handle much traffic or need much resources.
 
+How can this design be improved? It uses layers, but not tiers. Let's try adding tiers:
+
+
++------------------------------------------------+ +-----------------------------------------+
+|                CLIENT APPLICATION              | |          SERVER-SIDE APPLICATION        |
+|                                                | |                                         |
+| +--------------------------------------------+ | | +---------------------+                 |
+| |              ABSTRACTION LAYER             | | | |  DATA ACCESS LAYER  |  +------------+ |
+| |                                            | | | |                     |  |            | |
+| | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
+| | |  PRESENTATION  | +--> |    BUSINESS    | +------> |  DATA ACCESS  | +-> |  DATABASE  | |
+| | |     LAYER      | <--+ |     LAYER      | <------+ |     LAYER     | <-+ |            | |
+| | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
+| |                                            | | | |                     |  +------------+ |
+| +--------------------------------------------+ | | +---------------------+                 |
++------------------------------------------------+ +-----------------------------------------+
+
+        RUNS ON USER'S PC OR WEB SERVER                RUNS ON APPLICATION/DATABASE SERVER
+
+
+In this variation of the 2-tier architecture, the Presentation and Business Logic layers 
+are combined into the client. The client would probably run on a user's machine while the 
+Data Access Layer and the Database live on a server. Another variation of this 
+application would bundle the Business Logic and Data Access Layer together. 
+
+This application is less tightly coupled than the 1-tier application, so making changes 
+like swapping out the database become easier. The Presentation and Business Logic layers 
+are still coupled, making it likely that any changes to one layer could affect the other. 
+
+In a 3-tier application, you would have, three programs running on three different 
+machines: a client application running on the user's PC or perhaps on a web server, an 
+App server program (containing the Business Logic Layer and DAL) running on an 
+Application Server, and the Database backend will run on a Database Server:
+
+
++--------------------+  +-------------------------------------------+  +----------------------+
+| CLIENT APPLICATION |  |             APP SERVER/API                |  | DATABASE APPLICATION |
+|                    |  |                                           |  |                      |
+|  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
+|  |              |  |  |  |              |        |             |  |  |    |            |    |
+|  | PRESENTATION |  |  |  |   BUSINESS   |        | DATA ACCESS |  |  |    |            |    |
+|  |    LAYER     |  |  |  |    LAYER     |        |    LAYER    |  |  |    |            |    |
+|  |              | +----> |              | +----> |             | +------> |            |    |
+|  |  containing  |  |  |  |  containing  |        | containing  |  |  |    |  DATABASE  |    |
+|  |              |  |  |  |              |        |             |  |  |    |            |    |
+|  | PRESENTATION | <----+ |   BUSINESS   | <----+ | DATA ACCESS | <------+ |            |    |
+|  |    LOGIC     |  |  |  |    LOGIC     |        |    LOGIC    |  |  |    |            |    |
+|  |              |  |  |  |              |        |   (+ ORM)   |  |  |    |            |    |
+|  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
+|                    |  |                                           |  |                      |
++--------------------+  +-------------------------------------------+  +----------------------+
+
+  RUNS ON USER'S PC              RUNS ON AN APPLICATION SERVER           RUNS ON A DATABASE
+    OR WEB SERVER                                                              SERVER
+
+
+In this case, each layer has its own tier, and thus, each layer runs on its own machine. All
+layers are completely uncoupled from each other, making it easier to refactor and expand all
+elements of the application.
+
+One final warning, that increasing the number of layers and tiers does not come without a 
+price, so you have to weigh the cost of adding a new layer or tier.
+
+
+SOURCES
+
+1: 
