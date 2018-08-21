@@ -27,7 +27,7 @@ an incoherent mess.
                                       RUNS ON A SINGLE MACHINE
 
 
-Jason Ables explains the situation:[] (https://www.ethode.com/blog/fixing-spaghetti-how-to-work-with-legacy-code)
+Jason Ables explains the situation[1]:
 
     Legacy code is software that generates value for a business but is difficult for 
     developers to change. The terms "code rot" and "spaghetti code" refer to legacy code 
@@ -71,10 +71,10 @@ First, basic architectural concepts will be discussed:
     5. Architectural Principles: Layers and Tiers
 
 
-2.1 AN INTRODUCTION TO ARCHITECTURES
+2.1 AN INTRODUCTION TO SOFTWARE ARCHITECTURES
 
 From Robert Hanmer's book Pattern-Oriented Software Architecture For Dummies, he offers a 
-simple definition of Software Architecture, Page 9[1]:
+simple definition of Software Architecture, Page 9[2]:
 
 
     Every system has an architecture — some high-level structure that underlies the whole 
@@ -87,7 +87,7 @@ simple definition of Software Architecture, Page 9[1]:
     later.
 
 
-Here's a more elaborate definition:[] https://www.ou.nl/documents/40554/349790/IM0203_01.pdf
+Here's a more elaborate definition[3]: 
 
     An architecture embodies information about components and their interaction, but 
     omits information about components that does not pertain to their interaction. Thus, 
@@ -98,7 +98,7 @@ Here's a more elaborate definition:[] https://www.ou.nl/documents/40554/349790/I
     architecture determines how components interact, not how they are implemented.
 
 
-Here's a third definition that explains another aspect of architectures:[] https://www.codeproject.com/Articles/1064240/Introduction-to-Software-Architecture
+Here's a third definition that explains another aspect of architectures[4]: 
 
     Software architecture encompasses the set of significant decisions about the 
     organization of a software system including the selection of the structural elements 
@@ -118,7 +118,7 @@ it sets the tone for how your project will turn out.
 2.1.1 PARTS OF AN ARCHITECTURE
 
 When a programmer designs a software solution's architecture, she is dividing it into
-Services and Components. Hanmer defines them on Page 25[1]:
+Services and Components. Hanmer defines them on Page 25[2]:
 
 
     1.  COMPONENTS: are the building blocks of the system — the parts of software or the 
@@ -138,7 +138,7 @@ components, along with the services that they provide to other components.
 2.1.2 BEST PRACTICES AND FACTORS OF ARCHITECTURE DESIGN
 
 When designing an application's architecture, Hanmer suggests considering these factors; 
-Pg 10[1]:
+Pg 10[2]:
 
 
     ✓ Goals and philosophy of the system: The architecture explains the goals and 
@@ -173,7 +173,7 @@ Pg 10[1]:
       will be used.
 
 
-These are some best practices to follow when designing your architecture:[] https://dzone.com/articles/an-introduction-to-software-architecture-what-you
+These are some best practices to follow when designing your architecture[5]: 
 
 
     Best Practices in Software Architecture
@@ -200,13 +200,13 @@ These are some best practices to follow when designing your architecture:[] http
 2.2 ARCHITECTURAL STYLES
 
 Architectural styles define the general shape of a software system. Hanmer explains the 
-concept of architectural styles on Page 25[1]:
+concept of architectural styles on Page 25[2]:
 
 
     As I mention in Chapter 1, architectural style is like the style of a house. It may 
     define a ranch house, which sprawls horizontally in one story, or a Cape Cod house, 
     which is a two-story structure with a distinctive arrangement of doors and windows 
-    on its facade.
+    on its façade.
     
     In software development, architectural style refers to the general shape of the 
     system. Choosing the appropriate style is important because all the later design 
@@ -223,7 +223,7 @@ corresponding Architectural Patterns.
 
 2.3 ARCHITECTURAL PATTERNS
 
-F. Buschmann and company explain the idea of an architectural pattern[]: (Pattern-Oriented Software Architecture, Volume 1 - A System of Patterns (F. Buschmann, H. Rohnert, P. Sommerlad, 1996))
+F. Buschmann and company explain the idea of an architectural pattern[6]:
 
     Abstracting from specific problem-solution pairs and distilling out common factors 
     leads to patterns: These problem-solution pairs tend to fall into families of similar 
@@ -256,7 +256,7 @@ F. Buschmann and company explain the idea of an architectural pattern[]: (Patter
 
 Architectural patterns are specific expressions of architectural styles. On page 26, 
 Hanmer provides a table that lists a few basic architectural styles and their 
-corresponding patterns[1]:
+corresponding patterns[2]:
 
 
     ARCHITECTURAL STYLE         PATTERNS
@@ -284,7 +284,7 @@ these topics in some detail.
 2.4 ENABLING TECHNIQUES
 
 On page 30-31, Hanmer also discusses some enabling techniques that empower the developer to
-create good software, independent of architectures and development methodologies[1]:
+create good software, independent of architectures and development methodologies[2]:
 
 
     ✓ Abstraction: Abstraction is the ability to extract the common, general parts from a 
@@ -342,7 +342,7 @@ create good software, independent of architectures and development methodologies
 
 The architectural patterns you choose are determined by the enabling technique you want 
 to optimize for in your program design. On page 32, Hanmer lists a few more architectural 
-patterns, this time in relation to the fundamental techniques they enable[1]:
+patterns, this time in relation to the fundamental techniques they enable[2]:
 
 
     ENABLING TECHNIQUE              PATTERN
@@ -387,7 +387,7 @@ with MODULARIZATION.
 
 2.4.2 HIGH COHESION AND LOOSE COUPLING
 
-The definitions for cohesion and coupling are taken from this StackOverflow question.[] https://stackoverflow.com/questions/14000762/what-does-low-in-coupling-and-high-in-cohesion-mean#
+The definitions for cohesion and coupling are taken from this StackOverflow question[7]: 
 
 Cohesion is concerned with members WITHIN a particular module or class. COHESION refers 
 to the degree to which the members of a module or class belong together. Ideally, when 
@@ -490,7 +490,7 @@ The number of layers and tiers in a software project is variable and depends on 
 project's size and needs, but the number of layers and tiers usually increase with a 
 program's size and complexity. 
 
-What's the point of using layers and tiers? Rockford Lhotka explains[3]:
+What's the point of using layers and tiers? Rockford Lhotka explains[8]:
 
 
     Why do we layer software? Primarily to gain the benefits of logical organization and 
@@ -506,7 +506,7 @@ What's the point of using layers and tiers? Rockford Lhotka explains[3]:
     trade-off between them.
 
 
-He continues in the article and makes a few practical comments about tiers:
+He continues on and later in the article, he makes a few practical comments about tiers:
 
 
     Tiers imply process and/or network boundaries. A 1-tier model has all the layers running 
@@ -556,7 +556,7 @@ benefits to your application. The answer is that layers and tiers are used to cr
 abstraction layers in your application, which in turn bring the stated benefits. 
 
 Hanmer explains how tiers and layers are used to create abstraction layers in your 
-application:[]
+application[2]:
 
 
     What these different ways of layering the system [Tiers and Layers] have in common is 
@@ -582,7 +582,7 @@ application:[]
 
 
 Before getting into Abstraction Layers, let's take a closer look at the definition of 
-Abstraction again. Hanmer defines Abstraction on Page 30[]:
+Abstraction again. Hanmer defines Abstraction on Page 30[2]:
 
 
     Abstraction is the ability to extract the common, general parts from a particular 
@@ -591,7 +591,7 @@ Abstraction again. Hanmer defines Abstraction on Page 30[]:
 
 
 From this idea, comes the concept of abstraction layers. The Wikipedia article on 
-Abstraction Layer explains it as follows[]: https://en.wikipedia.org/wiki/Abstraction_layer  
+Abstraction Layer explains it as follows[9]: 
 
 
     In computing, an abstraction layer or abstraction level is a way of hiding the 
@@ -629,9 +629,8 @@ implementations of a module. This should help to create a system with loose coup
 between modules and sub-programs. All this will take your project on a direction that 
 leads away from spaghetti codebases.
 
-What does an abstraction layer look like in practice? gb2d offers a concrete example of 
-an abstraction layer[]:
-https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstraction-layer
+What does an abstraction layer look like in practice? In a StackOverflow answer, gb2d 
+offers a concrete example of an abstraction layer[10]:
 
 
     Often an abstraction layer is commonly used to 'abstract' away detail.
@@ -787,4 +786,14 @@ price, so you have to weigh the cost of adding a new layer or tier.
 
 SOURCES
 
-1: 
+01: https://www.ethode.com/blog/fixing-spaghetti-how-to-work-with-legacy-code
+02: Pattern-Oriented Software Architecture For Dummies (Robert Hanmer, 2013)
+03: https://www.ou.nl/documents/40554/349790/IM0203_01.pdf
+04: https://www.codeproject.com/Articles/1064240/Introduction-to-Software-Architecture
+05: https://dzone.com/articles/an-introduction-to-software-architecture-what-you
+06: Pattern-Oriented Software Architecture, Volume 1 - A System of Patterns 
+    (F. Buschmann, H. Rohnert, P. Sommerlad, 1996)
+07: https://stackoverflow.com/questions/14000762/what-does-low-in-coupling-and-high-in-cohesion-mean#
+08: http://www.lhotka.net/weblog/ShouldAllAppsBeNtier.aspx
+09: https://en.wikipedia.org/wiki/Abstraction_layer  
+10: https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstraction-layer
