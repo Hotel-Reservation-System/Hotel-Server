@@ -19,11 +19,9 @@ analyze and discuss the structure and architecture, and architectural patterns u
 Hotel-Reservation-System.
 
 
+2.1 DISTRIBUTED COMPUTING: CONCEPTS
 
-3.1 DISTRIBUTED COMPUTING
-
-HRSP is a web application, which means that it works over the internet. This requires 
-Distributed Computing. Here is a definition for it[2]:
+Here is a definition for Distributed Computing[1]:
 
 
     Distributed computing is a field of computer science that studies distributed systems. 
@@ -40,24 +38,30 @@ Distributed Computing. Here is a definition for it[2]:
 
 
 When one has to design software that works over any network, such as the internet, it 
-usually cannot be designed as a single monolithic application. Why? Because in such 
-programs, work is not being done by single monolithic program that runs on a single 
-computer. Rather, web applications are often comprised of two, three or more 
-sub-components (layers and tiers), and some of these are standalone programs designed to 
-run on separate machines. This should bring to mind the concept of tiers. That's right, 
-web applications are typically designed with multiple-tier architectures. Clients, 
-App Servers and Database Servers can all be part of the same application, but run on 
-different machines if needed.
+usually cannot be designed as a single monolithic application. Why? Because in a 
+networked program, work is not being done by a single monolithic program that runs on a 
+single computer. 
 
-The sub-programs are usually installed on separate machines (tiers) and communicate over
-the network (the internet, institutional intranets etc.) to coordinate towards 
-accomplishing the application's purpose. Others will be layers that live within a tier.
+Rather, web applications are often comprised of two, three or more components, which are 
+organized into layers and physically separated into tiers. The application's layers live 
+within one of its tiers. The application's tiers are standalone sub-programs with a 
+designated set of responsibilities. Each sub-program is usually designed to run on a 
+separate machine, but all sub-programs can run on the same computer if needed. However,
+this usually happens only in development and testing environments.
 
-As a web application tends to have multiple layers and tiers that are spread out over 
-multiple machines, its resources and duties are distributed over multiple devices. Hence,
+That's right, as non-networked programs can choose a monolithic architecture or not as
+the developers please, the standout difference is that web applications must almost 
+always be designed with multitier architectures. A web application can have several 
+tiers, such as: a Client Application, an App Server and a Database Server. These 
+sub-programs usually run on separate machines and communicate with each other over the 
+network (the internet, institutional intranets etc.) to coordinate towards 
+accomplishing the application's purpose.
+
+As web applications tend to have multiple layers and tiers that are spread out over 
+multiple machines, its resources and duties are distributed over multiple devices. Hence
 the name distributed computing. Therefore, when a programmer designs a web application, 
-she has to design the application with a distributed architecture. That is to say, a 
-program that is broken up into multiple layers and sub-programs.
+she has to design the application to work over a network, which requires being broken up 
+into multiple layers and sub-programs.
 
 At this point, let's talk about functional layers. Most web applications recognize that 
 they have at least three major groupings of functions (layers):
@@ -68,11 +72,16 @@ they have at least three major groupings of functions (layers):
     * Data Management
 
 
-When choosing a distributed architecture for your program, you will have to choose how 
-to collect or separate these functions into layers and tiers. There are several ways of 
-dividing up a distributed application. The wikipedia article on this topic provides a brief 
-explanation for a number of basic architectures[2]. The list of distributed architectures
-below distinguishes between them on the basis of the number of tiers they have:
+2.2 DISTRIBUTED COMPUTING: DISTRIBUTED ARCHITECTURES
+
+When designing a distributed application, you have to choose a distributed architecture
+for it. On top of that, you have organize its code into layers and tiers. Deciding which
+tier gets which layer is not a precise art and has some room for maneuvering. 
+
+Distributed architectures are usually categorized by the number of tiers they have. 
+Presented below, the Wikipedia article on this topic provides a brief explanation for a 
+number of basic architectures[1] This list of distributed architectures distinguishes 
+between architectures on the basis of the number of tiers they have:
 
 
     * CLIENT-SERVER: architectures where smart clients contact the server for data then 
@@ -94,24 +103,30 @@ below distinguishes between them on the basis of the number of tiers they have:
       have millions of peers.]
 
 
-Multitier/N-Tier is a distributed architecture that is divided into two or more parts. 
-The Client-Server and Three-Tier architectures are considered variants of Multitier 
-architecture. Client-Server is a 2-tier architecture, where the application is split into
-two parts, Client and Server.  Three-Tier architecture usually has these three tiers: 
-UI Server, App Server and Database Server.
+This list is presented in a rather confusing way, but the gist of it is that there are
+two main types of distributed architectures: Multitier Architecture and Peer-to-Peer
+Architectures. 
 
-P2P architectures are unlike the other three architectures. In the other three traditional
-architectures, the consumption of resources and supply of duties is divided by tier. This
-means that every part of an N-tier application, regardless of whether it has 2, 3 or more
-tiers, has a special duty, a role that only it can perform for the application. In a 
-client-server architecture, the client acts as a conduit, displaying information and 
-taking requests from the user. The server's duty is do the processing and data management. 
+Multitier (also called N-Tier) is a distributed architecture that is divided into two or 
+more parts. The Client-Server and Three-Tier architectures are considered variants of 
+Multitier architecture. Client-Server is a 2-tier architecture, where the application is 
+split into two parts, Client and Server. Three-Tier architecture has three tiers and 
+usually they are: UI Server, App Server and Database Server.
+
+P2P architectures are unlike the other architectures. In the other three traditional
+distributed architectures, the consumption of resources and supply of duties is divided 
+by tier. This means that every part of an Multitier application, regardless of whether it 
+has two, three or more tiers, has a special duty, a role that only it can perform for the 
+application. In a client-server architecture, the client acts as a conduit, displaying 
+information and taking requests from the user. The server's duty is do the processing and 
+data management. 
 
 A P2P application is different; it is a monolithic program that contains all or most 
-modules of the application. Therefore, P2P peers are said to be equally privileged 
+modules of the application. For this reason, P2P peers are said to be equally privileged 
 because every peer has the same capabilities and responsibilities. A peer can act as 
 both client and server and does processing on the local machine. The results of its work 
-can be shared across a network to peers running on other machines. 
+can be shared across a network to peers running on other machines. The most famous 
+example of P2P programs are Torrenting programs.
 
 
 3.1.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
@@ -498,7 +513,7 @@ MVC frameworks may be different.
    modify model objects in the database and create or update Views to fulfill the user 
    request. By doing these things, this layer controls and directs application flow.
 
-   To compare the Controller layer to Multier Architecture's layers for a moment, the 
+   To compare the Controller layer to Multitier Architecture's layers for a moment, the 
    Controller layer seems to combine Multitier's Business Logic and Data Access Layers.
    That might be a okay for small applications, but for mid-to-large sized applications, 
    combining two layers like that will lead to confusion and complexity. For more complex
