@@ -137,13 +137,14 @@ Multitier architecture has several common variants:
     2. Three-tier Architecture (3 Tiers)
 
 Multitier is also called N-Tier because it can refer to a distributed architecture that
-has more than two tiers. Variants with more than three tiers won't be discussed in this
-article. 
+has more than two tiers. Variants with more than three tiers are common in large, 
+enterprise software, but they won't be discussed in this article. The two simpler 
+variants of this distributed architecture will be presented in the next two sections.
 
 
 3.1.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
-The wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
+The Wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
 explanation:
 
 
@@ -164,15 +165,44 @@ Programs with a client-server architecture have two parts:
     * CLIENT: The client is the frontend; it's the user interface through which the user
       interacts with the application. When the user wants a resource or wants the program
       to do something, she will pass these instructions to the client. The client will 
-      send these requests to the server. 
+      pass these requests to the server, requesting a service. In this model, the Client 
+      is the Service Requester.
 
     * SERVER: The server will respond to client requests by sending back resources or 
       doing the operation that the user asked for. The server in this model handles two
-      functions, application processing and data management.
+      functions, application processing and data management. In this model, the Client 
+      is the Service Provider.
 
 
-HRSP needs two tiers, a client and an application server, so it is structured in a 
-client-server architecture. 
+These sub-programs are designed to run on two separate machines. Here is a simple 
+architectural diagram of a 2-tier application:
+
+
+  +------------------------------------------------+ +-----------------------------------------+
+  |                CLIENT APPLICATION              | |          SERVER-SIDE APPLICATION        |
+  |                                                | |                                         |
+  | +--------------------------------------------+ | | +---------------------+                 |
+  | |                   LAYER 1                  | | | |  DATA ACCESS LAYER  |  +------------+ |
+  | |                                            | | | |                     |  |            | |
+  | | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
+  | | |  PRESENTATION  | +--> |    BUSINESS    | +------> |  DATA ACCESS  | +-> |  DATABASE  | |
+  | | |     LAYER      | <--+ |     LAYER      | <------+ |     LAYER     | <-+ |            | |
+  | | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
+  | |                                            | | | |                     |  +------------+ |
+  | +--------------------------------------------+ | | +---------------------+                 |
+  +------------------------------------------------+ +-----------------------------------------+
+
+        RUNS ON USER'S PC OR WEB SERVER                RUNS ON APPLICATION/DATABASE SERVER
+
+
+In this variation of this architecture, the Presentation and Business Logic layers are 
+grouped together in the client. However, in another variation, only the Presentation 
+layer will be packaged in the client tier, leaving the Business Logic and Data Management
+layers to the Server. 
+
+HRSP implements a client-server architecture, so it has two tiers, a client and an 
+application server. HRSP implements the second variation which was mentioned the previous
+paragraph.
     
     
 3.1.2 THE MULTITIER/N-TIER ARCHITECTURE (3+ TIER ARCHITECTURE)
@@ -611,27 +641,6 @@ Dummies'[1]:
 
 
 BREAKDOWN OF MULTITIER ARCHITECTURES
-
-
-In a a 2-tier application, the program is usually separated into two halves:
-a client and a server. These programs run on two separate machines:
-
-
-+------------------------------------------------+ +-----------------------------------------+
-|                CLIENT APPLICATION              | |          SERVER-SIDE APPLICATION        |
-|                                                | |                                         |
-| +--------------------------------------------+ | | +---------------------+                 |
-| |                   LAYER 1                  | | | |  DATA ACCESS LAYER  |  +------------+ |
-| |                                            | | | |                     |  |            | |
-| | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
-| | |  PRESENTATION  | +--> |    BUSINESS    | +------> |  DATA ACCESS  | +-> |  DATABASE  | |
-| | |     LOGIC      | <--+ |     LOGIC      | <------+ |     LOGIC     | <-+ |            | |
-| | +----------------+      +----------------+ | | | |  +---------------+  |  |            | |
-| |                                            | | | |                     |  +------------+ |
-| +--------------------------------------------+ | | +---------------------+                 |
-+------------------------------------------------+ +-----------------------------------------+
-
-        RUNS ON USER'S PC OR WEB SERVER                RUNS ON APPLICATION/DATABASE SERVER
 
 
 
