@@ -129,6 +129,18 @@ can be shared across a network to peers running on other machines. The most famo
 example of P2P programs are Torrenting programs.
 
 
+3.1 MULTITIER ARCHITECTURE
+
+Multitier architecture has several common variants: 
+
+    1. Client-Server Model (2 Tiers)
+    2. Three-tier Architecture (3 Tiers)
+
+Multitier is also called N-Tier because it can refer to a distributed architecture that
+has more than two tiers. Variants with more than three tiers won't be discussed in this
+article. 
+
+
 3.1.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
 The wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
