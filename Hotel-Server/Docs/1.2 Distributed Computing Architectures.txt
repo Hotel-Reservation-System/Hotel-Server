@@ -129,7 +129,7 @@ can be shared across a network to peers running on other machines. The most famo
 example of P2P programs are Torrenting programs.
 
 
-3.1 MULTITIER ARCHITECTURE
+3. MULTITIER ARCHITECTURE
 
 Multitier architecture has several common variants: 
 
@@ -142,7 +142,7 @@ enterprise software, but they won't be discussed in this article. The two simple
 variants of this distributed architecture will be presented in the next two sections.
 
 
-3.1.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
+3.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
 The Wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
 explanation:
@@ -205,21 +205,69 @@ application server. HRSP implements the second variation which was mentioned the
 paragraph.
     
     
-3.1.2 THE MULTITIER/N-TIER ARCHITECTURE (3+ TIER ARCHITECTURE)
+3.2 THREE-TIER ARCHITECTURE (3-TIER ARCHITECTURE)
 
-Programs with three or more tiers usually use the multitier architecture to organize 
-code. The multi-tier architecture separates software along two axes, namely layers 
-and tiers. Recall that:
+The Three-Tier architecture is a variant of the Multitier architecture in which the User
+Interface, Application Processing and Data Management functions are separated into three
+independent sub-programs that are designed to run on separate hardware platforms. Of all 
+variants of the Multitier architecture, three-tier is the most widespread. Though there 
+are complex programs with four or five tiers, most web apps use three tiers. 
 
-Tier: A tier physically divides software into modules, components or libraries.
-Layer: A layer logically organizes software elements by function. 
+In three-tier, layers are typically separated into their own tier. Three layers, three 
+tiers; one layer to each tier. The tiers are logical, which means that a tier only 
+denotes a separate sub-program. The existence of multiple sub-programs does not
+necessitate dedicated hardware for each sub-program. In practice, an application's 
+sub-programs may or not be running on the same physical server.
 
-This section will explain the layers and tiers in the traditional three-layer and 
-three-tier architecture of web applications. In this architecture, the layers are tiers, 
-i.e. each layer in the application is a separate tier. As this is a traditional 
-structure, it only serves as a guideline. Reality rarely deigns to completely conform to 
-architectural theories, so you'll have to adapt architectures and patterns when designing 
-your software solution.
+In this section and its sub-sections, I will talk about 3-tier's layers and tiers 
+separately because while the three-tier architecture presents an architectural pattern 
+for organizing layers, it is not the only way to organize layers. In the next article, I 
+will discuss MVC, which is a very popular architectural pattern in distributed 
+applications. MVC appears to concern itself only with organizing layers, not tiers. Very 
+often, web applications will have their tiers organized as proscribed by the Multitier 
+architecture's variants (into client-server or three-tier), but their layers will be
+organized in MVC fashion. Yes, in practice, applications mix two or more architectural 
+patterns together. Keep this fact in mind when as you read on.
+
+In section 3.2 and its sub-sections, I will explain the traditional layers and tiers in 
+three-tier web applications. As this is a traditional structure, it only serves as a 
+guideline. Reality rarely deigns to completely conform to architectural theories, so 
+you'll have to adapt architectures and patterns when designing your software solution.
+
+
+3.2.1 A SAMPLE WEB APPLICATION
+
+  +--------------------+  +-------------------------------------------+  +----------------------+
+  | CLIENT APPLICATION |  |             APP SERVER/API                |  | DATABASE APPLICATION |
+  |                    |  |                                           |  |                      |
+  |  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
+  |  |              |  |  |  |              |        |             |  |  |    |            |    |
+  |  | PRESENTATION |  |  |  |   BUSINESS   |        | DATA ACCESS |  |  |    |            |    |
+  |  |    LAYER     |  |  |  |    LAYER     |        |    LAYER    |  |  |    |            |    |
+  |  |              | +----> |              | +----> |             | +------> |            |    |
+  |  |  containing  |  |  |  |  containing  |        | containing  |  |  |    |  DATABASE  |    |
+  |  |              |  |  |  |              |        |             |  |  |    |            |    |
+  |  | PRESENTATION | <----+ |   BUSINESS   | <----+ | DATA ACCESS | <------+ |            |    |
+  |  |    LOGIC     |  |  |  |    LOGIC     |        |    LOGIC    |  |  |    |            |    |
+  |  |              |  |  |  |              |        |   (+ ORM)   |  |  |    |            |    |
+  |  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
+  |                    |  |                                           |  |                      |
+  +--------------------+  +-------------------------------------------+  +----------------------+
+
+  RUNS ON USER'S PC              RUNS ON AN APPLICATION SERVER           RUNS ON A DATABASE
+    OR WEB SERVER                                                              SERVER
+
+
+For the reminder of this article, consider the diagram above as a guide to the three-tier 
+architecture. This is only one variant of this pattern. For example, it's possible to put 
+the Data Access Layer into the Database Tier. 
+
+Let's consider a hypothetical web-based video content service like Netflix. Assume that
+this web application is structured in three-tier. When you login to the service, either 
+through a browser or a web application, you are dealing with the client application. When 
+you choose a video and play it, the client application sends your request to the App 
+Server tier. The App Server will query the Data tier, find the video and send a stream 
+back to the client application, where the user can view it.
 
 
 LAYERS 
@@ -637,34 +685,6 @@ Dummies'[1]:
     ✓ Both controller and view components require changes when they’re ported to a new 
       system. These components contain some platformdependent code, so when the components 
       are ported to a new system, the platform-dependent code requires changes.
-
-
-
-BREAKDOWN OF MULTITIER ARCHITECTURES
-
-
-
-+--------------------+  +-------------------------------------------+  +----------------------+
-| CLIENT APPLICATION |  |             APP SERVER/API                |  | DATABASE APPLICATION |
-|                    |  |                                           |  |                      |
-|  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
-|  |              |  |  |  |              |        |             |  |  |    |            |    |
-|  | PRESENTATION |  |  |  |   BUSINESS   |        | DATA ACCESS |  |  |    |            |    |
-|  |    LAYER     |  |  |  |    LAYER     |        |    LAYER    |  |  |    |            |    |
-|  |              | +----> |              | +----> |             | +------> |            |    |
-|  |  containing  |  |  |  |  containing  |        | containing  |  |  |    |  DATABASE  |    |
-|  |              |  |  |  |              |        |             |  |  |    |            |    |
-|  | PRESENTATION | <----+ |   BUSINESS   | <----+ | DATA ACCESS | <------+ |            |    |
-|  |    LOGIC     |  |  |  |    LOGIC     |        |    LOGIC    |  |  |    |            |    |
-|  |              |  |  |  |              |        |   (+ ORM)   |  |  |    |            |    |
-|  +--------------+  |  |  +--------------+        +-------------+  |  |    +------------+    |
-|                    |  |                                           |  |                      |
-+--------------------+  +-------------------------------------------+  +----------------------+
-
-  RUNS ON USER'S PC              RUNS ON AN APPLICATION SERVER           RUNS ON A DATABASE
-    OR WEB SERVER                                                              SERVER
-
-
 
 
 ARCHITECTURE OF THE HOTEL-SERVER PROJECT
