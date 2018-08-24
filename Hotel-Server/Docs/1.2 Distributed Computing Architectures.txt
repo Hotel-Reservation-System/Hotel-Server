@@ -40,9 +40,9 @@ Here is a definition for Distributed Computing[1]:
 When one has to design software that works over any network, such as the internet, it 
 usually cannot be designed as a single monolithic application. Why? Because in a 
 networked program, work is not being done by a single monolithic program that runs on a 
-single computer. 
+single computer. A networked program necessitates a Distributed Architectural Style.
 
-Rather, web applications are often comprised of two, three or more components, which are 
+Web applications are often comprised of two, three or more components, which are 
 organized into layers and physically separated into tiers. The application's layers live 
 within one of its tiers. The application's tiers are standalone sub-programs with a 
 designated set of responsibilities. Each sub-program is usually designed to run on a 
@@ -51,11 +51,12 @@ this usually happens only in development and testing environments.
 
 That's right, as non-networked programs can choose a monolithic architecture or not as
 the developers please, the standout difference is that web applications must almost 
-always be designed with multitier architectures. A web application can have several 
-tiers, such as: a Client Application, an App Server and a Database Server. These 
-sub-programs usually run on separate machines and communicate with each other over the 
-network (the internet, institutional intranets etc.) to coordinate towards 
-accomplishing the application's purpose.
+always implement a distributed architectural pattern. In practice, most web apps use 
+one of the multitier patterns. A web application can have several tiers, such as: a 
+Client Application, an App Server and a Database Server. These sub-programs usually run 
+on separate machines and communicate with each other over the network (the internet, 
+institutional intranets etc.) to coordinate towards accomplishing the application's 
+purpose.
 
 As web applications tend to have multiple layers and tiers that are spread out over 
 multiple machines, its resources and duties are distributed over multiple devices. Hence
@@ -74,14 +75,19 @@ they have at least three major groupings of functions (layers):
 
 2.2 DISTRIBUTED COMPUTING: DISTRIBUTED ARCHITECTURES
 
-When designing a distributed application, you have to choose a distributed architecture
-for it. On top of that, you have organize its code into layers and tiers. Deciding which
-tier gets which layer is not a precise art and has some room for maneuvering. 
+In the previous section, I argued that web applications required the adoption of the
+distributed architecture style. In section 2.2, I'll introduce a few architectural
+patterns that correspond to this style.
 
-Distributed architectures are usually categorized by the number of tiers they have. 
-Presented below, the Wikipedia article on this topic provides a brief explanation for a 
-number of basic architectures[1] This list of distributed architectures distinguishes 
-between architectures on the basis of the number of tiers they have:
+When designing a distributed application, you have to choose a distributed architectural
+pattern for it. On top of that, you have organize its code into layers and tiers. 
+Deciding which tier gets which layer is not a precise art; there is some room for 
+personal taste. You have to tailor the pattern to your project. 
+
+Distributed architectural patterns are usually categorized by the number of tiers they 
+have. Presented below, the Wikipedia article on this topic provides a brief explanation 
+for a number of basic patterns[1]. This list separates patterns on the basis of the 
+number of tiers they have:
 
 
     * CLIENT-SERVER: architectures where smart clients contact the server for data then 
@@ -104,29 +110,29 @@ between architectures on the basis of the number of tiers they have:
 
 
 This list is presented in a rather confusing way, but the gist of it is that there are
-two main types of distributed architectures: Multitier Architecture and Peer-to-Peer
-Architectures. 
+two main types of patterns for distributed applications: Multitier Architecture and 
+Peer-to-Peer. 
 
-Multitier (also called N-Tier) is a distributed architecture that is divided into two or 
-more parts. The Client-Server and Three-Tier architectures are considered variants of 
-Multitier architecture. Client-Server is a 2-tier architecture, where the application is 
-split into two parts, Client and Server. Three-Tier architecture has three tiers and 
-usually they are: UI Server, App Server and Database Server.
+Multitier (also called N-Tier) is a pattern that is divided into two or more parts. The 
+Client-Server and Three-Tier patterns are considered variants of Multitier architecture. 
+Client-Server is a 2-tier pattern, where the application is split into two parts, Client 
+and Server. Three-Tier architectural pattern has three tiers and usually they are: 
+UI Server, App Server and Database Server. It's possible to have four, five or more 
+tiers.
 
-P2P architectures are unlike the other architectures. In the other three traditional
-distributed architectures, the consumption of resources and supply of duties is divided 
-by tier. This means that every part of an Multitier application, regardless of whether it 
-has two, three or more tiers, has a special duty, a role that only it can perform for the 
-application. In a client-server architecture, the client acts as a conduit, displaying 
-information and taking requests from the user. The server's duty is do the processing and 
-data management. 
+The P2P pattern is unlike Multitier patterns. In Multitier patterns, the consumption of
+resources and supply of duties is divided by tier. This means that every part of a 
+Multitier application, regardless of whether it has two, three or more tiers, has a 
+special duty, a role that only it can perform for the application. In the client-server 
+architectural pattern, the client acts as a conduit, displaying information and taking 
+requests from the user. The server's duty is do the processing and data management. 
 
-A P2P application is different; it is a monolithic program that contains all or most 
-modules of the application. For this reason, P2P peers are said to be equally privileged 
-because every peer has the same capabilities and responsibilities. A peer can act as 
-both client and server and does processing on the local machine. The results of its work 
-can be shared across a network to peers running on other machines. The most famous 
-example of P2P programs are Torrenting programs.
+A P2P architecture is different; it tends to produce monolithic programs that contains 
+all or most modules of the application. For this reason, P2P peers are said to be equally 
+privileged because every peer has the same capabilities and responsibilities. A peer can 
+act as both client and server and does processing on the local machine. The results of 
+its work can be shared across a network to peers running on other machines. The most 
+famous example of P2P programs are torrenting programs.
 
 
 3. MULTITIER ARCHITECTURE
@@ -270,9 +276,9 @@ Server tier. The App Server will query the Data tier, find the video and send a 
 back to the client application, where the user can view it.
 
 
-LAYERS 
+3.2.2 LAYERS 
 
-Let's discuss layers in detail first.  
+Let's discuss layers in this pattern first. 
 
 Note that a layer exists independently of the layers above it, but depends on the 
 functionality provided by the layers below it. The three traditional layers are:
