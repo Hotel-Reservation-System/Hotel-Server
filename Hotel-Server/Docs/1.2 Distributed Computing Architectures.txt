@@ -278,7 +278,7 @@ back to the client application, where the user can view it.
 
 3.2.2 LAYERS 
 
-Let's discuss layers in this pattern first. 
+Let's discuss the layers in this pattern first. 
 
 Note that a layer exists independently of the layers above it, but depends on the 
 functionality provided by the layers below it. The three traditional layers are:
