@@ -73,8 +73,8 @@ First, basic architectural concepts will be discussed:
 
 2.1 AN INTRODUCTION TO SOFTWARE ARCHITECTURES
 
-From Robert Hanmer's book Pattern-Oriented Software Architecture For Dummies, he offers a 
-simple definition of Software Architecture, Page 9[2]:
+In Robert Hanmer's book 'Pattern-Oriented Software Architecture For Dummies', he offers a 
+simple definition of the term Software Architecture on Page 9[2]:
 
 
     Every system has an architecture — some high-level structure that underlies the whole 
@@ -385,7 +385,7 @@ another component's internals. This is one way to enforce LOOSE COUPLING and als
 with MODULARIZATION. 
 
 
-2.4.2 HIGH COHESION AND LOOSE COUPLING
+2.4.2 PACKAGING PRINCIPLES: HIGH COHESION AND LOOSE COUPLING
 
 The definitions for cohesion and coupling are taken from this StackOverflow question[7]: 
 
@@ -441,7 +441,7 @@ cohesion and loose coupling. This section is about a set of fundamental architec
 concepts which can be used to divide your application into components. Instead of 
 developing monolithic applications, software can be separated into modules, libraries 
 and other components by using the architectural principles of layers and tiers. Layers 
-and tiers are the where Enabling Techniques are applied to create good architectures.
+and tiers are how Enabling Techniques are applied to create good architectures.
 
 How do they work?
 
