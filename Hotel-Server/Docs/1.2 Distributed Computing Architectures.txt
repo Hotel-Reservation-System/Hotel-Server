@@ -240,24 +240,24 @@ process unless they need server-side data or functionality. Example: Blog websit
 Without further ado, here is a diagram of a website's architecture: 
 
 
-           FRONTEND                                            BACKEND
-    +--------------------+         +--------------------------------------------------------------+
-    |                    |         |                                                              |
-    |      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
-    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
-    |  |              |  |         |  |              |        |             |       |          |  |
-    |  |    WEBSITE   |  |         |  | RESPONDS TO  |        |  BUSINESS   |       |          |  |
-    |  |   FRONTEND   |  |  HTML   |  | REQUESTS AND |        |    LAYER    |       |          |  |
-    |  |              | +-----------> |   HANDLES    | +----> |             | +---> |          |  |
-    |  |              |  |         |  |   WEBSITE    |        |     AND     |       | DATABASE |  |
-    |  | consisting of|  |         |  |   CONTENT    |        |             |       |          |  |
-    |  |              | <-----------+ |  GENERATION/ | <----+ | DATA ACCESS | <---+ |          |  |
-    |  |  HTML, CSS   |  |  HTML   |  |AUTHENTICATION|  HTML  |    LAYER    |       |          |  |
-    |  | & JAVASCRIPT |  |         |  |     ETC.     |        |   (+ ORM)   |       |          |  |
-    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
-    |                    |         |                                                              |
-    +--------------------+         +--------------------------------------------------------------+
-           CLIENT                                               SERVER
+       FRONTEND                                            BACKEND
++--------------------+         +--------------------------------------------------------------+
+|                    |         |                                                              |
+|      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
+|  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+|  |              |  |         |  |              |        |             |       |          |  |
+|  |    WEBSITE   |  |         |  | RESPONDS TO  |        |  BUSINESS   |       |          |  |
+|  |   FRONTEND   |  |  HTML   |  | REQUESTS AND |        |    LAYER    |       |          |  |
+|  |              | +-----------> |   HANDLES    | +----> |             | +---> |          |  |
+|  |              |  |         |  |   WEBSITE    |        |     AND     |       | DATABASE |  |
+|  | consisting of|  |         |  |   CONTENT    |        |             |       |          |  |
+|  |              | <-----------+ |  GENERATION/ | <----+ | DATA ACCESS | <---+ |          |  |
+|  |  HTML, CSS   |  |  HTML   |  |AUTHENTICATION|  HTML  |    LAYER    |       |          |  |
+|  | & JAVASCRIPT |  |         |  |     ETC.     |        |   (+ ORM)   |       |          |  |
+|  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+|                    |         |                                                              |
++--------------------+         +--------------------------------------------------------------+
+       CLIENT                                               SERVER
            
 
 Note that this is a client-server architecture. The user's browser is the frontend, 
@@ -283,24 +283,24 @@ the server. Thus, much of the web app's work is done in the browser, which is ve
 a typical website. 
 
 
-           FRONTEND                                            BACKEND
-    +--------------------+         +--------------------------------------------------------------+
-    |                    |         |                                                              |
-    |      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
-    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
-    |  |              |  |         |  |              |        |             |       |          |  |
-    |  |    WEBSITE   |  |         |  |              |        |  BUSINESS   |       |          |  |
-    |  |   FRONTEND   |  |  JSON   |  |     WEB      |        |    LAYER    |       |          |  |
-    |  |              +-------------->|   SERVICES   | +----> |             | +---> |          |  |
-    |  |              |  |         |  |              |        |     AND     |       | DATABASE |  |
-    |  | consisting of|  |         |  |  (Provides   |        |             |       |          |  |
-    |  |              <---------------+   Services   | <----+ | DATA ACCESS | <---+ |          |  |
-    |  |  HTML, CSS   |  |  JSON   |  |    to the    |  JS/   |    LAYER    |       |          |  |
-    |  | & JAVASCRIPT |  |         |  |   Web App)   |  HTML  |   (+ ORM)   |       |          |  |
-    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
-    |                    |         |                                                              |
-    +--------------------+         +--------------------------------------------------------------+
-           CLIENT                                               SERVER
+       FRONTEND                                            BACKEND
++--------------------+         +--------------------------------------------------------------+
+|                    |         |                                                              |
+|      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
+|  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+|  |              |  |         |  |              |        |             |       |          |  |
+|  |    WEBSITE   |  |         |  |              |        |  BUSINESS   |       |          |  |
+|  |   FRONTEND   |  |  JSON   |  |     WEB      |        |    LAYER    |       |          |  |
+|  |              +-------------->|   SERVICES   | +----> |             | +---> |          |  |
+|  |              |  |         |  |              |        |     AND     |       | DATABASE |  |
+|  | consisting of|  |         |  |  (Provides   |        |             |       |          |  |
+|  |              <---------------+   Services   | <----+ | DATA ACCESS | <---+ |          |  |
+|  |  HTML, CSS   |  |  JSON   |  |    to the    |  JS/   |    LAYER    |       |          |  |
+|  | & JAVASCRIPT |  |         |  |   Web App)   |  HTML  |   (+ ORM)   |       |          |  |
+|  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+|                    |         |                                                              |
++--------------------+         +--------------------------------------------------------------+
+       CLIENT                                               SERVER
 
 
 In most cases, when a user requests a URL that points to a web app, the server needs to 
@@ -312,6 +312,7 @@ itself.(??)
 
 So which approach is better? The website or the web app? rekabis provides an interesting
 philosophy which should serve as a guide[3]:
+
 
     My philosophy has always been to build as many features server-side as possible, then 
     move to the client side by first hitting those features that only client-side can do 
