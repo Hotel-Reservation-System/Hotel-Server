@@ -150,7 +150,7 @@ variants of this distributed architecture will be presented in the next two sect
 
 3.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
-The Wikipedia article for the CLIENT-SERVER MODEL architecture[3] provides this 
+The Wikipedia article for the CLIENT-SERVER MODEL architecture[2] provides this 
 explanation:
 
 
@@ -252,7 +252,7 @@ Without further ado, here is a diagram of a website's architecture:
     |  |              |  |         |  |   WEBSITE    |        |     AND     |       | DATABASE |  |
     |  | consisting of|  |         |  |   CONTENT    |        |             |       |          |  |
     |  |              | <-----------+ |  GENERATION/ | <----+ | DATA ACCESS | <---+ |          |  |
-    |  |  HTML, CSS   |  |  HTML   |  |AUTHENTICATION|        |    LAYER    |       |          |  |
+    |  |  HTML, CSS   |  |  HTML   |  |AUTHENTICATION|  HTML  |    LAYER    |       |          |  |
     |  | & JAVASCRIPT |  |         |  |     ETC.     |        |   (+ ORM)   |       |          |  |
     |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
     |                    |         |                                                              |
@@ -266,26 +266,69 @@ application that runs on a server. When the user types in a URL or clicks a link
 request is made to the server application. The server returns the requested content.
            
 
-
+3.1.2 THE ARCHITECTURE OF THE WEB APPLICATION
 
 Web applications tend to more like an application than a website. Web apps are more 
-complex than websites, offering more interactivity than a website. For instance, a web 
-application will let you drag-and-drop a file into the browser for upload, something 
-that's not possible on most websites. Most big websites tend to use web applications for 
-their websites. Web apps also contain HTML and CSS, but this content is typically 
+complex and offer more interactivity than websites. For instance, a web application will 
+let you drag-and-drop a file into the browser for upload, something that's not possible 
+on most websites. Most big companies tend to use web applications for their websites. 
+
+Just like websites, web apps also contain HTML and CSS, but this content is typically 
 dynamically generated on the fly server-side, customized for whoever is making the 
-request and what they want to do. Web apps also tend to contain much more Javascript on the 
-client-side, often using SPA frameworks like Angular, React or Vue to display a single 
-"page" view to the user. A lot of the web app's work is done in the browser and user data 
-and requests are communicated back to the server over HTTP. 
+request and what they want to do. Web apps also tend to contain much more Javascript on 
+the client-side, often using SPA frameworks like Angular, React or Vue to display a 
+single "page" view to the user. Web apps tend to send the bulk of the Javascript 
+application to the client, where it executes without much need to request resources from 
+the server. Thus, much of the web app's work is done in the browser, which is very unlike
+a typical website. 
 
 
+           FRONTEND                                            BACKEND
+    +--------------------+         +--------------------------------------------------------------+
+    |                    |         |                                                              |
+    |      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
+    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+    |  |              |  |         |  |              |        |             |       |          |  |
+    |  |    WEBSITE   |  |         |  |              |        |  BUSINESS   |       |          |  |
+    |  |   FRONTEND   |  |  JSON   |  |     WEB      |        |    LAYER    |       |          |  |
+    |  |              +-------------->|   SERVICES   | +----> |             | +---> |          |  |
+    |  |              |  |         |  |              |        |     AND     |       | DATABASE |  |
+    |  | consisting of|  |         |  |  (Provides   |        |             |       |          |  |
+    |  |              <---------------+   Services   | <----+ | DATA ACCESS | <---+ |          |  |
+    |  |  HTML, CSS   |  |  JSON   |  |    to the    |  JS/   |    LAYER    |       |          |  |
+    |  | & JAVASCRIPT |  |         |  |   Web App)   |  HTML  |   (+ ORM)   |       |          |  |
+    |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
+    |                    |         |                                                              |
+    +--------------------+         +--------------------------------------------------------------+
+           CLIENT                                               SERVER
 
 
+In most cases, when a user requests a URL that points to a web app, the server needs to 
+send the webpage only once. The webpage will contain the web application, which as of 
+2018, is mostly written in Javascript. That may change with the landing of Webassembly. 
+The web app can freely communicate the backend server via JSON packets. This enables the 
+web application to bypass the HTTP request-response cycle and make real time updates to 
+itself.(??) 
 
-HRSP implements a client-server architecture, so it has two tiers, a client and an 
-application server. HRSP implements the second variation which was mentioned the previous
-paragraph.
+So which approach is better? The website or the web app? rekabis provides an interesting
+philosophy which should serve as a guide[3]:
+
+    My philosophy has always been to build as many features server-side as possible, then 
+    move to the client side by first hitting those features that only client-side can do 
+    (quite rare on enterprise-class intranet apps, but they do exist), then moving on to 
+    server-side pain points where client-side can produce performance, UI or UX 
+    improvements.
+    
+    That way, if you get a visitor who is properly security-conscious, your site will 
+    still have maximum functionality even with all JS turned off. The only thing JS does 
+    is kick things up a notch; everything is there by default thanks to server-side 
+    functionality.
+
+
+With an understanding of the client-server model, I can talk about HRSP. HRSP implements 
+a client-server architecture, so it has two tiers, a client and an application server. 
+However, HRSP is not a web application, as it uses a console application for the 
+frontend.
     
     
 3.2 THREE-TIER ARCHITECTURE (3-TIER ARCHITECTURE)
@@ -906,3 +949,4 @@ SOURCES
 
 1: https://en.wikipedia.org/wiki/Distributed_computing
 2: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
+3: https://old.reddit.com/r/dotnet/comments/9lvofg/do_i_really_have_to_use_net_core_mvc/
