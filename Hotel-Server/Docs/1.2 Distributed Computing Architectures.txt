@@ -209,37 +209,41 @@ layers to the Server. That's what a generic Two-tier application looks like.
 
 3.1.1 THE ARCHITECTURE OF A TRADITIONAL WEBSITE
 
-Let's take a look at a traditional, Web 1.0 website. At this point, it's worth noting 
-the differences between traditional websites and the modern web application, usually 
-called Single Page Applications (SPA). Be aware that this is not an one-or-the-other 
-situation; there is a continuum from a completely static website to a modern SPA 
-application that can fully replace desktop applications.  
+Now let's take a look at a architecture of a traditional Web 1.0 website. But first, it's 
+worth noting the differences between traditional websites and the modern web application, 
+usually called Single Page Applications (SPA). Be aware that this is not a 
+one-or-the-other situation; there is a continuum from a completely static website to a 
+modern SPA application that can fully replace desktop applications.  
 
 Traditional websites tend to be fairly simple affairs that are primarily designed to 
 deliver static content to the end user. That is the main difference between websites and 
 web applications: A website delivers information to the user, but has limited capability
-for interactive features. Web applications provide interactive features, exposing full 
-features like chatting, text editing, drag-and-drop to the user right in the browser. 
-To sum it up: Websites are primarily informational, whereas web apps are interactive. 
+for interactive features whereas web applications provide interactive features, exposing 
+full features like drag-and-dropping files, chatting, text editing etc. to the user right 
+in the browser. To sum it up: Websites are primarily informational, while web apps are 
+interactive. 
 
 At the simplest level, a website is a mostly a collection of static .html files that link 
 to each other. Websites are usually manually written in HTML, CSS and small amounts of 
-Javascript. This content is hosted on the server. When the user requests a page, the 
-web server returns a static webpage to the user's browser. Pages cannot be updated in 
-part: the user must reload the entire page. To do this, client must go through a full 
-request-response cycle. Here is an another distinguishing feature of websites: most of 
-the work (website generation, authentication etc.) are done on the server. Any changes 
-to the webpage are made server-side, which are then sent to the user's browser. Example: 
-Blog websites.
+Javascript. While SPA web apps are the rage as of 2018, websites tend to be built with an
+Model-View-Controller approach. In this approach, the components of a webpage are hosted 
+on the server. When a user makes a request, the webpage or at least some of its parts are 
+built on the server, by the App server portion of the application and sent to the client. 
+This is an operational difference from SPA web apps, which do most of their work in the
+client's browser.
 
-As websites communicate over the internet, they tend to have a client-server 
-architecture: 
+This has some limitations; for instance, a website's pages cannot be updated in part - 
+the user must reload the entire page. To do this, client must go through a full
+request-response cycle. In contrast, Web apps are faster because they can skip this 
+process unless they need server-side data or functionality. Example: Blog websites.
+
+Without further ado, here is a diagram of a website's architecture: 
 
 
            FRONTEND                                            BACKEND
     +--------------------+         +--------------------------------------------------------------+
-    |      BROWSER       |         |                                                              |
-    |                    |         |     WEB SERVER             APP SERVER           DB SERVER    |
+    |                    |         |                                                              |
+    |      BROWSER       |         |     WEB SERVER             APP SERVER           DB SERVER    |
     |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
     |  |              |  |         |  |              |        |             |       |          |  |
     |  |    WEBSITE   |  |         |  | RESPONDS TO  |        |  BUSINESS   |       |          |  |
@@ -247,13 +251,22 @@ architecture:
     |  |              | +-----------> |   HANDLES    | +----> |             | +---> |          |  |
     |  |              |  |         |  |   WEBSITE    |        |     AND     |       | DATABASE |  |
     |  | consisting of|  |         |  |   CONTENT    |        |             |       |          |  |
-    |  |              | <-----------+ |  GENERATION  | <----+ | DATA ACCESS | <---+ |          |  |
-    |  |  HTML, CSS   |  |  HTML   |  |              |        |    LAYER    |       |          |  |
-    |  | & JAVASCRIPT |  |         |  |              |        |   (+ ORM)   |       |          |  |
+    |  |              | <-----------+ |  GENERATION/ | <----+ | DATA ACCESS | <---+ |          |  |
+    |  |  HTML, CSS   |  |  HTML   |  |AUTHENTICATION|        |    LAYER    |       |          |  |
+    |  | & JAVASCRIPT |  |         |  |     ETC.     |        |   (+ ORM)   |       |          |  |
     |  +--------------+  |         |  +--------------+        +-------------+       +----------+  |
     |                    |         |                                                              |
     +--------------------+         +--------------------------------------------------------------+
-                                                              
+           CLIENT                                               SERVER
+           
+
+Note that this is a client-server architecture. The user's browser is the frontend, 
+where the client's application runs. In this example, the backend is a monolothic
+application that runs on a server. When the user types in a URL or clicks a link, a
+request is made to the server application. The server returns the requested content.
+           
+
+
 
 Web applications tend to more like an application than a website. Web apps are more 
 complex than websites, offering more interactivity than a website. For instance, a web 
