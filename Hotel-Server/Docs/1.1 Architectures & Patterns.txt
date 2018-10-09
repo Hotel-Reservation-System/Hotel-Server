@@ -444,36 +444,87 @@ architecture that be changed easily in response to business requirements. Loose 
 even lets you work on modules independently. 
 
 
-2.5.1 LAYERS AND TIERS
+2.5.1 ORGANIZING SMALL PROJECTS USING FOLDERS
 
-The simplest possible ASP.NET Core program is one with a single project in it. Such a 
-program is called a monolith. What is a monolithic application? Steve Smith defines it
-on page 21 of his book[8]:
+Thus far, this article has been very abstract. Let's move on to the practical part; how
+are these principles applied to a software project? 
+
+Let's start with the simplest possible ASP.NET Core program: one with a single project in 
+it. Such a program is called a monolithic application. Steve Smith defines it on page 21 
+of his book[8]:
+
 
     A monolithic application is one that is entirely self-contained, in terms of its 
     behavior. It may interact with other services or data stores in the course of 
     performing its operations, but the core of its behavior runs within its own process 
     and the entire application is typically deployed as a single unit. If such an 
     application needs to scale horizontally, typically the entire application is 
-    duplicated across multiple servers or virtual machines. 
+    duplicated across multiple servers or virtual machines... The smallest possible 
+    number of projects for an application architecture is one. In this architecture, the
+    entire logic of the application is contained in a single project, compiled to a 
+    single assembly, and deployed as a single unit. 
      
-The 
-project should use 
-In a monolithic application, you should use folders like Models, Views, Controllers, 
-Data, Services etc. to separate concerns in order to prevent your project from 
-deteriorating into spaghetti code. But once the program reaches a certain size, using 
-folders alone to separate concerns no longer works. 
+     
+Even in such a small program, one should take care to organize code to avoid a descent
+into spaghetti code. The simplest way to organize code is to collect software elements 
+with similar or related functions and to store them together in their own folders. In 
+ASP.NET Core, it is traditional to have these folders: 
 
-The previous section talked about using enabling techniques to design a system with high
-cohesion and loose coupling. This section is about a set of fundamental architectural 
-concepts which can be used to divide your application into distinct components when your
-project grows large and complex. 
 
-Instead of developing spaghetti code applications, software can be separated into separate 
-folders, projects, modules, libraries and other components by using the architectural 
-principles of layers and tiers. Layers and tiers are how Enabling Techniques are applied 
+    1. Data: Any code related to a database, data store or other related functions like 
+       migrations, should stored in this folder. If your project uses migrations, the 
+       Data folder should have a dedicated Migrations folder to store them. 
+       
+    2. Services: Microsoft Docs defines a service as "A service is a component that's 
+       intended for common consumption in an app. Services are made available through 
+       dependency injection (DI). ASP.NET Core includes a native Inversion of Control 
+       (IoC) container that supports constructor injection by default. You can replace 
+       the default container if you wish. In addition to its loose coupling benefit, DI 
+       makes services, such as logging, available throughout your app." Much of the 
+       business logic for your program should be put into this folder.  
+       
+    3. Models: This folder will store POCO classes which define business entities for 
+       your project. 
+           
+    4. Views: This folder will contain presentation logic for your application. This 
+       will typically be HTML, CSS, and Javascript in ASP.NET Core projects, but your
+       application can also use a text UI, a GUI library and in the future, potentially
+       frameworks like the C#/HTML based Blazor.   
+       
+    5. Controllers: This folder will contain controllers, which are the brains of most
+       web applications. 
+
+
+Using folders to group like classes and interfaces together helps to enforce separation
+of concerns at the single-project scenario level. But once the program reaches a certain 
+size, using folders alone to separate concerns no longer works. 
+
+Steve Smith explains the problems that arise when your monolithic application becomes too
+complex (page 22)[8]:
+
+
+    Although simple, the single-project monolithic solution has some disadvantages. As 
+    the project’s size and complexity grows, the number of files and folders will continue 
+    to grow as well. User Interface (UIconcerns (models, views, controllers) reside in 
+    multiple folders, which are not grouped together alphabetically. This issue only gets 
+    worse when additional UI-level constructs, such as Filters or ModelBinders, are added 
+    in their own folders. Business logic is scattered between the Models and Services 
+    folders, and there’s no clear indication of which classes in which folders should 
+    depend on which others. This lack of organization at the project level frequently 
+    leads to spaghetti code. 
+    
+    To address these issues, applications often evolve into multi-project solutions, 
+    where each project is considered to reside in a particular layer of the application.  
+
+
+The next few sections will discuss using layers and tiers to manage mid-size and large
+applications. 
+
+
+2.5.2 LAYERS AND TIERS
+
+Layers and tiers are how Enabling Techniques are applied 
 to create good architectures.
-
 
 How do they work?
 
