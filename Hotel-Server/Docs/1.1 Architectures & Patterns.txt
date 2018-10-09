@@ -1,9 +1,7 @@
 1. INTRODUCTORY REMARKS: WHY DO WE NEED ARCHITECTURES AND PATTERNS?
 
-Look at the architectural diagram below. It depicts the architecture, or to put it 
-better, the complete lack thereof, in a poorly designed monolithic application. 
-Applications that are poorly designed tend to have major components mixed together into
-an incoherent mess.
+Look at the architectural diagram below. It depicts the architecture, or better put, the 
+complete lack thereof, in a poorly designed monolithic application.
 
 
     +--------------------------------------------------------------------------------------------+
@@ -27,7 +25,9 @@ an incoherent mess.
                                       RUNS ON A SINGLE MACHINE
 
 
-Jason Ables explains the situation[1]:
+Applications that are poorly designed tend to have their components mixed together into
+an incoherent mess. Jason Ables explains the situation[1]:
+
 
     Legacy code is software that generates value for a business but is difficult for 
     developers to change. The terms "code rot" and "spaghetti code" refer to legacy code 
@@ -51,24 +51,34 @@ Jason Ables explains the situation[1]:
 
 
 There are many failures that lead to a spaghetti codebase, and this article will discuss
-one aspect: Architectures and Patterns. At the start of every project, the developer 
-(team) needs to carefully choose architectural designs for it. The architectural styles
-and patterns used to structure a project will in large part determine its quality. A 
-program with a good design will have built-in resistance to decaying. 
+mitigating technical debt through the use of Architectural Patterns and sound 
+Architectural Design Principles (which are also called Enabling Techniques). 
+
+At the start of every project, the developer (team) needs to carefully choose 
+architectural patterns for it. The architectural styles, patterns and design principles 
+used to structure a project will in large part determine its future quality. A program 
+with a good design will have built-in resistance to code rot.  
 
 Web projects like the Hotel-Reservation-System Project (HRSP) are structured into 
 sub-components by implementing certain architecture styles and patterns. Dividing code 
 into clearly demarcated modules has been found to make programs simpler to develop, 
-maintain and extend, and easier to debug. 
+maintain and extend, and easier to debug. Modules should not directly depend on the 
+internals of other modules, but rather, every layer/tier should define and expose public 
+interfaces. By doing this, layers and tiers are loosely coupled, easily modified or
+swapped out for replacements. 
 
-First, basic architectural concepts will be discussed:
+First, in Section 2, basic architectural concepts will be discussed:
 
 
-    1. Introduction to Software Architectures
-    2. Architectural Styles
-    3. Architectural Patterns
-    4. Enabling Techniques
-    5. Architectural Principles: Layers and Tiers
+    2.1 Introduction to Software Architectures
+    2.2 Architectural Styles
+    2.3 Architectural Patterns
+    2.4 Enabling Techniques
+    2.5 Practical Architectural Principles: Layers and Tiers
+    
+    
+Then, in Section 3, these principles and techniques will be applied to create multi-layer
+and multi-tier software. 
 
 
 2.1 AN INTRODUCTION TO SOFTWARE ARCHITECTURES
@@ -436,12 +446,34 @@ even lets you work on modules independently.
 
 2.5.1 LAYERS AND TIERS
 
+The simplest possible ASP.NET Core program is one with a single project in it. Such a 
+program is called a monolith. What is a monolithic application? Steve Smith defines it
+on page 21 of his book[8]:
+
+    A monolithic application is one that is entirely self-contained, in terms of its 
+    behavior. It may interact with other services or data stores in the course of 
+    performing its operations, but the core of its behavior runs within its own process 
+    and the entire application is typically deployed as a single unit. If such an 
+    application needs to scale horizontally, typically the entire application is 
+    duplicated across multiple servers or virtual machines. 
+     
+The 
+project should use 
+In a monolithic application, you should use folders like Models, Views, Controllers, 
+Data, Services etc. to separate concerns in order to prevent your project from 
+deteriorating into spaghetti code. But once the program reaches a certain size, using 
+folders alone to separate concerns no longer works. 
+
 The previous section talked about using enabling techniques to design a system with high
 cohesion and loose coupling. This section is about a set of fundamental architectural 
-concepts which can be used to divide your application into components. Instead of 
-developing monolithic applications, software can be separated into modules, libraries 
-and other components by using the architectural principles of layers and tiers. Layers 
-and tiers are how Enabling Techniques are applied to create good architectures.
+concepts which can be used to divide your application into distinct components when your
+project grows large and complex. 
+
+Instead of developing spaghetti code applications, software can be separated into separate 
+folders, projects, modules, libraries and other components by using the architectural 
+principles of layers and tiers. Layers and tiers are how Enabling Techniques are applied 
+to create good architectures.
+
 
 How do they work?
 
@@ -462,7 +494,7 @@ the user and the Controller layer responds to user requests by issuing orders to
 other two layers. Separating software elements with the same goal from the rest of the 
 project and concentrating them into layers let's you enforce separation of concerns to 
 prevent unnecessary entanglements between elements of differing functions and imposes a 
-logical structure on the project. The act of creating layers should bring the idea of 
+logical structure on the project.  The act of creating layers should bring the idea of 
 cohesion to mind: gathering together like elements and consolidating them in one layer 
 increases cohesion. Thus, creating good quality layers brings high cohesion to your
 module/library/sub-program. 
@@ -490,7 +522,7 @@ The number of layers and tiers in a software project is variable and depends on 
 project's size and needs, but the number of layers and tiers usually increase with a 
 program's size and complexity. 
 
-What's the point of using layers and tiers? Rockford Lhotka explains[8]:
+What's the point of using layers and tiers? Rockford Lhotka explains[9]:
 
 
     Why do we layer software? Primarily to gain the benefits of logical organization and 
@@ -591,7 +623,7 @@ Abstraction again. Hanmer defines Abstraction on Page 30[2]:
 
 
 From this idea, comes the concept of abstraction layers. The Wikipedia article on 
-Abstraction Layer explains it as follows[9]: 
+Abstraction Layer explains it as follows[10]: 
 
 
     In computing, an abstraction layer or abstraction level is a way of hiding the 
@@ -630,7 +662,7 @@ between modules and sub-programs. All this will take your project on a direction
 leads away from spaghetti codebases.
 
 What does an abstraction layer look like in practice? In a StackOverflow answer, gb2d 
-offers a concrete example of an abstraction layer[10]:
+offers a concrete example of an abstraction layer[11]:
 
 
     Often an abstraction layer is commonly used to 'abstract' away detail.
@@ -794,6 +826,7 @@ SOURCES
 06: Pattern-Oriented Software Architecture, Volume 1 - A System of Patterns 
     (F. Buschmann, H. Rohnert, P. Sommerlad, 1996)
 07: https://stackoverflow.com/questions/14000762/what-does-low-in-coupling-and-high-in-cohesion-mean#
-08: http://www.lhotka.net/weblog/ShouldAllAppsBeNtier.aspx
-09: https://en.wikipedia.org/wiki/Abstraction_layer  
-10: https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstraction-layer
+08: Architecting Modern Web Applications with ASP.NET Core and Azure v2.1.01 (Steve Smith, 2017) 
+09: http://www.lhotka.net/weblog/ShouldAllAppsBeNtier.aspx
+10: https://en.wikipedia.org/wiki/Abstraction_layer  
+11: https://softwareengineering.stackexchange.com/questions/223947/what-is-an-abstraction-layer
