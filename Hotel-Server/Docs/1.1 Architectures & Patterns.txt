@@ -719,12 +719,13 @@ He continues on and later in the article, he makes a few practical comments abou
     tolerance or security.
 
 
-2.5.3 CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
+2.5.5 CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
 
 In section 2.5.1, it was established that layers bring high cohesion to your application,
-while tiers bring loose coupling. But what was not discussed is how they bring these 
-benefits to your application. The answer is that layers and tiers are used to create 
-abstraction layers in your application, which in turn bring the stated benefits. 
+while tiers bring loose coupling. I provided some discussion on the benefits they bring to 
+your application, but I want to bring up the concept of abstraction and abstraction layers. 
+Layers and tiers are used to create abstraction layers in your application, which in turn 
+bring the aforementioned benefits. 
 
 Hanmer explains how tiers and layers are used to create abstraction layers in your 
 application[2]:
@@ -789,16 +790,17 @@ Abstraction Layer explains it as follows[10]:
 
 Layers and tiers are used to deliberately create a architecture for the project by 
 cutting up the project into meaningful components. Creating components is an opportunity 
-increase cohesion to separate concerns by collecting together like software elements into 
-components like modules and sub-programs. You can also deploy the concepts of 
-encapsulation, information hiding and abstraction to create black box components that 
-conceal implementation details while exposing official interfaces. 
+increase cohesion of separate concerns by collecting together like software elements into 
+projects. You can also deploy the concepts of encapsulation, information hiding and 
+abstraction to create black box components that conceal implementation details of a layer
+while exposing official interfaces. 
 
-A module designed in this manner exposes official interfaces through an abstraction 
+A layer designed in this manner exposes official interfaces through an abstraction 
 layer. Doing this decreases the chances of other modules using the internal 
 implementations of a module. This should help to create a system with loose coupling
-between modules and sub-programs. All this will take your project on a direction that 
-leads away from spaghetti codebases.
+between modules and sub-programs. The application of all these sound architectural 
+principles will take your project on a direction that leads away from spaghetti 
+codebases.
 
 What does an abstraction layer look like in practice? In a StackOverflow answer, gb2d 
 offers a concrete example of an abstraction layer[11]:
