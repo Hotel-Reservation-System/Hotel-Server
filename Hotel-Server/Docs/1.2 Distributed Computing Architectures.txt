@@ -8,7 +8,7 @@ distributed architecture, this will be the focus in this article.
 Here are the topics that will be explored: 
 
 
-    1. Distributed Computing and an Introduction to DC Architectures
+    1. Distributed Computing and an Introduction to such Architectures
     2. A 2-Tier Distributed Architecture: The Client-Server Model
     3. A 3+ Tier Distributed Architecture: Multitier/N-Tier
     4. An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
@@ -204,7 +204,7 @@ architectural diagram of a GENERIC 2-tier application:
 In this variation of this architecture, the Presentation and Business Logic layers are 
 grouped together in the client. However, in another variation, only the Presentation 
 layer will be packaged in the client tier, leaving the Business Logic and Data Management
-layers to the Server. That's what a generic Two-tier application looks like. 
+layers to the Server. 
 
 
 3.1.1 THE ARCHITECTURE OF A TRADITIONAL WEBSITE
@@ -260,15 +260,17 @@ Without further ado, here is a diagram of a website's architecture:
        CLIENT                                               SERVER
            
 
-Note that this is a client-server architecture. The user's browser is the frontend, 
-where the client's application runs. In this example, the backend is a monolothic
-application that runs on a server. When the user types in a URL or clicks a link, a
-request is made to the server application. The server returns the requested content.
+Note that this is a client-server architecture. In this example, the backend is a 
+monolithic application that runs on a server. The user's browser is the frontend, 
+where the client application (the webpage) will be loaded. When the user types in a URL 
+or clicks a link in her browser, a request is made to the server application. The server 
+delivers the webpage (or whatever resource was requested) to the client's browser, where
+the user can view it.  
            
 
 3.1.2 THE ARCHITECTURE OF THE WEB APPLICATION
 
-Web applications tend to more like an application than a website. Web apps are more 
+Web applications tend to be more like an application than a website. Web apps are more 
 complex and offer more interactivity than websites. For instance, a web application will 
 let you drag-and-drop a file into the browser for upload, something that's not possible 
 on most websites. Most big companies tend to use web applications for their websites. 
@@ -305,7 +307,7 @@ a typical website.
 
 In most cases, when a user requests a URL that points to a web app, the server needs to 
 send the webpage only once. The webpage will contain the web application, which as of 
-2018, is mostly written in Javascript. That may change with the landing of Webassembly. 
+2018, is mostly written in Javascript. That may change with the landing of WebAssembly. 
 The web app can freely communicate the backend server via JSON packets. This enables the 
 web application to bypass the HTTP request-response cycle and make real time updates to 
 itself.(??) 
@@ -328,8 +330,7 @@ philosophy which should serve as a guide[3]:
 
 With an understanding of the client-server model, I can talk about HRSP. HRSP implements 
 a client-server architecture, so it has two tiers, a client and an application server. 
-However, HRSP is not a web application, as it uses a console application for the 
-frontend.
+However, HRSP is not a web application as it uses a console application for the frontend.
     
     
 3.2 THREE-TIER ARCHITECTURE (3-TIER ARCHITECTURE)
