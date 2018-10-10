@@ -634,14 +634,19 @@ layers[8]:
 2.5.3 CREATING MULTI-PART SOFTWARE PROGRAMS USING TIERS
 
 TIERS separate software by the hardware platforms to which a software component is to be
-deployed. Tiers are a more fundamental form of division than layers. Where layers involve
-collecting files with similar functions together into folders, tiers usually break 
-software up into separate programs, modules or libraries, depending on where that piece 
-of software is going to run. Tiers help to avoid a monolithic architecture, because the
-act of designing software for a tier requires severing the whole into independent parts.
-This should bring the concept of coupling to mind. A multitier architecture decreases 
-coupling in your application. Hence, the use of tiers in your program architecture helps 
-to bring a degree of loose coupling. 
+deployed. Tiers are a more fundamental form of division than layers. Where creating a 
+layer involves collecting files and folders with similar functions together into a 
+project, tiers usually break software up into separate programs, modules or libraries, 
+depending on where that piece of software is going to run. 
+
+Tiers help to avoid a spaghetti architecture, because the act of designing software for
+a tier requires severing the whole into independent parts. You have to decide the 
+hardware platforms where you want each software component to execute. With this in mind,
+if your program is not already divided into projects, that has to be done. 
+
+The creation of tiers should bring the concept of coupling to mind. A multitier 
+architecture decreases coupling in your application. Hence, the use of tiers in your 
+program architecture helps to bring a degree of loose coupling to your program. 
 
 For example, let's assume that you have a web application, which has a client-server 
 architecture (More on this in the next article.). Such an application is divided itself
