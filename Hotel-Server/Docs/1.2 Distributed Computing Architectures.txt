@@ -8,10 +8,12 @@ distributed architecture, this will be the focus in this article.
 Here are the topics that will be explored: 
 
 
-    1. Distributed Computing and an Introduction to such Architectures
-    2. A 2-Tier Distributed Architecture: The Client-Server Model
-    3. A 3+ Tier Distributed Architecture: Multitier/N-Tier
-    4. An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
+    2.1 Introduction to Distributed Computing 
+    2.2 Distributed Computing Architectures
+    3.1 Introduction to Multi-Tier Architectures
+    3.2 A 2-Tier Distributed Architecture: The Client-Server Model
+    3.3 A 3+ Tier Distributed Architecture: Multitier/N-Tier
+    4.1 An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
 
 
 Finally, after discussing distributed computing architectures and the MVC pattern, I will
@@ -135,7 +137,7 @@ its work can be shared across a network to peers running on other machines. The 
 famous example of P2P programs are torrenting programs.
 
 
-3. MULTITIER ARCHITECTURE
+3.1 MULTITIER ARCHITECTURE
 
 Multitier architecture has several common variants: 
 
@@ -148,7 +150,7 @@ enterprise software, but they won't be discussed in this article. The two simple
 variants of this distributed architecture will be presented in the next two sections.
 
 
-3.1 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
+3.2 CLIENT-SERVER MODEL (2-TIER ARCHITECTURE)
 
 The Wikipedia article for the CLIENT-SERVER MODEL architecture[2] provides this 
 explanation:
@@ -207,7 +209,7 @@ layer will be packaged in the client tier, leaving the Business Logic and Data M
 layers to the Server. 
 
 
-3.1.1 THE ARCHITECTURE OF A TRADITIONAL WEBSITE
+3.2.1 THE ARCHITECTURE OF A TRADITIONAL WEBSITE
 
 Now let's take a look at a architecture of a traditional Web 1.0 website. But first, it's 
 worth noting the differences between traditional websites and the modern web application, 
@@ -268,7 +270,7 @@ delivers the webpage (or whatever resource was requested) to the client's browse
 the user can view it.  
            
 
-3.1.2 THE ARCHITECTURE OF THE WEB APPLICATION
+3.2.2 THE ARCHITECTURE OF THE WEB APPLICATION
 
 Web applications tend to be more like an application than a website. Web apps are more 
 complex and offer more interactivity than websites. For instance, a web application will 
@@ -333,7 +335,7 @@ a client-server architecture, so it has two tiers, a client and an application s
 However, HRSP is not a web application as it uses a console application for the frontend.
     
     
-3.2 THREE-TIER ARCHITECTURE (3-TIER ARCHITECTURE)
+3.3 THREE-TIER ARCHITECTURE (3-TIER ARCHITECTURE)
 
 The Three-Tier architecture is a variant of the Multitier architecture in which the User
 Interface, Application Processing and Data Management functions are separated into three
@@ -355,7 +357,7 @@ applications. MVC appears to concern itself only with organizing layers, not tie
 often, web applications will have their tiers organized as proscribed by the Multitier 
 architecture's variants (into client-server or three-tier), but their layers will be
 organized in MVC fashion. Yes, in practice, applications mix two or more architectural 
-patterns together. Keep this fact in mind when as you read on.
+patterns together. Keep this fact in mind as you read on.
 
 In section 3.2 and its sub-sections, I will explain the traditional layers and tiers in 
 three-tier web applications. As this is a traditional structure, it only serves as a 
@@ -363,7 +365,7 @@ guideline. Reality rarely deigns to completely conform to architectural theories
 you'll have to adapt architectures and patterns when designing your software solution.
 
 
-3.2.1 A SAMPLE WEB APPLICATION
+3.3.1 A SAMPLE WEB APPLICATION
 
   +--------------------+  +-------------------------------------------+  +----------------------+
   | CLIENT APPLICATION |  |             APP SERVER/API                |  | DATABASE APPLICATION |
@@ -382,8 +384,8 @@ you'll have to adapt architectures and patterns when designing your software sol
   |                    |  |                                           |  |                      |
   +--------------------+  +-------------------------------------------+  +----------------------+
 
-  RUNS ON USER'S PC              RUNS ON AN APPLICATION SERVER           RUNS ON A DATABASE
-    OR WEB SERVER                                                              SERVER
+     RUNS ON USER'S PC              RUNS ON AN APPLICATION SERVER           RUNS ON A DATABASE
+       OR WEB SERVER                                                              SERVER
 
 
 For the reminder of this article, consider the diagram above as a guide to the three-tier 
@@ -398,7 +400,7 @@ Server tier. The App Server will query the Data tier, find the video and send a 
 back to the client application, where the user can view it.
 
 
-3.2.2 LAYERS 
+3.3.2 LAYERS 
 
 Let's discuss the layers in this pattern first. 
 
@@ -416,11 +418,13 @@ functionality provided by the layers below it. The three traditional layers are:
     2. BUSINESS LOGIC LAYER
     This is the domain logic layer; it contains business logic for your application. 
     The BLL does the work of processing user requests by performing operations on data 
-    stored in the Data Access Layer. The Business Logic Layer will return the results of 
-    these operations to the Presentation Layer, which will then display them to the user. 
-    Note that the Business Logic Layer sits in the middle of the layer stack, communicating 
-    to the UI layer above and the Data Access Layer below. 
-                             
+    stored in the Data Access Layer. This is where mission-critical business problems 
+    are solved. The Business Logic Layer will return the results of these operations to 
+    the Presentation Layer, which will then display them to the user. Note that the 
+    Business Logic Layer sits in the middle of the layer stack, communicating to the UI 
+    layer above and the Data Access Layer below. 
+    
+                               
     3. DATA ACCESS LAYER
     This layer is the bottom of the stack and its job is to interface with a data source,
     such as a database or file system, to store, modify or retrieve persistent data.
@@ -434,7 +438,7 @@ The goal of layers is to separate functionalities from each other. Presentation 
 should not entangled with Business logic or Data Management logic. LOOSE COUPLING
 
 
-TIERS
+3.3.3 TIERS
 
 Traditionally, there are three tiers, but once again, the actual number of tiers in your
 project should depend on its scope and needs. Here are the traditional tiers:  
@@ -442,11 +446,11 @@ project should depend on its scope and needs. Here are the traditional tiers:
  
     1. PRESENTATION TIER
     On this tier, you would deploy the sub-program that presents information to and 
-    receives input from Users. This module is frequently called the CLIENT or the 
+    receives input from Users. This project is frequently called the CLIENT or the 
     FRONT-END. It contains the presentation layer of the project; it is concerned with
     presenting information to the user and accepting directions from them via some type 
     of user interface (E.g. Graphical User Interface (GUI), Text-based User Interface 
-    (TUI) etc.) 
+    (TUI), Browser-based client etc.) 
 
     The client or frontend's native hardware platform (tier) is the PRESENTATION SERVER. 
     This is a server machine typically owned by the business or rented from a cloud 
@@ -463,7 +467,7 @@ project should depend on its scope and needs. Here are the traditional tiers:
 
     The browser is a standards-based way to deliver web content, making it (relatively) 
     easy to develop for. The Amazon.com website's presentation tier are the web servers 
-    that tasked with deliving this website to browsers. However, the web is only one of 
+    that tasked with delivering this website to browsers. However, the web is only one of 
     many possible ways to display information to the user. Other presentation tiers 
     exist; if we talk about the Amazon Kindle reading app instead, then the presentation 
     tier is no longer the web server, it becomes the all the hardware platforms on which 
@@ -482,7 +486,7 @@ project should depend on its scope and needs. Here are the traditional tiers:
     and its tier is called (confusingly enough) the APPLICATION SERVER. This tier is also 
     either owned by the business itself or rented from a cloud services company. The 
     App Server contains the Business Logic Layer, which is the brains of every project 
-    that is architected with 3 or more tiers. Note that in most applications, the 
+    that is designed with 3 or more layers. Note that in most applications, the 
     App Server also contains the Data Access Layer.
     
     When the App Server receives user requests from the presentation server, it leaps 
@@ -496,10 +500,10 @@ project should depend on its scope and needs. Here are the traditional tiers:
     3. DATA MANAGEMENT TIER     
     On this tier, you would deploy the primary data sources for the application and the
     sub-program that is responsible for DATA MANAGEMENT. The sub-program is often called 
-    the DATABASE APPLICATION and runs on a tier called the DATABASE SERVER. The tier may
-    also be called a REPOSITORY. The Database Application is probably commercial RDBMS 
-    software like Microsoft SQL Server, SQLite or PostgreSQL, or an application that acts 
-    as an abstraction layer over a database or a filesystem.
+    the DATABASE APPLICATION or INFRASTRUCTURE and runs on a tier called the DATABASE 
+    SERVER. The tier may also be called a REPOSITORY. The Database Application is 
+    probably commercial RDBMS software like Microsoft SQL Server, SQLite or PostgreSQL, 
+    or an application that acts as an abstraction layer over a database or a filesystem.
     
     Technically, in a three-tier application, the hardware for this tier would be a 
     DATABASE SERVER, but dedicated database servers are rarely used except in large 
@@ -507,8 +511,8 @@ project should depend on its scope and needs. Here are the traditional tiers:
     passive; it waits for instructions from the DAL in the App Server.
 
 
-If it's not already clear, the goal of using tiers,  is to carve out code from the main
-project and tailor it to run a specific hardware or software platform.
+If it's not already clear, the goal of using tiers is to carve out code from the main
+project and tailor it to run on a specific hardware or software platform.
 
 
 4. AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
