@@ -78,7 +78,9 @@ First, in Section 2, basic architectural concepts will be discussed:
     
     
 Then, in Section 3, these principles and techniques will be applied to create multi-layer
-and multi-tier software. 
+and multi-tier software. The next article, '1.2 Distributed Computing Architectures', 
+will discuss specific architectures such as the Client-Server and Multi-tier as well as
+the MVC architectural pattern.
 
 
 2.1 AN INTRODUCTION TO SOFTWARE ARCHITECTURES
@@ -881,19 +883,22 @@ successfully separate concerns:
 
 
 To avoid spaghetti code, the program's code has been partitioned into three distinct 
-layers, modelled after the layers in N-tier architecture. However, it's probably not 
-modular enough, because all the layers run on the same machine. That makes this a 1-tier 
-architecture.
+layers, modelled after the layers in N-tier architecture. However, once the program gets
+big enough, it probably will not be modular enough, because all the layers run on the 
+same machine. 
 
-All three layers are packaged in a single executable and run on the same machine. The 
-absence of tiers means that is program's architecture is tightly coupled. In such a 
-tightly integrated application, changing one layer will probably require changes to the 
-other layers. As the program is designed for a single machine, scaling the number of
-processors is probably not possible. For the same reason, the portability factor of this 
-design is low. Nevertheless, it may make sense to use this design for small applications
-that don't handle much traffic or need much resources.
+It also limits this program to being a 1-tier architecture. That means that all three 
+layers are packaged in a single executable and run on the same machine. The absence of 
+tiers means that is program's architecture is probably tightly coupled. (Unless the 
+design exposes interfaces for each layer.) In such a tightly integrated application, 
+changing one layer will probably require changes to the other layers. As the program is 
+designed for a single machine, scaling the number of processors is probably not possible. 
+For the same reason, the portability factor of this design is low. Nevertheless, it may 
+make sense to use this design for small applications that don't handle much traffic or 
+need much resources.
 
-How can this design be improved? It uses layers, but not tiers. Let's try adding tiers:
+How can this design be improved? It uses layers, but not tiers. If the design calls for
+it, I could try adding tiers:
 
 
 +------------------------------------------------+ +-----------------------------------------+
@@ -915,8 +920,8 @@ How can this design be improved? It uses layers, but not tiers. Let's try adding
 
 In this variation of the 2-tier architecture, the Presentation and Business Logic layers 
 are combined into the client. The client would probably run on a user's machine while the 
-Data Access Layer and the Database live on a server. Another variation of this 
-application would bundle the Business Logic and Data Access Layer together. 
+Data Access Layer and the Database live on a server. Another variation of this design 
+would bundle the Business Logic and Data Access layers together. 
 
 This application is less tightly coupled than the 1-tier application, so making changes 
 like swapping out the database become easier. The Presentation and Business Logic layers 
@@ -949,12 +954,14 @@ Application Server, and the Database backend will run on a Database Server:
     OR WEB SERVER                                                              SERVER
 
 
-In this case, each layer has its own tier, and thus, each layer runs on its own machine. All
-layers are completely uncoupled from each other, making it easier to refactor and expand all
-elements of the application.
+In this case, each layer has its own tier, and thus, each layer runs on its own machine. 
+All layers are completely uncoupled from each other, making it easier to refactor and 
+expand all components of the application.
 
-One final warning, that increasing the number of layers and tiers does not come without a 
-price, so you have to weigh the cost of adding a new layer or tier.
+One final warning that increasing the number of layers and tiers does not come without a 
+price, so you have to weigh the cost of adding a new layer or tier. Tiers in particular 
+are expensive, both in terms of increasing latency and hardware costs, so think carefully
+before adding one.
 
 
 SOURCES
