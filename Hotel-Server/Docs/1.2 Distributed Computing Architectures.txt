@@ -515,7 +515,7 @@ If it's not already clear, the goal of using tiers is to carve out code from the
 project and tailor it to run on a specific hardware or software platform.
 
 
-4. AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
+4.1 AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
 
 Model-View-Controller (MVC) is an architectural pattern that is widely used in web
 programming. This project uses ASP.NET Core for building web pages; ASP.NET Core makes use 
@@ -540,27 +540,39 @@ Pablo Pastor introduces MVC, its history and its purpose in a blog post[4]:
     later.
 
 
-If you check the 'Architectural Patterns' section of this file, you'll note that MVC is an
-architectural pattern that falls under the architectural style of Interactive Systems. 
-Interactive Systems are computer systems (a bundle of hardware and software) that has lots
-of interaction between humans and the computer system. Desktop and laptop PCs and mobile 
-devices are good examples of interactive systems. Embedded devices, for instance in your 
-car's engine or in a factory's conveyor belt are examples of systems with relatively 
-little human-computer interaction. Interactive applications are things like games, word 
-processors, CLI apps; all of them take substantial user input as part of their normal 
-functioning.
+This is a good time to mention that MVC is a concept that frameworks choose implement, 
+which they can do either in part or full. For instance, Ruby on Rails, PHP CodeIgniter 
+and ASP.NET Core implement the MVC pattern in such a way that software projects in these 
+languages have folders titled Models, Views and Controllers. On the other hand, Python's 
+Django borrows some MVC concepts but does not have this folder structure. Another thing
+that happens is that one framework might put one aspect of the program under one folder
+(say, Models), while another framework may choose to put that feature in different folder
+(say, Controllers). Thus, MVC is a concept with a thousand slightly different 
+implementations. For this reason, there is a lot of confusion on this topic. In the 
+explanation that follows, I have tried to explain MVC as its implemented in ASP.NET Core.
+
+If you check sections '2.2 Architectural Styles' and '2.3 Architectural Patterns' section 
+of the file '1.1 Architectures & Patterns.txt', you'll note that MVC is an architectural 
+pattern that falls under the architectural style of Interactive Systems. Interactive 
+Systems are computer systems (a bundle of hardware and software) that has lots of 
+interaction between humans and the computer system. Desktop and laptop PCs and mobile 
+devices are good examples of interactive systems. Embedded devices, for instance the ones
+in your car's engine or in a factory's conveyor belt are examples of systems with 
+relatively little human-computer interaction. Interactive applications are things like 
+games, word processors, CLI apps. All of these applications take substantial user input 
+as part of their normal functioning.
 
 Interactive systems and applications are designed to respond to human requests. This is 
 where MVC comes in: It appears to be an architectural pattern that best suited to 
-organizing the layers in an interactive application. All interactive applications are 
-similar, but not identical to one another. 
+organizing the layers in an interactive application. All interactive applications have
+architectural similarities, but are not identical to one another. 
 
-MVC is often used to structure the presentation tier in larger applications, but in 
-smaller applications, it can be used to structure the presentation, business logic and
-data access layers.
+Historically, MVC was often used to structure just the Graphical User Interface module in 
+larger applications, but in smaller applications, it can be used to structure other 
+layers too.
 
 
-THE COMPONENTS OF MODEL-VIEW-CONTROLLER 
+4.2 THE COMPONENTS OF MODEL-VIEW-CONTROLLER 
 
 MVC's goal is to separate the following responsibilities in an application into three 
 distinct layers:
@@ -574,8 +586,15 @@ Controller handles requests and returns responses.
 
 It's important to note that MVC's layers do not directly correspond to the Multitier
 architecture's layers, i.e. Model, View and Controller do not directly map on to the 
-Presentation layer, Business Logic Layer and Data Access Layer. Keep this is mind to 
-avoid confusion. 
+Presentation layer, Business Logic Layer and Data Access Layer. Bear this is mind to 
+avoid confusion. Business Layers are a major unit of separation that supersede MVC's
+own separation of concerns. In ASP.NET Core applications, you should separate code
+files into folders titled 'Models', 'Views' and 'Controllers'. If you feel like adding 
+layers to your program, you create distinct projects for each layer. For instance, you
+could create Business Logic, Presentation and Data Access Layers (entitled 
+'ApplicationCore', 'Web' and 'Data' respectively) and move the MVC folders as well other 
+ones like 'Services' and 'Data' into the appropriate projects. In this way, you can use
+both MVC and N-Layer Architectures to organize your software application.
 
 MVC has other differences to the Multitier Architecture. In the multi-tier architecture, 
 communication goes linearly through layers/tiers: the client tier cannot directly 
@@ -631,6 +650,7 @@ MVC frameworks may be different.
 1. Model: The model layer is probably the simplest layer in MVC. The model represents the
    data, but does nothing else. The model is independent of the View and the Controller,
    i.e. specific output representations and or programmed responses to user requests.
+   
    When it comes to models, there is distinction to be made between Model classes and
    Model objects. Be aware of the difference between the two terms. Model classes are 
    templates for Model objects. Model objects contain most of the business-related data 
@@ -638,16 +658,16 @@ MVC frameworks may be different.
    are defined in the Models folder of the Common project, whereas Model objects live in 
    a Data Store such as a Database or File system. 
 
-   Model classes are Plain Old Class Objects (POCO) that define important business entities 
-   for your application. A model class represents the knowledge that the application needs 
-   to know about a certain business entity. Therefore, a Model class needs to be designed 
-   to capture information important to each entity. When designing a model class, it's 
-   important to be selective about the information you capture.
+   Model classes are Plain Old Class Objects (POCO) that define important business 
+   entities for your application. A model class represents the knowledge that the 
+   application needs to know about a certain business entity. Therefore, a Model class 
+   needs to be designed to capture information important to each entity. When designing a 
+   model class, it's important to be selective about the information you capture.
    
-   In a Calendar program, things like the Day, Alarms, Contacts etc. would be the Business 
-   entities. To a Day class, things like Date, Day of the Week, Scheduled events etc., 
-   would qualify as important information. So, these things will be represented as class 
-   properties. What kind of information should be left out? Here's a rather extreme 
+   In a Calendar program, things like the Day, Alarms, Contacts etc. would be the 
+   Business entities. To a Day class, things like Date, Day of the Week, Scheduled events 
+   etc., would qualify as important information. So, these things will be represented as 
+   class properties. What kind of information should be left out? Here's a rather extreme 
    example: you probably won't need a property that captures how many days have passed 
    since the death of Julius Caesar. It would not make much sense in a Calendar app as 
    your users probably don't care about this piece of information.
@@ -665,23 +685,27 @@ MVC frameworks may be different.
    
    Once these model objects have been created, they are passed back and forth between the 
    Views, Controllers and Database. Therefore, Model objects are the drops of water in a 
-   river of data that flows throughout the application. To display information to the user, 
-   the Controller will send model objects to the View layer. To persistently store data, 
-   the Controller will send model objects to the program's database/file system. Model 
-   objects will live there, and when needed, the Controller layer will consult or modify them.
+   river of data that flows throughout the application. To display information to the 
+   user, the Controller will send model objects to the View layer. To persistently store 
+   data, the Controller will send model objects to the program's database/file system. 
+   Model objects will live there, and when needed, the Controller layer will consult or 
+   modify them.
    
-   The Common library contains the Model classes for HRSP.
+   The Common project is a library that contains the Model classes used in HRSP.
    
 
 2. View: "A view is a (visual) representation of its model. It would ordinarily highlight
-   certain attributes of the model and suppress others. It is thus acting as a presentation
-   filter."[5] 
+   certain attributes of the model and suppress others. It is thus acting as a 
+   presentation filter."[5] 
    
-   The View layer is the presentation layer; it controls how data from model objects are
-   formatted and presented to the user. The View provides a variety of ways to present data 
-   it receives from Model objects, subject to user direction. With information it receives 
-   from the View, the user use the UI (the View) to issue orders to the program. The View 
-   can be an HTML webpage, a GUI, a text-based UI, Razor Views etc.
+   The View layer is the presentation layer: information is presented to the user through
+   the View and it offers the user the means to issue orders to the application. It is 
+   the responsibility of the View to control everything concerned to how data from model 
+   objects are formatted and presented to the user. Typically, the View provides a 
+   the user a variety of ways to display the data it receives from Model objects. With 
+   the help of information it receives from the View, the user can use the UI (the View) 
+   to issue orders to the program. The View can be a webpage, a GUI, a text-based UI, 
+   Razor Views etc.
 
    HRSP does not use standard ASP.NET Core Views due to the fact that it uses the Console
    to display text-based information to the user instead of HTML-based web pages. 
@@ -690,17 +714,17 @@ MVC frameworks may be different.
 
 3. ViewModel: This layer, strictly speaking, is not a part of MVC. It belongs to a variant 
    of MVC, the Model-View-ViewModel (MVVM) pattern. However, as MVC/MVVM is not an 
-   either/or choice[6], I'm introducing this concept here. In MVVM, ViewModels take up the 
-   role of Controllers, but do not necessarily replace them completely. See the sixth 
+   either/or choice[6], I'm introducing this concept here. In MVVM, ViewModels take up 
+   the role of Controllers, but do not necessarily replace them completely. See the sixth 
    source for more details. Here is an explanation of what ViewModels do from an MSDN 
    article[7]:
    
 
        The ViewModel class, which is the bridge between the view and the model. Each View
        class has a corresponding ViewModel class. The ViewModel retrieves data from the 
-       Model and manipulates it into the format required by the View. It notifies the View 
-       if the underlying data in the model is changed, and it updates the data in the Model 
-       in response to UI events from the View.
+       Model and manipulates it into the format required by the View. It notifies the 
+       View if the underlying data in the model is changed, and it updates the data in 
+       the Model in response to UI events from the View.
 
        
    However, in ASP.NET Core, viewmodels appear to be passive containers. There are two 
@@ -731,19 +755,12 @@ MVC frameworks may be different.
    interpret and validate incoming requests. In ASP.NET Core, Controllers do much of the 
    in-program communication and handling of data by doing things like routing, 
    authentication, authorization, request validation and redirection, response handling, 
-   model formatting and generation etc.  Once that is done, it is their job to query and 
+   model formatting and generation etc. Once that is done, it is their job to query and 
    modify model objects in the database and create or update Views to fulfill the user 
    request. By doing these things, this layer controls and directs application flow.
 
-   To compare the Controller layer to Multitier Architecture's layers for a moment, the 
-   Controller layer seems to combine Multitier's Business Logic and Data Access Layers.
-   That might be a okay for small applications, but for mid-to-large sized applications, 
-   combining two layers like that will lead to confusion and complexity. For more complex
-   programs, you'll want to keep your Controllers rather lean and move your business logic
-   into a separate software component, such as the Model layer. 
 
-
-PROS AND CONS OF THE MVC PATTERN
+4.3 PROS AND CONS OF THE MVC PATTERN
 
 This list is taken from Pg 194-195 of 'Pattern-Oriented Software Architecture For 
 Dummies'[1]:
@@ -819,7 +836,7 @@ Dummies'[1]:
       are ported to a new system, the platform-dependent code requires changes.
 
 
-ARCHITECTURE OF THE HOTEL-SERVER PROJECT
+5.1 ARCHITECTURE OF THE HOTEL-SERVER PROJECT
 
 This project pairs the ideas of tiers from the Multitier Architecture with layers from the
 MVC architectural pattern. This is not unusual, as N-Tier Architecture is often used in 
