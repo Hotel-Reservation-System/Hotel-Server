@@ -1,0 +1,4 @@
+1. INTRODUCTION
+
+The 2.1 document series is intended to chronicle the functioning of HRSP. The 
+Hotel-Reservation-System project is a simple CRUD application. 
