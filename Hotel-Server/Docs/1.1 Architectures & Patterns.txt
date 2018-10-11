@@ -1,5 +1,11 @@
 1. INTRODUCTORY REMARKS: WHY DO WE NEED ARCHITECTURES AND PATTERNS?
 
+Recommended Resource: Architecting Modern Web Applications with ASP.NET Core and Azure 
+                      v2.1.01 (Supports ASP.NET Core 2.1) (Steve Smith, 2017)
+This free ebook from Microsoft explains application architectures in much greater detail.
+I highly recommend reading it.
+
+
 Look at the architectural diagram below. It depicts the architecture, or better put, the 
 complete lack thereof, in a poorly designed monolithic application.
 
@@ -67,23 +73,45 @@ internals of other modules, but rather, every layer/tier should define and expos
 interfaces. By doing this, layers and tiers are loosely coupled, easily modified or
 swapped out for replacements. 
 
-First, in Section 2, basic architectural concepts will be discussed:
+This is the Table of Contents for this article: 
 
 
-    2.1 Introduction to Software Architectures
-    2.2 Architectural Styles
-    2.3 Architectural Patterns
-    2.4 Enabling Techniques
-    2.5 Practical Architectural Principles: Layers and Tiers
+    2.1.1 Introduction to Software Architectures
+    2.1.2 Parts of an Architecture
+    2.1.3 Best Practices and Factors of Architecture Design
     
+    2.2   Architectural Styles
+    2.3   Architectural Patterns
     
-Then, in Section 3, these principles and techniques will be applied to create multi-layer
-and multi-tier software. The next article, '1.2 Distributed Computing Architectures', 
-will discuss specific architectures such as the Client-Server and Multi-tier as well as
-the MVC architectural pattern.
+    2.4.1 Enabling Techniques (Architectural Design Principles)
+    2.4.2 Applying Enabling Techniques
+    2.4.3 Packaging Principles: High Cohesion and Loose Coupling
+    
+    2.5.1 Organizing Small Programs Using Folders
+    2.5.2 Organizing Medium-Sized and Large Application into Layers Using Projects
+    2.5.3 Creating Multi-Part Software Programs Using Tiers
+    2.5.4 What Do Layers and Tiers Do for Your Application? 
+    2.5.5 Creating Abstraction Layers Using Layers and Tiers
+     
+    3.1   A Better Designed Architecture
+
+    
+First, Section 2.1 will introduce basic architectural concepts will be discussed. Section
+2.2 and 2.3 will look at the concept of Styles and Patterns. Section 2.4 will discuss 
+explore architecture design principles and their application. Section 2.5 will delve into
+the practicalities of organizing code into folders, layers and tiers. It will also 
+discuss the benefits of these things and how they come together to form a rock solid 
+foundation for your application. Section 2.5.5 will teach you how to build abstraction 
+layers on top these foundations. 
+    
+Finally, in Section 3.1, these principles and techniques will be applied to illustrate 
+well-designed multi-layer and multi-tier software. The next article, '1.2 Distributed 
+Computing Architectures', will discuss specific architectures such as Client-Server and 
+Multitier as well as the MVC architectural pattern. It will also explore the architecture 
+of this project.
 
 
-2.1 AN INTRODUCTION TO SOFTWARE ARCHITECTURES
+2.1.1 INTRODUCTION TO SOFTWARE ARCHITECTURES
 
 In Robert Hanmer's book 'Pattern-Oriented Software Architecture For Dummies', he offers a 
 simple definition of the term Software Architecture on Page 9[2]:
@@ -127,7 +155,7 @@ writing the first line of code. Spend a lot of time designing the architecture, 
 it sets the tone for how your project will turn out.
 
 
-2.1.1 PARTS OF AN ARCHITECTURE
+2.1.2 PARTS OF AN ARCHITECTURE
 
 When a programmer designs a software solution's architecture, she is dividing it into
 Services and Components. Hanmer defines them on Page 25[2]:
@@ -147,7 +175,7 @@ components - libraries, modules, layers, tiers, sub-programs. Keep track of thes
 components, along with the services that they provide to other components. 
 
 
-2.1.2 BEST PRACTICES AND FACTORS OF ARCHITECTURE DESIGN
+2.1.3 BEST PRACTICES AND FACTORS OF ARCHITECTURE DESIGN
 
 When designing an application's architecture, Hanmer suggests considering these factors; 
 Pg 10[2]:
@@ -293,7 +321,7 @@ patterns are very common in web world, which is why the following articles will 
 these topics in some detail. 
 
 
-2.4 ENABLING TECHNIQUES
+2.4.1 ENABLING TECHNIQUES (ARCHITECTURAL DESIGN PRINCIPLES)
 
 On page 30-31, Hanmer also discusses some enabling techniques that empower the developer to
 create good software, independent of architectures and development methodologies[2]:
@@ -381,9 +409,9 @@ Software, by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides
 (Addison-Wesley Professional).
 
 
-2.4.1 USING ENABLING TECHNIQUES
+2.4.2 APPLYING ENABLING TECHNIQUES
 
-Section 2.4 listed a lot of enabling techniques. How can you use them?
+Section 2.4.1 listed a lot of enabling techniques. How can you use them?
 
 Well, the first thing you might want to use is the Divide and Conquer technique to
 break up your big software problem into smaller ones. When you start designing your
@@ -397,7 +425,7 @@ another component's internals. This is one way to enforce LOOSE COUPLING and als
 with MODULARIZATION. 
 
 
-2.4.2 PACKAGING PRINCIPLES: HIGH COHESION AND LOOSE COUPLING
+2.4.3 PACKAGING PRINCIPLES: HIGH COHESION AND LOOSE COUPLING
 
 The definitions for cohesion and coupling are taken from this StackOverflow question[7]: 
 
@@ -446,7 +474,7 @@ architecture that be changed easily in response to business requirements. Loose 
 even lets you work on modules independently. 
 
 
-2.5.1 ORGANIZING SMALL PROJECTS USING FOLDERS
+2.5.1 ORGANIZING SMALL PROGRAMS USING FOLDERS
 
 Thus far, this article has been very abstract. Let's move on to the practical part; how
 are these principles applied to a software project? 
@@ -639,7 +667,9 @@ TIERS separate software by the hardware platforms to which a software component 
 deployed. Tiers are a more fundamental form of division than layers. Where creating a 
 layer involves collecting files and folders with similar functions together into a 
 project, tiers usually break software up into separate programs, modules or libraries, 
-depending on where that piece of software is going to run. 
+depending on where that piece of software is going to run. In the .NET world, you create
+a tier when you make a new software solution. You can then populate the solution with 
+with new or existing projects.
 
 Tiers help to avoid a spaghetti architecture, because the act of designing software for
 a tier requires severing the whole into independent parts. You have to decide the 
@@ -721,9 +751,9 @@ He continues on and later in the article, he makes a few practical comments abou
     tolerance or security.
 
 
-2.5.5 CREATING ABSTRACTION LAYERS USING TIERS AND LAYERS
+2.5.5 CREATING ABSTRACTION LAYERS USING LAYERS AND TIERS
 
-In section 2.5.1, it was established that layers bring high cohesion to your application,
+In section 2.4.3, it was established that layers bring high cohesion to your application,
 while tiers bring loose coupling. I provided some discussion on the benefits they bring to 
 your application, but I want to bring up the concept of abstraction and abstraction layers. 
 Layers and tiers are used to create abstraction layers in your application, which in turn 
@@ -854,7 +884,7 @@ offers a concrete example of an abstraction layer[11]:
     components to achieve a common goal.
 
 
-3. A BETTER DESIGNED ARCHITECTURE
+3.1 A BETTER DESIGNED ARCHITECTURE
 
 Finally, let's take a look at diagrams of a better designed application. Contrasted with
 the mess from section 1, this is a diagram of a monolithic application with layers that 
