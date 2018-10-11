@@ -1,24 +1,32 @@
 1. INTRODUCTION TO DISTRIBUTED COMPUTING ARCHITECTURES
 
-In the previous article, 1.1 Architectures & Patterns.txt, I introduced architectures and
-concepts related to them. This article will consider a narrower class of ideas - 
+Recommended Resource: Architecting Modern Web Applications with ASP.NET Core and Azure 
+                      v2.1.01 (Supports ASP.NET Core 2.1) (Steve Smith, 2017)
+This free ebook from Microsoft explains application architectures in much greater detail.
+I highly recommend reading it.
+
+
+In the previous article, '1.1 Architectures & Patterns.txt', I introduced architectures 
+and concepts related to them. This article will consider a narrower class of ideas - 
 architectural concepts required to develop web applications. As web applications need a 
 distributed architecture, this will be the focus in this article. 
+
+After discussing distributed computing architectures and the MVC pattern, I will analyze 
+and discuss the structure and architecture, including both styles and patterns used in the 
+Hotel-Reservation-System project.
 
 Here are the topics that will be explored: 
 
 
     2.1 Introduction to Distributed Computing 
     2.2 Distributed Computing Architectures
-    3.1 Introduction to Multi-Tier Architectures
+    3.1 Introduction to Multitier Architectures
     3.2 A 2-Tier Distributed Architecture: The Client-Server Model
     3.3 A 3+ Tier Distributed Architecture: Multitier/N-Tier
     4.1 An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
-
-
-Finally, after discussing distributed computing architectures and the MVC pattern, I will
-analyze and discuss the structure and architecture, and architectural patterns used in 
-Hotel-Reservation-System.
+    4.2 Components of MVC
+    4.3 Pros and Cons of MVC
+    5.1 Architecture of the Hotel-Reservation-System Project
 
 
 2.1 DISTRIBUTED COMPUTING: CONCEPTS
@@ -590,7 +598,7 @@ Presentation layer, Business Logic Layer and Data Access Layer. Bear this is min
 avoid confusion. Business Layers are a major unit of separation that supersede MVC's
 own separation of concerns. In ASP.NET Core applications, you should separate code
 files into folders titled 'Models', 'Views' and 'Controllers'. If you feel like adding 
-layers to your program, you create distinct projects for each layer. For instance, you
+layers to your program, create distinct projects for each layer. For instance, you
 could create Business Logic, Presentation and Data Access Layers (entitled 
 'ApplicationCore', 'Web' and 'Data' respectively) and move the MVC folders as well other 
 ones like 'Services' and 'Data' into the appropriate projects. In this way, you can use
@@ -836,7 +844,7 @@ Dummies'[1]:
       are ported to a new system, the platform-dependent code requires changes.
 
 
-5.1 ARCHITECTURE OF THE HOTEL-SERVER PROJECT
+5.1 THE ARCHITECTURE OF THE HOTEL-RESERVATION-SYSTEM PROJECT
 
 This project pairs the ideas of tiers from the Multitier Architecture with layers from the
 MVC architectural pattern. This is not unusual, as N-Tier Architecture is often used in 
@@ -846,8 +854,8 @@ This project, Hotel Reservation System Project (HRSP), is divided into 2 tiers a
 library component:
 
 
-    1. Hotel-Client,            (Client Frontend)
-    2. Hotel-Server, and        (Application Server)
+    1. Hotel-Client,            (Frontend; The Client)
+    2. Hotel-Server, and        (Backend: Application/Database Server)
     3. Common                   (Shared Library)
 
 
@@ -912,25 +920,22 @@ Let's take a look at the structure of this project:
 
 TIERS
 
-1. Presentation Tier
+1. Presentation Tier: Hotel-Client
 
 In HRSP, the frontend role falls to Hotel-Client, which is a program that let the user 
 communicate to HRSP application. Users will issue orders and make requests of HRSP through 
 Hotel-Client, which will pass them on to the heart of the application, the Hotel-Server 
-program. If HRSP were deployed in the real world, many copies of Hotel-Client would run on
-desktop and laptop computers that serve Hotel front desk clerks and their managers. 
+program. If HRSP were deployed in the real world, many copies of Hotel-Client would run 
+on desktop and laptop computers that serve Hotel front desk clerks and their managers. 
 Therefore, the presentation tier for Hotel-Client is intended to be PCs.
 
-2. API/App Server
+2. API/App Server + Data Tier: Hotel-Server
 
-In HRSP, Hotel-Server is the Application Server. The Business Logic Tier's hardware platform 
-is usually a physical (or virtual) SERVER. App Server programs run on these servers, 
-listening for communications from the frontend. Client frontends pass User requests over 
-the internet to the App Server program to do the processing.
-
-3. Data Tier
-
-For this project, Hotel-Server also contains the Data Access Tier. 
+In HRSP, Hotel-Server is the API or the App Server program. The Business Logic Tier's 
+hardware platform is usually a physical (or virtual) SERVER. App Server programs run on 
+these servers, listening for communications from the frontend. Client frontends pass 
+User requests over the internet to the App Server program to do the processing. For this 
+project, Hotel-Server also contains the Data Access layer.
 
 
 LAYERS
