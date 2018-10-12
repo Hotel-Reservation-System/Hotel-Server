@@ -15,7 +15,7 @@ through interfaces defined in the Business Layer.
 Coming back to the entry point, this means that the UI project or layer should contain 
 Program.cs and Main(). Main() is the first method to be executed in an ASP.NET Core 
 application. By default, the first few instructions in Main() configure and start a Host 
-for the program. The Host is the container in which a program executes. After 
+for the program. The Host is the container in which your program will execute. After 
 initializing, the Host will configure and boot up these two things at a bare minimum:
 
 
@@ -52,35 +52,72 @@ application and also configure the Request Processing Pipeline.
 ****************************************************************************************************
 
 
-WHAT IS A WEB HOST?
+2.1 WHAT IS A WEB HOST?
 
 I can't find a clear definition for a Host. It's an ambiguous term whose meaning
 varies with context. 
 
-In the most often used sense, a web host appears to refer to the bundle of hardware
-and software required to serve up websites. The word appears to be synonymous with
-Web Server. In this sense, a host seems be a reference to a physical (or virtual) web
-server that stores files for one or more websites along with other related
-applications. In the typical case, when a user requests a website or a resource via
-their browser, the request travels over the internet to the host server, which
-responds by delivering the requested content, provided that the user is authorized to
-receive it. A Web Hosting Service leases this bundle to clients who want to host
-websites. 
+In the most often used sense, a web host appears to refer to the bundle of hardware and 
+software required to serve up websites. The word appears to be synonymous with
+Web Server. In this sense, a host seems be a reference to the physical server and/or the
+server application that stores files for one or more websites. In the typical case, when 
+a user requests a website or a resource via their browser, the request travels over the 
+internet to the web host server, which responds by delivering the requested content, 
+provided that the user is authorized to receive it. A Web Hosting Service leases this 
+bundle to clients who want to host websites. 
 
 This is related to but different from what the word 'Host' means in .NET/ASP.NET Core
-terminology. 
+terminology. This appears to the a reference to an OWIN Host, which their website defines
+as follows:
 
 
+    OWIN defines a standard interface between .NET web servers and web applications. The 
+    goal of the OWIN interface is to decouple server and application, encourage the 
+    development of simple modules for .NET web development, and, by being an open 
+    standard, stimulate the open source ecosystem of .NET web development tools.
 
-An ASP.NET Core Web Application must run inside, for lack of a better
-word, a container. This container, called a HOST or Webhost, appears to refer to the
-thread or process that executes the web application. A Host also connects the web app to a web server.
-This section is concerned with this type of host.
+The specifications page of their website provides the following definitions for software
+actors[1]:
 
-As the Host is the container for the Web app, creating and instantiating a Host is the
-first thing an ASP.NET Core application does. This code is the BuildWebHost() method in
-Program.cs of this application; it loads configuration information into a Host and turns
-it on. Some variation of it must run at the start of every ASP.NET Core program:
+
+    1. Server — The HTTP server that directly communicates with the client and then uses 
+       OWIN semantics to process requests. Servers may require an adapter layer that 
+       converts to OWIN semantics.
+    
+    2. Web Framework — A self-contained component on top of OWIN exposing its own object 
+       model or API that applications may use to facilitate request processing. Web 
+       Frameworks may require an adapter layer that converts from OWIN semantics.
+    
+    3. Web Application — A specific application, possibly built on top of a Web Framework, 
+       which is run using OWIN compatible Servers.
+    
+    4. Middleware — Pass through components that form a pipeline between a server and 
+       application to inspect, route, or modify request and response messages for a 
+       specific purpose.
+    
+    5. Host — The process an application and server execute inside of, primarily 
+       responsible for application startup. Some Servers are also Hosts.
+
+
+An ASP.NET Core Web Application must run inside, for lack of a better word, a container. 
+This container is called a Host or Webhost and refers to the process that executes the 
+web application. The Host is responsible for application startup and management of the
+app's lifecycle. It also connects the web app to a web server. Apparently, two kinds of 
+host APIs are availble[]: 
+Source: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/?view=aspnetcore-2.1
+
+
+    1. Web Host: for hosting web applications.
+    2. Generic Host: for hosting non-web applications. (ASP.NET Core 2.1 and later)
+    
+
+2.2 CONFIGURING AND BOOTING UP THE HOST
+
+ As mentioned before, an ASP.NET Core
+program's first act is to create and instantiate a host for the program. This code is the 
+from the BuildWebHost() method in Program.cs of this application; it loads configuration 
+information into a Host and turns it on. Some variation of it must run at the start of 
+every ASP.NET Core program:
 
 
         public static IWebHost BuildWebHost(string[] args) =>
@@ -89,8 +126,8 @@ it on. Some variation of it must run at the start of every ASP.NET Core program:
                 .Build();
 
 
-As you can see above, the first line of Main() in this program calls BuildWebHost(),
-which creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must
+As you can see in Program.cs, the first line of Main() calls BuildWebHost(), which 
+creates a Host (the IWebHost object) and then boots it up. ASP.NET Core hosts must 
 implement the IWebHost interface. An IWebHost object represents a configured web host.
 They are created by the static WebHost class, which "provides convenience methods for
 creating instances of IWebHost and IWebHostBuilder with pre-configured defaults."[2]
@@ -466,7 +503,7 @@ Docs for more details.
 
 SOURCES
 
-01: https://docs.microsoft.com/en-us/aspnet/core/
+01: http://owin.org/html/spec/owin-1.0.html#2-definitions
 02: https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.webhost?view=aspnetcore-2.1
 03: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-2.1
 04: https://aspnetcore.readthedocs.io/en/stable/fundamentals/hosting.html
