@@ -1,17 +1,22 @@
-1. THE PROCESS OF BOOTING UP ASP.NET CORE PROGRAMS
+1. WHAT HAPPENS WHEN AN ASP.NET CORE PROGRAM STARTS?: THE PROCESS
 
 NOTE: This article will explain code from Program.cs and to a lesser extent, 
 Startup.cs.
 
-When an ASP.NET Core application is started, a lot of things are configured and turned
-on. Some of them are parts of .NET Core and ASP.NET Core and others are parts of your
-web application.
+When an ASP.NET Core application is started, a lot of things have to be configured and 
+turned on. Some of them are parts of .NET Core and ASP.NET Core and others are parts of 
+your web application.
 
-When an ASP.NET Core application starts, the first thing it will do is to execute the
-Main() method in Program.cs. In any ASP.NET Core project, the first few instructions
-in Main() configure and start a Host for the program. The Host is container in which a
-program executes. After initializing, the Host will configure and boot up these two
-things at a bare minimum:
+Note that in ASP.NET Core MVC/Razor applications, the user interface layer is the entry 
+point. The UI project (layer) must reference the Business Layer (ApplicationCore) and
+its types should interact with the Data Access Layer (aka Infrastructure) strictly 
+through interfaces defined in the Business Layer.
+
+Coming back to the entry point, this means that the UI project or layer should contain 
+Program.cs and Main(). Main() is the first method to be executed in an ASP.NET Core 
+application. By default, the first few instructions in Main() configure and start a Host 
+for the program. The Host is the container in which a program executes. After 
+initializing, the Host will configure and boot up these two things at a bare minimum:
 
 
     1. A Web Server: to handle incoming HTTP requests,                  (in Program.cs)
@@ -22,29 +27,30 @@ The host in turn will have to configure and turn on the web server and middlewar
 services, for which it will need to have configuration information for things like:
 
 
-   The web server
-   The ContentRoot and wwwroot directories for the app,
-   Environment variables for the program,
-   .json files with user specified configurations
-   User secrets config values,
-   logging config defaults,
-   integrating the IIS web server with the default server (for use as a Reverse
+    * The web server
+    * The ContentRoot and wwwroot directories for the app,
+    * Environment variables for the program,
+    * .json files with user specified configurations
+    * User secrets config values,
+    * Logging config defaults,
+    * Integrating the IIS web server with the default server (for use as a Reverse
       Proxy),
 
 
-plus config information for all the other parts of the application that your web app
-requires. The takeaway here is there is a lot of configuration information that the
-Host needs.
-
-Default configuration data for the things listed above is specified in this static
-class and method: Webhost.CreateDefaultBuilder(). I believe you can change these
-defaults by making changes in Program.cs.
+plus configuration information for all the other parts of the application. The take away 
+here is there is a lot of configuration information that the Host needs. Fortunately,
+you can rely on default values for most the configuration values, but if you need to 
+change default values, you can do so by making changes to either Main() or BuildWebHost()
+in Program.cs. Default configuration data for the things listed above is specified in 
+this static class and method: Webhost.CreateDefaultBuilder().
 
 In Startup.cs, you can specify the the Middleware services you want to add to your
 application and also configure the Request Processing Pipeline.
 
+
 ****************************************************************************************************
 ****************************************************************************************************
+
 
 WHAT IS A WEB HOST?
 
