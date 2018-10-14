@@ -1,16 +1,22 @@
-1. WHAT HAPPENS WHEN AN ASP.NET CORE PROGRAM STARTS?: THE PROCESS
+1. 
 
-NOTE: This article will explain code from Program.cs and to a lesser extent, 
-Startup.cs.
 
-When an ASP.NET Core application is started, a lot of things have to be configured and 
-turned on. Some of them are parts of .NET Core and ASP.NET Core and others are parts of 
-your web application.
+****************************************************************************************************
+****************************************************************************************************
+
+
+2. WHAT HAPPENS WHEN AN ASP.NET CORE PROGRAM STARTS?: THE PROCESS
+
+An ASP.NET Core application requires many services to function, like an execution
+environment (a process). So, when an application is started, many features and services
+have to configured and turned on to support the program. Only then can application itself
+be booted. Most of these pre-application services are booted up and/or configured in 
+Program.cs and Startup.cs, which is why this article will refer to these files. 
 
 Note that in ASP.NET Core MVC/Razor applications, the user interface layer is the entry 
-point. The UI project (layer) must reference the Business Layer (ApplicationCore) and
-its types should interact with the Data Access Layer (aka Infrastructure) strictly 
-through interfaces defined in the Business Layer.
+point of the program. The UI project (layer) must reference the Business Layer 
+(ApplicationCore) and its types should interact with the Data Access Layer (aka 
+Infrastructure) strictly through interfaces defined in the Business Layer.
 
 Coming back to the entry point, this means that the UI project or layer should contain 
 Program.cs and Main(). Main() is the first method to be executed in an ASP.NET Core 
@@ -23,8 +29,27 @@ initializing, the Host will configure and boot up these two things at a bare min
     2. A Middleware Pipeline: to process and respond to these requests. (in Startup.cs)
 
 
-The host in turn will have to configure and turn on the web server and middleware
-services, for which it will need to have configuration information for things like:
+After booting up them up, the Host will connect your web application to the Web Server.
+Why do we need a web server and a middleware pipeline? Why does a web application have to 
+be connected to a web server?
+
+Recall that websites and web applications tend to have a multi-tier architecture. In a 
+client-server architecture, which is common for websites and web apps, one part of your 
+program runs on the server and the other part in the user's browser. When the user types
+in your website's URL, her request is to the server. The server responds by sending the 
+user the client portion of your web application. For a website, this is a static HTML
+webpage, but for a web app, the client is a written in Javascript, HTML and CSS. The 
+client communicates with the server over the HTTP protocol.
+ 
+Web applications are network-facing, i.e. the client and server communicate with each 
+other over a network. To make this happen, the server-side portion of your application 
+must be able to handle incoming HTTP requests and respond to them. Managing HTTP requests 
+is the duty of a WEB SERVER program. Responding to requests is the job of ASP.NET Core's 
+Middleware Services (Such services make up the Request Processing Pipeline. More on this
+later in this article.). For these reasons, when the host boots up, at a minimum, it will 
+configure a web server and a request processing pipeline.
+
+To do this, the host will need to have configuration information for things like:
 
 
     * The web server
@@ -44,16 +69,6 @@ change default values, you can do so by making changes to either Main() or Build
 in Program.cs. Default configuration data for the things listed above is specified in 
 this static class and method: Webhost.CreateDefaultBuilder().
 
-What is the point of all this configuration? Why does a web application have to be 
-connected to a web server?
-
-Every web application is network-facing, i.e. it communicates to other programs and
-processes over a network. This entails handling incoming HTTP requests and responding
-to them. Managing HTTP requests is the duty of a WEB SERVER program. Responding to
-requests is the job of ASP.NET Core's Middleware Services (Such services make up the
-Request Processing Pipeline). For these reasons, when the host boots up, at a minimum, it 
-will configure a web server and a request processing pipeline.
-
 In Startup.cs, you can specify the the Middleware services you want to add to your
 application and also configure the Request Processing Pipeline. See the Configure() 
 method of the Startup class to learn how to create and manage the Request Pipeline.
@@ -63,10 +78,10 @@ method of the Startup class to learn how to create and manage the Request Pipeli
 ****************************************************************************************************
 
 
-2.1 WHAT IS A WEB HOST?
+3.1 WHAT IS A WEB HOST?
 
-I can't find a clear definition for a Host. It's an ambiguous term whose meaning
-varies with context. 
+I can't find a clear definition for a Host. It's an ambiguous term whose meaning varies 
+with context. 
 
 In the most often used sense, a web host appears to refer to the bundle of hardware and 
 software required to serve up websites. The word appears to be synonymous with
@@ -86,6 +101,7 @@ as follows:
     goal of the OWIN interface is to decouple server and application, encourage the 
     development of simple modules for .NET web development, and, by being an open 
     standard, stimulate the open source ecosystem of .NET web development tools.
+
 
 The specifications page of their website provides the following definitions for software
 actors[1]:
@@ -110,12 +126,11 @@ actors[1]:
        responsible for application startup. Some Servers are also Hosts.
 
 
-An ASP.NET Core Web Application must run inside, for lack of a better word, a container. 
+As this source informs us, an ASP.NET Core Web application must run inside a container. 
 This container is called a Host or Webhost and refers to the process that executes the 
-web application. The Host is responsible for application startup and management of the
-app's lifecycle. Another one of its responsibilities is to correctly configure and turn 
-on an application's services and connect it to a web server. Apparently, two kinds of 
-host APIs are availble[]: 
+web application. The Host is responsible for application configuration and startup, 
+connecting it to a web server and thereafter, the management of the app's lifecycle. 
+Apparently, two kinds of host APIs are available[]: 
 Source: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/?view=aspnetcore-2.1
 
 
@@ -145,7 +160,7 @@ source appears to be out of date, not having been updated since the release of .
     is configured to use a particular server; the server is unaware of its host.
     
 
-2.2 CREATING AND BOOTING UP THE HOST
+3.2 CREATING AND BOOTING UP THE HOST
 
 As previously mentioned, an ASP.NET Core program's first act is to create and instantiate 
 a host for the program. This code is the from the BuildWebHost() method in Program.cs of 
