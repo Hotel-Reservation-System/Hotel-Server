@@ -1,4 +1,20 @@
-1. 
+1. Table of Contents
+
+This article considers a few indirectly connected concepts as they pertain to Program.cs
+and Startup.cs. The topics are as follows:
+
+    2.    What Happens When an Asp.Net Core Program Starts?: A Process
+    
+    3.1   What is a Web Host?
+    3.2   Creating and Booting Up the Host
+    3.3   The Host: Configuration Options
+
+    4.1   What is a Server?
+    4.2   Types of Servers
+    4.3   What is a Web Server?
+    4.3.1 How Does a Web Server Communicate Over the Network?
+    4.4   Choice of Web Servers
+    4.5   Kestrel
 
 
 ****************************************************************************************************
@@ -130,15 +146,14 @@ As this source informs us, an ASP.NET Core Web application must run inside a con
 This container is called a Host or Webhost and refers to the process that executes the 
 web application. The Host is responsible for application configuration and startup, 
 connecting it to a web server and thereafter, the management of the app's lifecycle. 
-Apparently, two kinds of host APIs are available[]: 
-Source: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/?view=aspnetcore-2.1
+Apparently, two kinds of host APIs are available[2]: 
 
 
     1. Web Host: for hosting web applications.
     2. Generic Host: for hosting non-web applications. (ASP.NET Core 2.1 and later)
     
 
-Below, see some additional notes on Web Hosts and Web Servers[4]. Please note that this
+Below, see some additional notes on Web Hosts and Web Servers[3]. Please note that this
 source appears to be out of date, not having been updated since the release of .NET Core
 1.0:
 
@@ -179,14 +194,14 @@ creates a Host (the IWebHost object), loads configuration information into it an
 it on. ASP.NET Core hosts must implement the IWebHost interface. An IWebHost object 
 represents a configured web host. They are created by the static WebHost class, which 
 "provides convenience methods for creating instances of IWebHost and IWebHostBuilder with 
-pre-configured defaults."[2]
+pre-configured defaults."[4]
 
 The WebHost class uses an instance of IWebHostBuilder to construct IWebHost objects.
 Webhost.CreateDefaultBuilder() will load default configuration information into an
 IWebHostBuilder object. IWebHostBuilder will return a IWebHost object.
 
 
-2.2.1 THE HOST: CONFIGURATION OPTIONS 
+3.3 THE HOST: CONFIGURATION OPTIONS 
 
 By default, when an IWebHost instance is created, it needs to be given configuration
 parameters. Configuring a web app is complicated because a lot of parameters need to
@@ -220,7 +235,7 @@ what CreateDefaultBuilder() looks like in ASP.NET Core 2.0:
     }
 
 
-These are the things CreateDefaultBuilder() is doing[3]:
+These are the things CreateDefaultBuilder() is doing[5]:
 
 
     * CONFIGURES THE DEFAULT WEB SERVER (KESTREL) AND STARTS IT: Configures Kestrel as
@@ -231,12 +246,13 @@ These are the things CreateDefaultBuilder() is doing[3]:
     * CONTENT DIRECTORY: Sets the content root to the path returned by
       Directory.GetCurrentDirectory. ["The content root is the base path to any content
       used by the app, such as views, Razor Pages, and static assets. By default, the
-      content root is the same as application base path for the executable hosting the app."
+      content root is the same as application base path for the executable hosting the 
+      app."
 
-      ContentRoot is similar to Web Root (wwwroot), which contains public static resources,
-      such as HTML, CSS and JavaScript files. When the Host object is being constructed,
-      by default, the program directory that contains appsettings.json is made the Content
-      Root (aka Content Directory) for that web application.]
+      ContentRoot is similar to Web Root (wwwroot), which contains public static 
+      resources, such as HTML, CSS and JavaScript files. When the Host object is being 
+      constructed, by default, the program directory that contains appsettings.json is
+      made the Content Root (aka Content Directory) for that web application.]
 
     * OPTIONAL CONFIGURATIONS: Loads host configuration from:
           * Environment variables prefixed with ASPNETCORE_ 
@@ -273,15 +289,16 @@ the Microsoft Docs for more information.
 ****************************************************************************************************
 ****************************************************************************************************
 
-WHAT IS A SERVER?
+4.1 WHAT IS A SERVER?
 
-In computing, the term server is overloaded and can be used for lots of things. In the
-context of ASP.NET Core, when I talk about 'servers', the term can refer to the physical
-computer that hosts applications or the actual program that runs on these computers and
-delivers content to users or to the combination of hardware and software working together. 
+In computing, as with the term 'host', the term 'server' is overloaded and can be used 
+for lots of things. In the context of ASP.NET Core, when I talk about 'servers', the term 
+can refer to the physical computer that hosts applications OR the actual program that 
+runs on these computers and delivers content to users OR to the combination of hardware 
+and software working together. 
 
 In the hardware sense, what is a server? Here is an explanation from an answer to a
-question on Quora[5]:
+question on Quora[6]:
 
 
     In a hardware context, a "server" is computer hardware that has been engineered for
@@ -294,15 +311,16 @@ question on Quora[5]:
     fans, hard drives, memory, sometimes even processors) can be removed and replaced
     without shutting down the machine or requiring the operating system to restart.
     Servers typically have very limited video capabilities (although some have
-    "headless GPUs" to support GPU-based computation) and usually have no audio capability
-    at all, just a little thing that can go beep. Server-class hardware has been engineered
-    to run continuously for years at a time in temperature-controlled environments.
-    Architecturally, server-grade hardware is not that dissimilar to workstation-grade
-    hardware; it's just engineered for a different level of performance.
+    "headless GPUs" to support GPU-based computation) and usually have no audio 
+    capability at all, just a little thing that can go beep. Server-class hardware has 
+    been engineered to run continuously for years at a time in temperature-controlled 
+    environments. Architecturally, server-grade hardware is not that dissimilar to 
+    workstation-grade hardware; it's just engineered for a different level of 
+    performance.
 
 
-Both physical servers and programs that serve content are called servers, but this section
-is mostly devoted to studying programs that run on server machines, not the machines
+Both physical servers and programs that serve content are called servers, but section 4 
+is mostly devoted to studying programs that run on server machines, not the machines 
 themselves.
 
 What is a server in the software sense? What does it do?
@@ -311,7 +329,7 @@ A SERVER is an application that runs passively on a device, listening on a netwo
 for incoming requests. It stands ready to perform operations or answer inquiries in
 response to queries from other programs. Programs that makes queries or requests of the
 server are called CLIENTS. The Server and Client form a two-sided distributed,
-network-based architecture called the 'Client-Server Model'[6]. Clients and Servers in
+network-based architecture called the 'Client-Server Model'[7]. Clients and Servers in
 this model communicate across a network (via network protocols) even if they are running
 on the same machine.
 
@@ -319,69 +337,72 @@ Servers usually don't act on their own; they act in response to client requests.
 servers are designed to respond to queries, a server program spends most of its time
 waiting for requests. A server program is usually not turned off, instead often running
 for months, years or even decades without interruption. This is why they run on special
-server computers that are designed for reliablity and durability. You rarely see server
-programs intended for long-term, uninterrupted uptime run on phones or desktop computers.  
+server computers that are designed for reliability and durability. You rarely see server
+programs that are intended for long-term, uninterrupted up-time run on phones or desktop 
+computers.  
 
 
-TYPES OF SERVERS
+4.2 TYPES OF SERVERS
 
-There are many kinds of servers. A distinction should be made here between dedicated
-and virtual servers. When the bundle of hardware and software in one server machine
-performs a single task, it is called a DEDICATED SERVER. For instance, email servers are
-usually dedicated to sending, receiving and storing emails.
+There are many kinds of servers. At this juncture, a distinction should be made between 
+dedicated and virtual servers. When the bundle of hardware and software in one server 
+machine performs a single task, it is called a DEDICATED SERVER. For instance, email 
+servers are usually dedicated to sending, receiving and storing emails.
 
-Servers can also be VIRTUAL, i.e you can use virtualization software to run several virtual
-operating systems at once. You can install server programs on each of these virtual OSs to
-maximize the use of the physical server's capabilities. In this way, you can run dozens of
-server programs across many virtual OSs on a single server machine. Each server program
-can now act like a dedicated server. However if too many server programs reside on one
-machine or if a single ravenous server starts hogging resources, it can negatively impact
+Servers can also be VIRTUAL, i.e you can use virtualization software to run several 
+virtual operating systems at once on one machine. You can deploy server apps in each of 
+these virtual environments to maximize the use of a physical server's capabilities. In 
+this way, you can run dozens of instances of your server across many virtual environment 
+on a single server machine or even across multiple machines. Each server program can now 
+act like a dedicated server. However if too many server programs reside on one machine or 
+if a single ravenous server starts hogging resources, it can negatively impact
 performance for all virtual servers on that machine.
 
-Servers can also be categorized according to purpose. Here is a partial list of server types:
+Servers can also be categorized according to purpose. Here is a partial list of server 
+types:
 
 
-   Email Servers: Mail servers move and store email across the internet and corporate
+    * Email Servers: Mail servers move and store email across the internet and corporate
       intranets.
 
-   Proxy Servers: "A proxy server is a server that sits between a client application,
+    * Proxy Servers: "A proxy server is a server that sits between a client application,
       such as a Web browser, and a real server. Proxy servers have two main purposes: to
-      improve performance and to filter requests."[7]
+      improve performance and to filter requests."[8]
 
-   Web Servers: "Web servers are computers that deliver (or serve up) Web pages. Every
+    * Web Servers: "Web servers are computers that deliver (or serve up) Web pages. Every
       Web server has an IP address and possibly a domain name. There are many Web server
-      software applications, including public domain software and commercial packages."[7]
-      Web servers usually involve a browser (the client) and the server communicating over
-      the HTTP Protocol.
+      software applications, including public domain software and commercial packages."
+      [7] Web servers usually involve a browser (the client) and the server communicating 
+      over the HTTP Protocol.
 
-   Real-Time Communication Server: are sometimes called Chat servers or IRC servers.
+    * Real-Time Communication Server: are sometimes called Chat servers or IRC servers.
       They are used to send and receive instant messages in real time.
 
-   FTP Server: is one of the oldest types of servers. An FTP server uses the File
+    * FTP Server: is one of the oldest types of servers. An FTP server uses the File
       Transfer Protocol (FTP) to send and receive files securely.
 
-   Collaboration Server: are used to facilitate collaboration for groupware software.
+    * Collaboration Server: are used to facilitate collaboration for groupware software.
 
-   Telnet Server: "A Telnet server enables users to log on to a host computer and
-      perform tasks as if they're working on the remote computer itself."[8]
+    * Telnet Server: "A Telnet server enables users to log on to a host computer and
+      perform tasks as if they're working on the remote computer itself."[9]
 
-   List Server: "List servers offer a way to better manage mailing lists, whether
+    * List Server: "List servers offer a way to better manage mailing lists, whether
       they be interactive discussions open to the public or one-way lists that deliver
       announcements, newsletters or advertising."
 
-   Application Server: is the server program portion of an application that is divided
-      into a multi-tier architecture, as is the case for this project. Application servers
-      host the business logic of your application and expose access to it through APIs to
-      clients. An application server is an environment that provides all the runtime
-      services your application needs. The application server for this project is called
-      'Hotel-Server'.  
+    * Application Server: is the server program portion of an application that is divided
+      into a multi-tier architecture, as is the case for this project. Application 
+      servers host the business logic of your application and expose access to it through 
+      APIs to clients. An application server is an environment that provides all the 
+      runtime services your application needs. The application server for this project is 
+      called 'Hotel-Server'.  
 
 
-WHAT IS A WEB SERVER?
+4.3 WHAT IS A WEB SERVER?
 
-A Web Server can refer to a physical machine (or a virtual server running on it) or server
-software running on a server machine. An Mozilla Developer Network article describes a
-hardware web server as follows[9]:
+A Web Server can refer to a physical machine (or a virtual server running on it) or 
+server software running on a server machine. An Mozilla Developer Network article 
+describes a hardware web server as follows[10]:
 
 
     On the hardware side, a web server is a computer that stores web server software 
@@ -395,12 +416,12 @@ The article describes Web server software like this:
 
     On the software side, a web server includes several parts that control how web users
     access hosted files, at minimum an HTTP server. An HTTP server is a piece of software
-    that understands URLs (web addresses) and HTTP (the protocol your browser uses to view
-    webpages). It can be accessed through the domain names (like mozilla.org) of websites
-    it stores, and delivers their content to the end-user's device.
+    that understands URLs (web addresses) and HTTP (the protocol your browser uses to 
+    view webpages). It can be accessed through the domain names (like mozilla.org) of 
+    websites it stores, and delivers their content to the end-user's device.
 
 
-HOW DOES A WEB SERVER COMMUNICATE OVER THE INTERNET?
+4.3.1 HOW DOES A WEB SERVER COMMUNICATE OVER THE INTERNET?
 
 
         +----------------------+                           +---------------------+
@@ -415,32 +436,34 @@ HOW DOES A WEB SERVER COMMUNICATE OVER THE INTERNET?
         | +-------+  +-------+ |                           |                     |
         |                      |                           |                     |
         +----------------------+                           +---------------------+
+                SERVER                                              CLIENT
+        
 
 Take a look at this diagram. The MDN article explains how the browser gets a file from a
 web server:
 
 
-    At the most basic level, whenever a browser needs a file which is hosted on a web server,
-    the browser requests the file via HTTP. When the request reaches the correct web server
-    (hardware), the HTTP server (software) accepts request, finds the requested document
-    (if it doesn't then a 404 response is returned), and sends it back to the browser, also
-    through HTTP.
+    At the most basic level, whenever a browser needs a file which is hosted on a web 
+    server, the browser requests the file via HTTP. When the request reaches the correct 
+    web server (hardware), the HTTP server (software) accepts request, finds the 
+    requested document (if it doesn't then a 404 response is returned), and sends it back 
+    to the browser, also through HTTP.
 
 
 As the article explains, there are some rules to communication over the HTTP protocol:
 
 
-   Only clients can make HTTP requests, and then only to servers. Servers can only
+    * Only clients can make HTTP requests, and then only to servers. Servers can only
       respond to a client's HTTP request.
 
-   When requesting a file via HTTP, clients must provide the file's URL.
+    * When requesting a file via HTTP, clients must provide the file's URL.
 
-   The web server must answer every HTTP request, at least with an error message.
+    * The web server must answer every HTTP request, at least with an error message.
 
 
-The article explains the responsibilities of a Web Server. Note that the term 'HTTP Server'
-is used instead 'Web Server'. There is a distinction between the terms, but here you can
-treat them as the same:
+The article explains the responsibilities of a Web Server. Note that the term 'HTTP 
+Server' is used instead 'Web Server'. There is a distinction between the terms, but here 
+you can treat them as the same:
 
 
     On a web server, the HTTP server is responsible for processing and answering incoming
@@ -456,28 +479,31 @@ treat them as the same:
            designers spend quite some time designing 404 error pages.)
 
 
-CHOICE OF WEB SERVERS
+4.4 CHOICE OF WEB SERVERS
 
-According to w3techs[10], these are the most popular web servers as of 26 July, 2018:
+According to w3techs[11], these are the most popular web servers as of 26 July, 2018:
 
 
     1. Apache: 45.9%
     2. Nginx: 39.0%
     3. IIS: 9.5%
     4. Litespeed: 3.4%
+    
 
-Microsoft-oriented shops tend to use IIS (Internet Information Server), but it's no longer
-the default web server for .NET Core/ASP.NET Core so its market share is declining. Linux
-shops tend to favour Apache, Nginx and Litespeed. Apache has been the big dog since 1995, 
-but it consumes much more memory while being much less performant, so unsurprisingly,
-it will probably soon lose its crown in a few years to the new rising star, Nginx. 
+Microsoft-oriented shops tend to use IIS (Internet Information Server), but it's no 
+longer the default web server for .NET Core/ASP.NET Core so its market share is 
+declining. Linux shops tend to favour Apache, Nginx and Litespeed. Apache has been the 
+big dog since 1995, but it consumes much more memory while being much less performant, so 
+unsurprisingly, it will probably soon lose its crown in a few years to the new rising 
+star, Nginx. 
 
 The default web server for ASP.NET Core programs is Kestrel.
 
 
-KESTREL
+4.5 KESTREL
 
-Stackify has an article that introduces Kestrel[11]:
+Stackify has an article that introduces Kestrel[12]:
+
 
     Kestrel is open-source (source code available on GitHub), event-driven, asynchronous
     I/O based server used to host ASP.NET applications on any platform. It’s a listening
@@ -492,26 +518,28 @@ Stackify has an article that introduces Kestrel[11]:
     based on the libuv library, the same one used by node.js. Libuv supports an
     event-driven style of programming. Some of its core utilities include:
 
-       Non-blocking network support
-       Asynchronous file system access
-       Timers
-       Child processes
+        * Non-blocking network support
+        * Asynchronous file system access
+        * Timers
+        * Child processes
 
-    It allows ASP.NET Core applications to be run easily on other cross-platform webservers
-    such as Nginx and Apache, without the need to address varying startup configurations. By
-    using Kestrel as an in-process server, applications will have a consistent process
-    (Startup (Main(), Startup.ConfigireServices(), Startup.Configure()) ) even with
-    cross-platform support.
+    It allows ASP.NET Core applications to be run easily on other cross-platform 
+    webservers such as Nginx and Apache, without the need to address varying startup 
+    configurations. By using Kestrel as an in-process server, applications will have a 
+    consistent process (Startup (Main(), Startup.ConfigureServices(), Startup.Configure()) ) 
+    even with cross-platform support.
 
-However, Kestrel is not a fully-featured web server; it does as little as possible. Kestrel
-developers seem to optimized for speed by leaving out most of IIS's features. So, it
-sounds as though Kestrel is intended to work as an in-process server, with another fully
-featured web server like Nginx or IIS in front of it for public web applications, as Kestrel
-cannot handle windows authentication, security and other such services. When you use another
-web server in front of Kestrel, that web server is said to be a Reverse Proxy Server.
 
-You can configure some of these options in Configure() method of Startup.cs. See Microsoft
-Docs for more details.
+However, Kestrel is not a fully-featured web server; it does as little as possible. 
+Kestrel developers seem to have optimized for speed by leaving out most of IIS's 
+features. So, it sounds as though Kestrel is intended to work as an in-process server, 
+with another fully featured web server like Nginx or IIS in front of it for public web 
+applications, as Kestrel cannot handle windows authentication, security and other such 
+services. When you use another web server in front of Kestrel, that web server is said to 
+be a Reverse Proxy Server.
+
+You can configure some of these options in Configure() method of Startup.cs. See 
+Microsoft Docs for more details.
 
 
 ****************************************************************************************************
@@ -521,13 +549,14 @@ Docs for more details.
 SOURCES
 
 01: http://owin.org/html/spec/owin-1.0.html#2-definitions
-02: https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.webhost?view=aspnetcore-2.1
-03: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-2.1
-04: https://aspnetcore.readthedocs.io/en/stable/fundamentals/hosting.html
-05: https://www.quora.com/What-is-a-software-server-and-what-are-the-main-differences-between-a-software-server-and-a-hardware-server
-06: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
-07: https://www.webopedia.com/TERM/S/server.html
-08: https://www.webopedia.com/quick_ref/servers.asp
-09: https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_web_server
-10: https://w3techs.com/technologies/overview/web_server/all
-11: https://stackify.com/what-is-kestrel-web-server/
+02: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/?view=aspnetcore-2.1
+03: https://aspnetcore.readthedocs.io/en/stable/fundamentals/hosting.html
+04: https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.webhost?view=aspnetcore-2.1
+05: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-2.1
+06: https://www.quora.com/What-is-a-software-server-and-what-are-the-main-differences-between-a-software-server-and-a-hardware-server
+07: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
+08: https://www.webopedia.com/TERM/S/server.html
+09: https://www.webopedia.com/quick_ref/servers.asp
+10: https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_web_server
+11: https://w3techs.com/technologies/overview/web_server/all
+12: https://stackify.com/what-is-kestrel-web-server/
