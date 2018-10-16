@@ -144,9 +144,15 @@ actors[1]:
 
 As this source informs us, an ASP.NET Core Web application must run inside a container. 
 This container is called a Host or Webhost and refers to the process that executes the 
-web application. The Host is responsible for application configuration and startup, 
-connecting it to a web server and thereafter, the management of the app's lifecycle. 
-Apparently, two kinds of host APIs are available[2]: 
+web application. What is a process? A process is a term that is usually synonymous with 
+a program. A process is an encapsulated container for a program. It is an independent 
+execution environment to which the operating system assigns a slice of computing 
+resources. With access to resources like processor time and some RAM to store temporary
+data, a process can execute almost any program.  
+ 
+The Host is responsible for application configuration and startup, connecting it to a web 
+server and thereafter, the management of the app's lifecycle. Apparently, two kinds of 
+host APIs are available[2]: 
 
 
     1. Web Host: for hosting web applications.
@@ -178,9 +184,10 @@ source appears to be out of date, not having been updated since the release of .
 3.2 CREATING AND BOOTING UP THE HOST
 
 As previously mentioned, an ASP.NET Core program's first act is to create and instantiate 
-a host for the program. This code is the from the BuildWebHost() method in Program.cs of 
-this application. Some variation of it must run at the start of every ASP.NET Core 
-program:
+a host for the program. In fact, that's the only thing that Main() seems to do. Main()
+calls BuildWebHost() to configure and return a Host object, which it will then turn on.
+The code below is from the BuildWebHost() method in Program.cs of this application. Some 
+variation of it must run at the start of every ASP.NET Core program:
 
 
         public static IWebHost BuildWebHost(string[] args) =>
@@ -189,16 +196,42 @@ program:
                 .Build();
 
 
-As you can see in Program.cs, the first line of Main() calls BuildWebHost(), which 
-creates a Host (the IWebHost object), loads configuration information into it and turns 
-it on. ASP.NET Core hosts must implement the IWebHost interface. An IWebHost object 
-represents a configured web host. They are created by the static WebHost class, which 
-"provides convenience methods for creating instances of IWebHost and IWebHostBuilder with 
-pre-configured defaults."[4]
+WebHost() is a static class which contains a static method called CreateDefaultBuilder().
+The WebHost class "provides convenience methods for creating instances of IWebHost and 
+IWebHostBuilder with pre-configured defaults."[4] CreateDefaultBuilder() will create a 
+Host, load configuration information into it, and return it to the caller, the Main() 
+method. 
 
-The WebHost class uses an instance of IWebHostBuilder to construct IWebHost objects.
-Webhost.CreateDefaultBuilder() will load default configuration information into an
-IWebHostBuilder object. IWebHostBuilder will return a IWebHost object.
+The return type of the BuildWebHost() method is IWebHost, which is an interface. An 
+IWebHost object represents an configured Host. In ASP.NET Core, all hosts (objects) must 
+implement the IWebHost interface. 
+
+Let's take a look at the early lifecycle of your program (We're only concerned with the
+Host for now):
+
+
+    1. When WebHost.CreateDefaultBuilder(args) is invoked, it will initialize a 
+       WebHostBuilder object, which must implement the IWebHostBuilder interface. The 
+       WebHostBuilder constructor loads some default configuration values into the new 
+       WebHostBuilder object. 
+       
+       The CreateDefaultBuilder() method loads even more default values into the 
+       WebHostBuilder object and returns it to the caller, BuildWebHost().
+        
+    2. Back in BuildWebHost(), the next step is to add user specified configuration 
+       values to the Host. In the code snippet above, this is done on line 3. In the 
+       Startup class, you can register any ASP.NET Core or third party services that 
+       your application may need. In addition, you can configure the middleware layer to 
+       alter the request processing pipeline. 
+       
+    3. After all these things have been added to the Host, BuildWebHost() will build 
+       the host and return it to Main(). In Main(), you can further configure some things
+       that the Host needs, like the database's context. Finally, the Host is booted up.
+       
+    4. The Host will turn on all the services your application needs as well as Kestrel 
+       for the in-process Web Server. 
+       
+    5. After all these things have been done, the Host turns on your application. 
 
 
 3.3 THE HOST: CONFIGURATION OPTIONS 
@@ -244,15 +277,16 @@ These are the things CreateDefaultBuilder() is doing[5]:
       in ASP.NET Core.
 
     * CONTENT DIRECTORY: Sets the content root to the path returned by
-      Directory.GetCurrentDirectory. ["The content root is the base path to any content
-      used by the app, such as views, Razor Pages, and static assets. By default, the
-      content root is the same as application base path for the executable hosting the 
-      app."
+      Directory.GetCurrentDirectory. 
+      ["The content root is the base path to any content used by the app, such as views, 
+      Razor Pages, and static assets. By default, the content root is the same as 
+      application base path for the executable hosting the app."
 
-      ContentRoot is similar to Web Root (wwwroot), which contains public static 
-      resources, such as HTML, CSS and JavaScript files. When the Host object is being 
-      constructed, by default, the program directory that contains appsettings.json is
-      made the Content Root (aka Content Directory) for that web application.]
+      ContentRoot is similar to Web Root (wwwroot). The wwwroot folder contains public 
+      static resources, such as HTML, CSS and JavaScript files. ContentRoot contains the
+      web app's private internal files. When the Host object is being constructed, by 
+      default, the program directory that contains appsettings.json is made the Content 
+      Root (aka Content Directory) for that web application.]
 
     * OPTIONAL CONFIGURATIONS: Loads host configuration from:
           * Environment variables prefixed with ASPNETCORE_ 
