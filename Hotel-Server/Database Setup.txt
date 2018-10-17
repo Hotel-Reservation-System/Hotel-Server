@@ -1,12 +1,287 @@
 1. SETTING UP THE DATABASE FOR THE HOTEL RESERVATION SYSTEM PROJECT
 
-This project will store data in a PostgreSQL database and it will use Entity Framework Core (EFC) 
-for the ORM. The sections below discuss concepts and frameworks that concern setting up this program
-to interface with a database. 
+This program will store data in a PostgreSQL database and it will use Entity Framework 
+Core (EFC) as the ORM. The sections below discuss concepts and frameworks that concern 
+setting up HRSP to connect and talk to a database. 
 
 
+2. INTRODUCTION TO DATABASE CONCEPTS AND TERMS
 
-2. INTRODUCTION TO DATABASE CONCEPTS AND FRAMEWORKS 
+2.1 WHAT IS A DATABASE?
+
+A database is an software system that stores data. A snippet I found on the internet 
+describes databases like this: "A database is a computerised system that makes it easy to 
+search, select and store information." Databases are used in institutions and businesses 
+to store organizational data like customer records and profiles, sales transactions, 
+product information etc. Computers, web browsers and phones have many built-in databases
+for tracking information. However, storing data is not worthwhile unless the database is 
+secure and well-organized, yet easily accessible to those who have authorization.
+
+This is why a database program is rarely marketed as a standalone piece of software; 
+instead most databases come with an ecosystem of additional tools. This collection of 
+database and tooling is called a Database Management System (DBMS). A DBMS comes with 
+tools to facilitate things like security rules and user access management, user 
+authentication, search optimization, data management (Data integrity, encryption, 
+compression, de-duplication, backup and recovery etc.), report generation etc. 
+
+In 'Databases: A Beginner's Guide', Andy Oppel provides some definitions for terms 
+related to databases[]:
+ 
+ 
+    1. Database Object (Page 4): "A database object is a named data structure that is 
+       stored in a database. The specific types of database objects supported in a 
+       database vary from vendor to vendor and from one database model to another."
+       
+    2. Database Model (Page 4): "Database model refers to the way in which a database 
+       organizes its data to pattern the real world." 
+       
+       Historical database models include Flat File, Hierarchical, Network and the 
+       Inverted file model. Some modern niche database models: Object-oriented, 
+       Object-Relational, Graph, Document-oriented, and NewSQL.
+    
+       The most common modern database models are Relational and NoSQL.
+    
+    3. File (Page 4): A file is a collection of related records that are stored as a 
+       single unit by an operating system. Given the unfortunately similar definitions of 
+       files and databases, how can we make a distinction?… The answer lies in an 
+       understanding of certain characteristics or properties that databases possess 
+       which are not found in ordinary files, including the following:
+    
+           * Management by a database management system (DBMS)
+           * Layers of data abstraction
+           * Physical data independence
+           * Logical data independence
+    
+    4. Database Management System (DBMS) (Page 5): The database management system (DBMS) 
+       is software provided by the database vendor. Software products such as Microsoft 
+       Access, Oracle, Microsoft SQL Server, Sybase ASE,DB2, Ingres, and MySQL are all 
+       DBMSs…
+    
+       The DBMS provides all the basic services required to organize and maintain the 
+       database, including the following:
+    
+       * Moves data to and from the physical data files as needed.
+       * Manages concurrent data access by multiple users, including provisions to prevent 
+         simultaneous updates from conflicting with one another.
+       * Manages transactions so that each transaction’s database changes are an 
+         all-or-nothing unit of work. In other words, if the transaction succeeds, all 
+         database changes made by it are recorded in the database; if the transaction 
+         fails, none of the changes it made are recorded in the database.
+       * Supports a query language, which is a system of commands that a database user 
+         employs to retrieve data from the database.
+       * Provides provisions for backing up the database and recovering from failures.
+       * Provides security mechanisms to prevent unauthorized data access and modification.
+
+
+2.2 RELATIONAL DATABASE MANAGEMENT SYSTEMS (RDBMS)
+
+Andy Oppel explains the Relational Model on pages 17-19[]:
+
+
+    In addition to complexity, the network and hierarchical database models share another 
+    common problem—they are inflexible. You must follow the preconceived paths through 
+    the data to process the data efficiently. Ad hoc queries, such as finding all the 
+    orders shipped in a particular month, require scanning the entire database to locate 
+    them all. Computer scientists were still looking for a better way…
+    
+    The relational model is based on the notion that any preconceived path through a 
+    data structure is too restrictive a solution, especially in light of ever-increasing 
+    demands to support ad hoc requests for information. Database users simply cannot 
+    think of every possible use of the data before the database is created; therefore, 
+    imposing predefined paths through the data merely creates a “data jail.” The 
+    relational model allows users to relate records as needed rather than as predefined 
+    when the records are first stored in the database. Moreover, the relational model 
+    is constructed such that queries work with sets of data (for example, all the 
+    customers who have an outstanding balance) rather than one record at a time, as 
+    with the network and hierarchical models.
+    
+    The relational model presents data in familiar two-dimensional tables, much like 
+    a spreadsheet does. Unlike a spreadsheet, the data is not necessarily stored in 
+    tabular form and the model also permits combining (joining in relational terminology) 
+    tables to form views, which are also presented as two-dimensional tables. In short, 
+    it follows the ANSI/SPARC model and therefore provides healthy doses of physical and 
+    logical data independence. Instead of linking related records together with physical 
+    address pointers, as is done in the hierarchical and network models, a common data 
+    item is stored in each table, just as was done in flat file systems…
+    
+    The elegant simplicity of the relational model and the ease with which people can 
+    learn and understand it has been the main factor in its universal acceptance. The 
+    relational model is the main focus of this book because it is ubiquitous in today’s 
+    information technology systems and will likely remain so for many years to come.
+
+
+In the Relational Model, two pieces of data are linked to each other with respect to the 
+relationship they have to another. A table is a physical representation of a relation.
+
+This article will only consider the most common kind of databases, the Relational 
+Database Management System. Here is an explanation of RDBMSes[]: 
+Source: from db-engines.com
+
+
+    1. Relational Databases: Relational database management systems (RDBMS) support the 
+       relational (=table-oriented) data model. The schema of a table (=relation schema) 
+       is defined by the table name and a fixed number of attributes with fixed data 
+       types. A record (=entity) corresponds to a row in the table and consists of the 
+       values of each attribute. A relation thus consists of a set of uniform records.
+    
+       The table schemas are generated by normalization in the process of data modeling.
+    
+       Certain basic operations are defined on the relations:
+    
+       * classical set operations (union, intersection and difference)
+       * Selection (selection of a subset of records according to certain filter criteria 
+         for the attribute values)
+       * Projection (selecting a subset of attributes / columns of the table)
+       * Join: special conjunction of multiple tables as a combination of the Cartesian 
+         product with selection and projection.
+         
+      These basic operations, as well as operations for creation, modification and 
+      deletion of table schemas, operations for controlling transactions and user 
+      management are performed by means of database languages​​, with SQL being a well 
+      established standard for such languages.
+    
+      The first relational database management systems appeared on the market at the 
+      beginning of the 1980s and since have been the most commonly used DBMS type.
+    
+      Over the years, many RDBMS have been expanded with non-relational concepts such as 
+      user-defined data types, not atomic attributes, inheritance and hierarchies, which 
+      is why they are sometimes referred to as object-relational DBMS.
+      
+      
+Here is a list of well known RDBMSes:
+
+
+    Oracle
+    MySQL
+    Microsoft SQL Server
+    PostgreSQL
+    DB2
+    Microsoft Access
+    SQLite
+    Teradata
+    MariaDB
+
+
+The most popular open source databases as of October 2018 are: PostgreSQL and SQLite. 
+Both are robust and capable. 
+
+SQLite is designed to be a light-weight, server-less single file database. It's used in 
+electronic devices like phones, PDAs, MP3 players as well as web browsers. If you need a
+low footprint, high-quality database, go with SQLite.
+
+PostgreSQL is a open source, fully featured RDBMS. It's more powerful than MySQL/MariDB,
+but it has better data integrity. It will serve well as the database for web applications
+and for other kinds of heavier duty software.   
+ 
+ 
+2.3 OTHER DATABASE TERMS TO LEARN BEFORE PROCEEDING
+
+There is much more to learn about databases before proceeding to Section 3. Here are 
+lists of such things, mostly taken from Caleb Curry's website.[]
+
+
+SQL
+
+You should know the basics of SQL, because this is the language of databases.
+ 
+
+DATA
+
+    * Data
+    * Database
+    * Relational Database
+    * Database Management System
+    * Relational Database Management System
+    * Null
+    * Anomalies
+    * Referential Integrity 
+
+
+DATABASE COMPONENTS
+
+    * Entity
+    * Attribute
+    * Relation
+    * Tuple
+    * Table
+    * Row
+    * Column
+    * File
+    * Record
+    * Field
+    * Value
+    * Entry
+    * Database Design
+    * Schema
+    * Normalize
+    * Naming Conventions
+    * Keys
+    
+
+CONCEPTUAL DATABASE DESIGN CONCEPTS
+
+Andy Oppel explains on page 30: []
+
+    … involves studying and modeling the data in a technology-independent manner. The 
+    conceptual data model that results can be theoretically implemented on any database 
+    or even on a flat file system. The person who performs conceptual database design 
+    is often called a data modeler.
+
+
+    * Entity vs. Entity-Type
+    * External Entities
+    * Attributes
+    * Relationships
+    * One-to-One Relationships
+    * One-to-Many Relationships
+    * Many-to-Many Relationship
+    * Recursive Relationships 
+    * Business Rules
+    
+    
+LOGICAL & PHYSICAL DESIGN CONCEPTS
+
+Andy Oppel explains on page 30: []
+
+Logical Database Design
+
+
+    …is the process of translating, or mapping, the conceptual design into a logical 
+    design that fits the chosen database model (relational, object-oriented, 
+    object-relational, and so on). A specialist who performs logical database design is 
+    called a database designer, but often the database administrator (DBA) performs all 
+    or part of this design step.
+
+
+Physical Database Design
+
+    The final design step is physical database design, which involves mapping the logical 
+    design to one or more physical designs, each tailored to the particular DBMS that 
+    will manage the database and the particular computer system on which the database 
+    will run. The person who performs physical database design is usually the DBA.
+
+
+    * Tables
+    * Columns and Data Types
+    * Constraints
+    * Primary Key Constraints
+    * Primary Key Constraints
+    * Intersection Tables
+    * Intersection Tables
+    * NOT NULL Constraints
+    * CHECK Constraints
+    * Constraint Enforcement Using Triggers
+    * View
+
+
+ENTITY-RELATIONSHIP MODEL
+
+In the context of a database, an entity–relationship model (ER model for short) 
+describes relationships between instances of entities.
+
+
+    * Keys (Primary, Foreign, Compound, Alternate etc.)
+    
 
 2.1 ENTITY FRAMEWORK CORE
 
