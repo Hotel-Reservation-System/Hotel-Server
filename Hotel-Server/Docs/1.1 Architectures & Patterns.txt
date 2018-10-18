@@ -111,6 +111,10 @@ Multitier as well as the MVC architectural pattern. It will also explore the arc
 of this project.
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 2.1.1 INTRODUCTION TO SOFTWARE ARCHITECTURES
 
 In Robert Hanmer's book 'Pattern-Oriented Software Architecture For Dummies', he offers a 
@@ -321,6 +325,10 @@ patterns are very common in web world, which is why the following articles will 
 these topics in some detail. 
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 2.4.1 ENABLING TECHNIQUES (ARCHITECTURAL DESIGN PRINCIPLES)
 
 On page 30-31, Hanmer also discusses some enabling techniques that empower the developer to
@@ -472,6 +480,10 @@ effect. Putting all related members in specialized modules and designing the mod
 have as little dependency on each other as possible lets the systems designer build an 
 architecture that be changed easily in response to business requirements. Loose coupling
 even lets you work on modules independently. 
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 2.5.1 ORGANIZING SMALL PROGRAMS USING FOLDERS
@@ -884,6 +896,10 @@ offers a concrete example of an abstraction layer[11]:
     components to achieve a common goal.
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 3.1 A BETTER DESIGNED ARCHITECTURE
 
 Finally, let's take a look at diagrams of a better designed application. Contrasted with
@@ -992,6 +1008,10 @@ One final warning that increasing the number of layers and tiers does not come w
 price, so you have to weigh the cost of adding a new layer or tier. Tiers in particular 
 are expensive, both in terms of increasing latency and hardware costs, so think carefully
 before adding one.
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 SOURCES
