@@ -1,4 +1,4 @@
-1. SETTING UP THE DATABASE FOR THE HOTEL RESERVATION SYSTEM PROJECT
+﻿1. SETTING UP THE DATABASE FOR THE HOTEL RESERVATION SYSTEM PROJECT
 
 This program will store data in a PostgreSQL database and it will use Entity Framework 
 Core (EFC) as the ORM. The sections below discuss concepts and frameworks that broadly 
