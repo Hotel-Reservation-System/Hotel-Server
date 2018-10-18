@@ -20,13 +20,20 @@ Here are the topics that will be explored:
 
     2.1 Introduction to Distributed Computing 
     2.2 Distributed Computing Architectures
+    
     3.1 Introduction to Multitier Architectures
     3.2 A 2-Tier Distributed Architecture: The Client-Server Model
     3.3 A 3+ Tier Distributed Architecture: Multitier/N-Tier
+    
     4.1 An Architectural Pattern for Interactive Systems: Model-View-Controller (MVC)
     4.2 Components of MVC
     4.3 Pros and Cons of MVC
+    
     5.1 Architecture of the Hotel-Reservation-System Project
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 2.1 DISTRIBUTED COMPUTING: CONCEPTS
@@ -143,6 +150,10 @@ privileged because every peer has the same capabilities and responsibilities. A 
 act as both client and server and does processing on the local machine. The results of 
 its work can be shared across a network to peers running on other machines. The most 
 famous example of P2P programs are torrenting programs.
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 3.1 MULTITIER ARCHITECTURE
@@ -523,6 +534,10 @@ If it's not already clear, the goal of using tiers is to carve out code from the
 project and tailor it to run on a specific hardware or software platform.
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 4.1 AN ARCHITECTURAL PATTERN FOR INTERACTIVE SYSTEMS: MODEL-VIEW-CONTROLLER (MVC)
 
 Model-View-Controller (MVC) is an architectural pattern that is widely used in web
@@ -844,6 +859,10 @@ Dummies'[1]:
       are ported to a new system, the platform-dependent code requires changes.
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 5.1 THE ARCHITECTURE OF THE HOTEL-RESERVATION-SYSTEM PROJECT
 
 This project pairs the ideas of tiers from the Multitier Architecture with layers from the
@@ -971,6 +990,9 @@ changes to persistent data.
 
 The DAL contains the Database and code that 
 
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 SOURCES
