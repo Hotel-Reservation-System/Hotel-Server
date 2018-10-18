@@ -1,8 +1,31 @@
 1. SETTING UP THE DATABASE FOR THE HOTEL RESERVATION SYSTEM PROJECT
 
 This program will store data in a PostgreSQL database and it will use Entity Framework 
-Core (EFC) as the ORM. The sections below discuss concepts and frameworks that concern 
-setting up HRSP to connect and talk to a database. 
+Core (EFC) as the ORM. The sections below discuss concepts and frameworks that broadly 
+concern databases in Section 2, program to database communication concepts in Section 3, 
+and hooking up your application to a database in Section 4.
+
+
+    2.    Introduction to Database Concepts and Terms
+    2.1   What is a Database?
+    2.2   Relational Database Management Systems (RDBMS)
+    2.3   Other Database Concepts and Terms to Learn Before Proceeding to Section 3
+    
+    3.    Application-Database Communication Concepts
+    3.1   Entity Framework Core
+    3.2   How Does Entity Framework Core Translate Data To and From the Database?
+    3.2.1 Database Providers
+    3.2.2 The Program-side Representation of Database Entities: The Data Model vs. The Schema
+    3.2.3 Migrations
+    
+    4.    Setting Up the Database
+    4.1   The Connection String
+    4.2   The Context Class
+    4.3   Initiating a New Session with Your Database
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 2. INTRODUCTION TO DATABASE CONCEPTS AND TERMS
@@ -25,7 +48,7 @@ authentication, search optimization, data management (Data integrity, encryption
 compression, de-duplication, backup and recovery etc.), report generation etc. 
 
 In 'Databases: A Beginner's Guide', Andy Oppel provides some definitions for terms 
-related to databases[]:
+related to databases[1]:
  
  
     1. Database Object (Page 4): "A database object is a named data structure that is 
@@ -75,7 +98,7 @@ related to databases[]:
 
 2.2 RELATIONAL DATABASE MANAGEMENT SYSTEMS (RDBMS)
 
-Andy Oppel explains the Relational Model on pages 17-19[]:
+Andy Oppel explains the Relational Model on pages 17-19[1]:
 
 
     In addition to complexity, the network and hierarchical database models share another 
@@ -114,8 +137,7 @@ In the Relational Model, two pieces of data are linked to each other with respec
 relationship they have to another. A table is a physical representation of a relation.
 
 This article will only consider the most common kind of databases, the Relational 
-Database Management System. Here is an explanation of RDBMSes[]: 
-Source: from db-engines.com
+Database Management System. Here is an explanation of RDBMSes[2]: 
 
 
     1. Relational Databases: Relational database management systems (RDBMS) support the 
@@ -174,10 +196,10 @@ but it has better data integrity. It will serve well as the database for web app
 and for other kinds of heavier duty software.   
  
  
-2.3 OTHER DATABASE TERMS TO LEARN BEFORE PROCEEDING
+2.3 OTHER DATABASE CONCEPTS AND TERMS TO LEARN BEFORE PROCEEDING TO SECTION 3
 
 There is much more to learn about databases before proceeding to Section 3. Here are 
-lists of such things, mostly taken from Caleb Curry's website.[]
+lists of such things, mostly taken from Caleb Curry's website.[3]
 
 
 SQL
@@ -220,7 +242,7 @@ DATABASE COMPONENTS
 
 CONCEPTUAL DATABASE DESIGN CONCEPTS
 
-Andy Oppel explains on page 30: []
+Andy Oppel explains on page 30: [1]
 
     … involves studying and modeling the data in a technology-independent manner. The 
     conceptual data model that results can be theoretically implemented on any database 
@@ -241,7 +263,7 @@ Andy Oppel explains on page 30: []
     
 LOGICAL & PHYSICAL DESIGN CONCEPTS
 
-Andy Oppel explains on page 30: []
+Andy Oppel explains on page 30: [1]
 
 Logical Database Design
 
@@ -281,9 +303,13 @@ describes relationships between instances of entities.
 
 
     * Keys (Primary, Foreign, Compound, Alternate etc.)
-    
+ 
+ 
+****************************************************************************************************
+****************************************************************************************************
+   
 
-3. CONNECTING YOUR APPLICATION TO A DATABASE
+3. APPLICATION DATABASE COMMUNICATION CONCEPTS
 
 3.1 ENTITY FRAMEWORK CORE
 
@@ -394,10 +420,11 @@ going?
 
 Put simply, records in a database can be converted into C# objects. The structure of a 
 table in a database, such as the Contacts table above, can be represented in a C# program 
-in the form a plain C# POCO model class. Columns in a table can be mapped to properties 
-in the class. The information in a record from the Contacts table can be represented in 
-the form of a Contact object. To say it again, data contained in a record from a database 
-table can transmuted into a form recognizable and usable in a C# program - a C# object.  
+in the form of a C# POCO (Plain Old Class Object) model class. Columns in a table can be 
+mapped to properties in the class. The information in a record from the Contacts table 
+can be represented in the form of a Contact object. To say it again, data contained in a 
+record from a database table can transmuted into a form recognizable and usable in a C# 
+program - a C# object.  
 
 This is Entity Framework Core's job: to map records from tables in a database to a 
 collection of C# objects and and the reverse. More specifically, EF Core acts as a 
@@ -424,9 +451,7 @@ A Database Provider is a "a software library consisting of classes that provide 
 access services such as connecting to a data source, executing commands at a data source 
 and fetching data from a data source with support to execute commands within 
 transactions. It resides as a lightweight layer between data source and code, providing 
-data access services with increased performance."[] 
-
-(Source: https://www.techopedia.com/definition/25227/net-data-provider). 
+data access services with increased performance."[4] 
 
 A DATABASE PROVIDER is a small library that helps EF Core to speak to databases from a 
 certain vendor. For instance, there are Database Providers for SQL Server, SQLite, 
@@ -456,15 +481,27 @@ The Data Provider, connection string and other related features can be configure
 To learn more about database providers, go to: https://docs.microsoft.com/en-us/ef/core/providers/
 
 
-3.2.2 A DATABASE'S DATA MODEL vs. DATABASE SCHEMA
+3.2.2 THE PROGRAM-SIDE REPRESENTATION OF DATABASE ENTITIES: THE DATA MODEL vs. THE SCHEMA
 
 Once EF Core confirms that it can talk to the database via the database provider, it 
-needs the Data Model and Schema of the database. Why? In order to do two-way translations 
-i.e. to map tables and other databases entities to C# objects and vice versa, EF Core 
-must know the names and attributes of entities in the database and their relationships.
- 
-The Data Model is distinct from a Database Schema; see this StackOverflow Answer from 
-richik jaiswal to learn distinction[1]:
+will need the Data Model and Schema of the database. What are those things and why does 
+your database need them? Recall that it is EFC's job to do two-way translations between 
+your program and the database. This involves mapping tables and other databases entities 
+to C# objects and vice versa. To do this, EF Core must have a program-side representation 
+of entities your program will want to store in the database. This includes entity and 
+attribute names, and their relationships expressed in C# code. The Data Model and the
+Schema are precisely that: representations of database entities and their relationships. 
+
+A short discussion is in order on when and how the data model and schema is to be 
+written. When the programmer first starts writing an ASP.NET Core program, she typically
+starts by defining the entities in that project. These entities are usually defined as
+POCO classes in the 'Models' folder of your solution. In the eyes of EFC, these model 
+classes are the Data Model. When preparing a greenfield database for your program, you 
+have to write the schema for it. To write the schema, the programmer will have to 
+consult the Data Model.
+
+Let's move on to studying these two things. The Data Model is distinct from a Database 
+Schema; see this StackOverflow Answer from richik jaiswal to learn the difference[5]:
 
 
      A schema is a blueprint of the database which specifies what fields will be present 
@@ -484,8 +521,8 @@ richik jaiswal to learn distinction[1]:
 
 A Data Model is an abstract formalization of a database's entities. The basic properties 
 of database entities like tables and columns are defined as C# model classes. The model 
-classes in the 'Models' or 'Entities' folder of your project form the DATA MODEL for 
-your database. 
+classes in the 'Models' or 'Entities' folder of your project form the DATA MODEL for your 
+database. 
 
 For an example, let's take another look at the Contact class from section 3.2:
 
@@ -516,7 +553,8 @@ Note that the properties of this class have data annotation attributes on them. 
 annotations mandate values for the 'Id' property and establish value minimums and 
 maximums on the 'FirstName' and 'LastName' properties. As the data model informs the 
 schema, when the schema is written, these restrictions will carry over to it. In fact,
-the schema is usually derived from the data model. 
+when the programmer first writes the schema for a new database, she usually derives it 
+from the data model. 
 
 Go to this location to see the model classes for this project.
 
@@ -526,13 +564,18 @@ Go to this location to see the model classes for this project.
 
 Let's move on to discussing the schema. The DATABASE SCHEMA is a more specific definition 
 of a database's entities and their attributes. It serves as a snapshot of the database's 
-topology at a certain point in time, usually reflecting its current state. The schema 
-takes entities defined in the data model, plus any data annotation attributes defined 
-therein, and adds other things to it. This may include restrictions on character length 
-for a field, marking certain fields as mandatory when a record is created, and 
-establishing the nature of relationships between entities.   
+topology at the current point in time. The schema takes entities defined in the data 
+model, plus any data annotation attributes defined therein, and adds other things to it. 
+This may include restrictions on character length for a field, marking certain fields as 
+mandatory when a record is created, and establishing the nature of relationships between 
+entities. 
 
-First, take a look at the Hotel model class (from the Models folder): 
+For new databases, the schema has to be written by the programmer. However, if a database 
+already exists, you can join it to an ASP.NET Core project and then generate a schema 
+from it. 
+
+Let's take a look at what a schema looks like. First, here's the Hotel model class (from 
+the Models folder): 
 
 
     public class Hotel : IObjectWithState
@@ -616,30 +659,108 @@ object is populated with data from a record, it gets stored in the Hotels collec
 In case it was not clear, the schema for an ASP.NET Core solution can usually be found 
 in:
 
+
 /Data/Context.cs
 
 
 3.2.3 MIGRATIONS
 
-I'll touch on migrations lightly, but there is another file that deals with this subject 
-in full. 
+WHAT ARE MIGRATION? WHY DO WE NEED THEM?
 
-During the course of developing a database, you will add and remove tables and other 
-entities from it. The relationships between entities may also change. In other words, 
-during the lifetime of a database, its topology is in constant flux. 
+During the course of developing a software solution, your program and its database will
+grow and change. This section will focus on managing change in databases.
 
-A schema can contain only a snapshot of the topology of a database at one point in time. 
+Recall that the Schema is a more specific map to the database than the Data Model. The 
+schema of a database defines tables, specifies columns and their types, and the 
+relationships between tables, i.e. it concretely describes the structure and topology of
+the database. It also imposes constraints on data that seeks to enter the database.
+
+However, a database is not a static thing; it changes with its program. In other words, 
+during the lifetime of a database, its topology is in constant flux. In order to make any 
+changes to fundamental entities in a database or their relationships, the programmer 
+will have to modify the schema. Tables and attributes can be modified, added or deleted
+by making changes to the schema. Corresponding changes will also have to be made to the
+Data model classes.  
+
+Changes to a database are complicated by the fact that organizations usually have 
+multiple instances of a database. For instance, a company may have a development 
+environment where software is developed, a production environment where stable software 
+runs and perhaps a demo environment for demonstrating products to clients. If the 
+development team makes changes to the master database, how are they going to roll out 
+changes to all instances of the database? Databases change often enough that their Schema 
+needs version control. 
+
+A schema defines the topology of a database at one point in time. Usually, the schema 
+only contains the current topology of the database. However, it would be very useful to 
+have snapshots of the schema every time it was changed. This is where SCHEMA MIGRATIONS 
+(often called MIGRATIONS) come in. Schema snapshots are called MIGRATIONS and they serve 
+as version control for a database's schema. 
+
+To track changes to the schema, you can generate a migrations file. Migration files 
+contain only delta values, i.e. only changes from the previous migration file. Your 
+program usually has one active schema file, but many migrations files. You can use 
+migrations to update to or rollback from a version of the database's schema. A migration 
+file will  have a way to revert its own changes. It may also contain scripts to enact 
+transformations and to insert default data into the database by populating tables and 
+columns.
+
 To ensure data integrity, it is a best practice to take a snapshot of a database's 
-topology every time a change is made to the schema. Schema snapshots are called 
-MIGRATIONS and they serve as version control for a database's schema. You can use 
-migrations to update to or rollback from a version of the database. 
+topology every time a change is made to the schema. When you first write the schema for a 
+new database, you should generate a migration file that contains the entire schema. 
+Subsequently, every time you change entities or their relationships by editing the 
+schema, you will want to generate a new migration file that contains the new, updated 
+topology of the database. Once again, do note that the new migration file only contains 
+delta values, i.e. only changes from the previous migration file.
 
-If a database already exists, you can import it into an ASP.NET Core project and 
-generate a schema from the database. For new databases, the schema has to be written by 
-the programmer.
+Migrations are constantly generated in the development stage of an application, because 
+that's when the schema is changing the most. Large architectural changes and feature 
+churn necessitate frequent alterations to the database's schema. Migrations are also 
+needed when upgrading a database, switching to another database vendor, or moving a 
+database into the cloud. Having a version controlled history of the database's schema 
+(which captures the changes made to the database over time) gives you the ability to 
+migrate the database to older or newer versions of the schema. Migrations are a 
+convenient way to track your database's schema over time in a predictable and 
+consistent way. By using migrations, you can update all instances of a database 
+automatically and reliably to the schema version of your choice.
+ 
+Typical location of migration files: Data/Migrations/ 
 
-Taken from the file called, '20180128032156_CreateHotelHotelRoomRoomTypeBedTypeRoomReservationTables.cs',
-this is the Logical schema for the Hotel table: 
+
+THE CONTENTS OF A MIGRATIONS FILE
+
+Every migration file will contain an Up() and Down() method. The Up() method contains 
+transformations to the schema of the Database. The Down() method just rolls back 
+transformations in the Up() method i.e. it returns the schema to the state in the Up() 
+method of the previous migration. The database schema should be unchanged if a call to 
+Up() is followed by a Down(). If another, new migration file has been generated and 
+needs to be applied to the database, call its Up() method. To revert these 
+transformations, call its Down() method. 
+
+The final set of transformations in a long chain of such changes is described in the 
+Up() method of the last migration. The current state of a database's schema is the 
+result of calling the Up() methods of all previous Migrations. 
+
+Here is a answer from StackOverflow that expands on migrations[6]:
+
+    DB Migrations make changes to your database to reflect the changes made to the Entity 
+    Framework Model. These changes are added to the database with the Up method.
+    
+    When you want to rollback a change (e.g. by rolling back a changeset in TFS or Git), 
+    the changes in the database have to be rolled back also because otherwise your Entity 
+    Framework model is out-of-sync with the database. This is what the Down method is 
+    for. It undo's all changes to the database that were done when the Up method was run 
+    against the database.
+    
+    The Seed method gives you the ability to Insert, Update or Delete data which is 
+    sometimes needed when you change the model of the database. So the Seed method is 
+    optional and only necessary when you need to modify existing data or add new data to 
+    make the model working.
+    
+    - Ric .Net    
+    
+Let's take a look at migrations file. Taken from the file called, 
+'20180128032156_CreateHotelHotelRoomRoomTypeBedTypeRoomReservationTables.cs', this is the 
+Logical schema for the Hotel table: 
 
 
     public partial class CreateHotelHotelRoomRoomTypeBedTypeRoomReservationTables : Migration
@@ -671,41 +792,95 @@ this is the Logical schema for the Hotel table:
     }
     
 
-Typical location of migration files: Data/Migrations/ 
+GENERATING, APPLYING AND REMOVING MIGRATIONS
+    
+Migrations are generated or applied with CLI commands. 
+
+Migrations files for .NET Core projects can be generated either through .NET Core CLI or 
+terminals built into IDEs. Note that Jetbrains Rider cannot and does not support Visual 
+Studio's Package Manager Console commands. Check if this changes in the future.
+
+What happens when a migration is generated? When the command is given, it appears that 
+Entity Framework Core combines the existing Schema with type information and data 
+annotations from Model classes to generate a migration file. Generating a Migration will 
+create a new file in the Migrations folder. It will contain a a user-named class that is 
+a subclass of Entity Framework Core's Migration class. You may need to manually remove 
+things from either method if it added more than the changes you made to the Schema. Make 
+sure you read the migration file before applying it.
+
+Here are two basic commands for generating and using migrations. Check the Entity 
+Framework Core docs for more.
+
+    1. GENERATING MIGRATIONS: Creates a new migration. The migration name should describe 
+       in pascal case, the changes you made to the data model. 
+    
+       Visual Studio: add-migration <MigrationName> 
+       E.g.: add-migration AddUserUserPreferenceUserInformationRoleUserRoleTables
+    
+    
+    2. UPDATING DATABASE TO THE LATEST MIGRATION: Runs the Up() method of all migrations. 
+    
+       Visual Studio: update-database
 
 
+    
+MIGRATIONS: THE WORKFLOW 
 
-3. SETTING UP THE DATABASE
+This is the workflow for changing the schema and generating migrations:
 
-Now that the concepts have been introduced, this section will introduce classes where you have
-to configure the database. Before you can do operations on the database, you must initiate a new 
-session with the database. This will require several pieces of information that must be passed
-to the database. 
+
+In the Development Environment:
+
+    1. When you need to add tables or modify relations in the database, edit the Schema 
+       in Context.cs.
+    2. Because the Schema has been modified, you need to generate a new migrations file.
+    3. You run the migration file in the development environment to verify that it works 
+       as intended. 
+
+
+In the Production, Demo and other Environments:
+    
+    4. Deploy and run the migrations file in other environments to update these instances 
+       of the database to the latest version of the schema.
+    5. Verify that migration has gone smoothly in these environments as well.
+    
+
+****************************************************************************************************
+****************************************************************************************************
+
+
+4. SETTING UP THE DATABASE
+
+Now that the concepts have been introduced, this section will introduce database 
+configuration. Before you can do operations on the database, you must initiate a new 
+session with the database. This will require several pieces of information that must be 
+passed to the database. 
 
 The following sections mention some of them, but others may be required: 
 
 
-3.1 CONNECTION STRING
+4.1 THE CONNECTION STRING
 
-What is a connection string?[2]:
+What is a connection string?[7]:
 
-"Most database providers require some form of connection string to connect to the database. 
-Sometimes this connection string contains sensitive information that needs to be protected. You 
-may also need to change the connection string as you move your application between environments, 
-such as development, testing, and production." 
+"Most database providers require some form of connection string to connect to the 
+database. Sometimes this connection string contains sensitive information that needs to 
+be protected. You may also need to change the connection string as you move your 
+application between environments, such as development, testing, and production." 
 
-A connection string is database-related information that you must provide to start a session with
-it. This might include: the hostname of the computer on which the database is running, the 
-database's name, user authentication information and DB configuration data. 
+A connection string is database-related information that you must provide to start a 
+session with it. This might include: the hostname of the computer on which the database 
+is running, the database's name, user authentication information and DB configuration 
+data. 
 
 See the second article in the sources section for more information. 
  
 
-3.2 CONTEXT CLASS (aka DbContext class)
+4.2 THE CONTEXT CLASS (aka DbContext class)
 
-A Context class is an important EF Core class that represents a session with the database. According 
-to 'Entity Framework Core: DbContext'[3], DbContext is the class where you can do all of these 
-things:
+A Context class is an important EF Core class that represents a session with the 
+database. According to 'Entity Framework Core: DbContext'[8], DbContext is the class 
+where you can do all of these things:
 
     
    * Manage database connection
@@ -717,43 +892,49 @@ things:
    * Transaction management
    
 
-Aside from representing a session with the database, a Context class also contains the SCHEMA for 
-the database. This is why you need to create a Context class in your project.
+Aside from representing a session with the database, a Context class also contains the 
+SCHEMA for the database. This is why you need to create a Context class in your project.
 
-There are two approaches you can take, contingent on whether you have an existing database. If you 
-are starting a greenfield project WITHOUT an existing database, you go with the NEW DATABASE 
-approach. If you have an existing database, and you want to write a program to talk to it, you use 
-the EXISTING DATABASE approach.
+There are two approaches you can take, depending on whether you have an existing 
+database. If you are starting a greenfield project WITHOUT an existing database, you go 
+with the NEW DATABASE approach. If you have an existing database, and you want to write a 
+program to talk to it, you use the EXISTING DATABASE approach.
 
 
     1. NEW DATABASE: Write your own Context class for your new database.
+       For full details, see this project: 'ASPNETCore WebApp 2A - Getting Started with a 
+       New Database'
        (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db)
-       For full details, see this project: ASPNETCore WebApp 2A - Getting Started with a New Database
-    2. EXISTING DATABASE: Generate a Context class from the database via the package manager command 
-       line. (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db)
-       For full details, see this project: ASPNETCore WebApp 2B - New Project With an Existing Database
+       
+    2. EXISTING DATABASE: Generate a Context class from the database via the package 
+       manager command line. For full details, see this project: 'ASPNETCore WebApp 2B - 
+       New Project With an Existing Database'
+       (More details: https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/existing-db)
 
 
-Let's look at the NEW DATABASE approach: you have to create a Context class that inherits from 
-Microsoft.EntityFrameworkCore.DbContext. It can be named Context, DbContext, HotelContext or 
-something similar. Just append the word 'Context' to the filename. The Context class for this 
-project can be found in the Context.cs file of the DbContext folder. 
+Let's look at the NEW DATABASE approach: you have to create a Context class that inherits 
+from 'Microsoft.EntityFrameworkCore.DbContext'. It can be named Context, DbContext, 
+HotelContext or something similar. Just append the word 'Context' to the filename. 
 
 Once you create a new Context class, you have to define the schema in it. This includes:
 
-* Defining the program-side equaivalent of a table (by declaring a DbSet<T> collection)
-* Defining relationships between entities (by declaring them in the OnModelCreating() method) 
+    * Defining the program-side equivalent of a table (by declaring a DbSet<T> 
+      collection)
+      
+    * Defining relationships between entities (by declaring them in the OnModelCreating() 
+      method) 
 
-Go to Context.cs to learn more about these things. 
+Consult Context.cs to learn more about these things. 
 
 
-3.3 INITIATING A NEW SESSION 
+4.3 INITIATING A NEW SESSION WITH YOUR DATABASE
 
-After creating the data model in the Context class, you need to configure a new session. To do 
-this, you have to pass in the connection string to a Context object in a DbContextOptions object.
+After creating the data model in the Context class, you need to configure a new session. 
+To do this, you have to pass in the connection string to a Context object in a 
+DbContextOptions object.
 
-The Microsoft Docs article, "Configuring a DbContext"[4] gives information on how to configure 
-the DbContextOptions class:
+The Microsoft Docs article, "Configuring a DbContext"[9] gives information on how to 
+configure the DbContextOptions class:
 
 
     DbContext must have an instance of DbContextOptions in order to perform any work. The 
@@ -762,18 +943,21 @@ the DbContextOptions class:
     
         * The database provider to use, typically selected by invoking a method such as 
           UseSqlServer or UseSqlite
-        * Any necessary connection string or identifier of the database instance, typically passed 
-          as an argument to the provider selection method mentioned above
-        * Any provider-level optional behavior selectors, typically also chained inside the call 
-          to the provider selection method
-        * Any general EF Core behavior selectors, typically chained after or before the provider 
-          selector method
+          
+        * Any necessary connection string or identifier of the database instance, 
+          typically passed as an argument to the provider selection method mentioned above
+          
+        * Any provider-level optional behavior selectors, typically also chained inside 
+          the call to the provider selection method 
+          
+        * Any general EF Core behavior selectors, typically chained after or before the 
+          provider selector method
           
           
-    The following example configures the DbContextOptions to use the SQL Server provider, a 
-    connection contained in the connectionString variable, a provider-level command timeout, and 
-    an EF Core behavior selector that makes all queries executed in the DbContext no-tracking by 
-    default:
+    The following example configures the DbContextOptions to use the SQL Server provider, 
+    a connection contained in the connectionString variable, a provider-level command 
+    timeout, and an EF Core behavior selector that makes all queries executed in the 
+    DbContext no-tracking by default:
     
     
         optionsBuilder
@@ -781,30 +965,33 @@ the DbContextOptions class:
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
 
-    The DbContextOptions can be supplied to the DbContext by overriding the OnConfiguring method 
-    OR (emphasis mine) externally via a constructor argument. 
+    The DbContextOptions can be supplied to the DbContext by overriding the OnConfiguring 
+    method OR (emphasis mine) externally via a constructor argument. 
     
-    If both are used, OnConfiguring is applied last and can overwrite options supplied to the 
-    constructor argument.
+    If both are used, OnConfiguring is applied last and can overwrite options supplied to 
+    the constructor argument.
     
     
-There are three ways to configure the Context class, DbContextOptions and the Connection string
-in preparation for a new session:
+There are three ways to configure the Context class, DbContextOptions and the Connection 
+string in preparation for a new session:
 
-    1. Override the OnConfiguring() method (in DbContext/Context.cs)
+
+    1. Override the OnConfiguring() method (in Data/Context.cs)
     
-    2. Structure Context class's constructor to accept an DbContextOptions object: This project
-       uses this approach.
+    
+    2. Structure Context class's constructor to accept an DbContextOptions object: This 
+       project uses this approach.
        
        Write a separate Context Factory class that inherits from IDesignTimeDbContextFactory<T> 
-       Class. The Context Factory class will pass a DbContextOptions object to class Context, and 
-       then instantiates a Context object.
+       Class. The Context Factory class will pass a DbContextOptions object to class 
+       Context, and then instantiates a Context object.
        (see DbContextFactory/MyDbContextFactory.cs).
        
-    3. Dependency Injection: This is done in the ConfigureServices() method of Startup.cs. From 
-       this article[4]: "EF Core supports using DbContext with a dependency injection container. 
-       Your DbContext type can be added to the service container by using the AddDbContext<TContext> 
-       method.         
+       
+    3. Dependency Injection: This is done in the ConfigureServices() method of 
+       Startup.cs. From this article[4]: "EF Core supports using DbContext with a 
+       dependency injection container. Your DbContext type can be added to the service 
+       container by using the AddDbContext<TContext> method.         
                                                                     
        AddDbContext<TContext> will make both your DbContext type, TContext, and the corresponding 
        DbContextOptions<TContext> available for injection from the service container."
@@ -814,7 +1001,12 @@ See the fourth article for information more about these options.
 
 SOURCES
 
-1: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
-2: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
-3: http://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
-4: https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext
+01: Databases - A Beginner's Guide (Andy Oppel, 2009)
+02: https://db-engines.com/en/article/RDBMS
+03: https://www.calebcurry.com/beginner-database-terms/
+04: https://www.techopedia.com/definition/25227/net-data-provider
+05: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
+06: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
+07: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
+08: http://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
+09: https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext
