@@ -999,6 +999,10 @@ string in preparation for a new session:
 See the fourth article for information more about these options. 
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 SOURCES
 
 01: Databases - A Beginner's Guide (Andy Oppel, 2009)
