@@ -1,92 +1,149 @@
 ﻿/* CONTEXT CLASS (aka DBCONTEXT CLASS)
  *
- * When the Hotel-Server program is run, EF Core will try to talk to the database. Recall that EF
- * Core will attempt to do two-way translations between the program and the database:
+ * When the Hotel-Server program is run, EF Core will try to talk to the database. Recall
+ * that EF Core will attempt to do two-way translations between the program and the
+ * database:
  *
  * 
- *                    PROGRAM <----> ENTITY FRAMEWORK CORE <----> DATABASE
+ *                PROGRAM <----> ENTITY FRAMEWORK CORE <----> DATABASE
  *
  * 
- * Before it can do this, it needs a blueprint of the database to which it is trying to talk. Enter
- * Context class, which is a repository of one of the things EF Core needs to act as ORM for this
- * project, namely, the Schema. As a reminder, the Schema contains a specific definition of the
- * topology of a database, the entities in it and their relationships at a point in time, usually
- * reflecting the current status.
+ * Before it can do this, it needs a map of the database to which it is trying to talk.
+ * Enter Context class, which is a repository of one of the things EF Core needs to act
+ * as ORM for this project, namely, the Schema. As a reminder, the Schema contains a
+ * specific definition of the topology of a database, the entities in it and their
+ * relationships at a point in time, usually capturing the current state.
  *
- * Context class is an integral part of Entity Framework Core. It is a custom class written by the
- * programmer. It must inherit from an EF Core class called Microsoft.EntityFrameworkCore.DbContext,
- * which is it is often known as DbContext class.
- * 
- * From the docs[1]: "A DbContext instance represents a session with the database and can be used
- * to query and save instances of your entities." Put succinctly, the DbContext class helps EF Core
- * talk to the database. For this reason, one of the first things EF Core will do is create a
- * Context object.
+ * Context class is an integral part of Entity Framework Core. It must inherit from an
+ * EF Core class called Microsoft.EntityFrameworkCore.DbContext, which is often known as
+ * DbContext class. From the docs[1]: "A DbContext instance represents a session with the
+ * database and can be used to query and save instances of your entities." Put
+ * succinctly, the DbContext class helps EF Core talk to the database.
  *
- * In Context class, the programmer must specify specific parameters for Tables and other entities
- * in the database. As such, it serves as a bridge between the data model (classes that model
- * database entities in the Models/Tables folder of the Common project) and database entities
- * (records stored in the database).
+ * In this custom class, you, the programmer, must define the schema to your project's
+ * database. The programmer must provide very specific parameters for Tables and other
+ * entities in the database. As such, it serves as a bridge between the data model
+ * (classes that model database entities) and database entities (records stored in the
+ * database).
  *
- *
- * 
- * STEP 1: WRITING AND CONFIGURING THIS CLASS
- *
- * When you write a Context class, first set it to inherit from DbContext. Call the class whatever
- * you want, plus the "Context" suffix; e.g. ACMEContext, SchoolContext, HotelContext etc. or just
- * Context as I have for this project. It's a good idea to name it after the database, as each
- * database requires its own Context class.
+ * When the project starts, one of the first things EF Core will do is instantiate an
+ * object from the Context class that you have provided. This context object will be
+ * provided to Controller classes, where it will serve as a map to the database, its
+ * entities and their relationships. This will help Controllers to carry out CRUD
+ * operations on the database.
  *
  * 
- * STEP 2: DEFINE DATA STRUCTURES FOR TABLES IN THE DATABASE
- * 
- * The first thing you have to do is define tables in the database as properties to Context class.
- * From Microsoft's DbContext docs[1]:
+ ***************************************************************************************************
+ ***************************************************************************************************
+ *
+ *
+ * WRITING AND CONFIGURING A CONTEXT CLASS
+ *
+ * Before starting work on the Context class, you should have already finished writing
+ * model classes.
  *
  * 
- *     Typically you create a class that derives from DbContext and contains DbSet<TEntity>
- *     properties for each entity in the model. If the DbSet<TEntity> properties have a public
- *     setter, they are automatically initialized when the instance of the derived context is
- *     created.
+ * STEP 1: INHERIT FROM DBCONTEXT CLASS
+ *
+ * When you write a Context class, first set it to inherit from DbContext. Call the class
+ * whatever you want, plus the "Context" suffix; e.g. ACMEContext, SchoolContext,
+ * HotelContext etc. or just Context as I have for this project. It's a good idea to name
+ * it after the database, as each database requires its own Context class.
+ *
+ ***************************************************************************************************
+ *
+ * STEP 2: DEFINE DATA STRUCTURES THAT CORRESPOND TO TABLES IN THE DATABASE
+ * 
+ * The next thing you have to do is define tables from the database as properties in
+ * this class. When EF Core translates database records into C# objects, it will store
+ * them in these data structures. From Microsoft's DbContext docs[1]:
+ *
+ * 
+ *     Typically you create a class that derives from DbContext and contains
+ *     DbSet<TEntity> properties for each entity in the model. If the DbSet<TEntity>
+ *     properties have a public setter, they are automatically initialized when the
+ *     instance of the derived context is created.
  * 
  *
- * In short, you have to add DbSet<T> data structures as properties to the Context class, one to
- * represent each table from the database. Name them after the table they are representing. When
- * EF Core translates database records into C# objects, it will store them in these data structures.
- * Here's an example from this file:
+ * Consult the data model classes. Those will be the tables in your database. In step 3,
+ * you have to add DbSet<T> data structures as properties to the Context class, one to
+ * represent each table from the database. You will have one property for every model
+ * class. Give each data structure a plural name, after the table/data model they are
+ * representing. Here's an example data structure from this file:
  *
+ * 
  *         public virtual DbSet<Hotel> Hotels { get; set; }
  *
+ ***************************************************************************************************
  *
  * STEP 3: CONFIGURING THE INSTANTIATION OF THE CONTEXT OBJECT
  *
- * This step is an somewhat of deviation, as it's about configuring the instantiation of the
- * Context object, not about the schema.
+ * This step is an somewhat of deviation, as it's about configuring the instantiation of
+ * the Context object, not about the schema. It is a necessary process, but not easy to 
+ * understand. Do note that I don't fully understand this section.
+ *
+ * A Context object needs to have configuration information regarding the database loaded
+ * into it before it can instantiated. This bundle of config data is often called a
+ * connection string. This includes pieces of data like: Host's name, the database's name
+ * and authentication credentials for the database.
+ *
+ * That makes sense: a Context object contains a map to the layout of a particular
+ * database, so configuration and access information for that database should be folded
+ * into the Context object. There are three ways of configuring the connection string and
+ * adding it to Context objects:
  * 
- * At runtime, EF Core will create a Context instance and pass it to the Controller classes. So,
- * the next thing to do is configure the creation of a Context instance.  There are three options
- * for doing this, of which two are listed below[1]:
+ *
+ *     1. WITHIN THE CONTEXT CLASS
+ *        "Override the OnConfiguring(DbContextOptionsBuilder) method to configure the
+ *        database (and other options) to be used for the context."[1]
  *
  * 
- *     Override the OnConfiguring(DbContextOptionsBuilder) method to configure the database (and
- *     other options) to be used for the context. Alternatively, if you would rather perform
- *     configuration externally instead of inline in your context, you can use
- *     DbContextOptionsBuilder<TContext> (or DbContextOptionsBuilder) to externally create an
- *     instance of DbContextOptions<TContext> (or DbContextOptions) and pass it to a base
- *     constructor of DbContext.
- *
- *
- * If you want to do the configuration in one class, Context, go with overridding the
- * OnConfiguring(DbContextOptionsBuilder) method. If you want to do configuration externally,
- * go the Context Factory route.
+ *     2. OUTSIDE THE CONTEXT CLASS: IN A DbContextFactory CLASS, USE A
+ *        DbContextOptionsBuilder OBJECT TO BUILD A DbContextOptions<TContext> OBJECT
+ *        THAT BUNDLES THE CONNECTION STRING. THEN PASS IT TO THE CONTEXT CONSTRUCTOR
  * 
- * In this project, I've chosen to do the configuration externally. Look in the DbContextFactory
- * folder and open the MyDbContextFactory.cs. EF Core will execute this class to create the Context
- * object for this project. The connection string and other details are defined in this file and
- * then passed to Context's constructor, which creates the object.
+ *        "Alternatively, if you would rather perform configuration externally instead of
+ *        inline in your context, you can use DbContextOptionsBuilder<TContext> (or
+ *        DbContextOptionsBuilder) to externally create an instance of DbContextOptions<TContext>
+ *        (or DbContextOptions) and pass it to a base constructor of DbContext."[1]
  *
- * The third option is to do configuration via dependency injection in Startup.cs; see Section 3.3
- * in Database Setup.txt.
+ * 
+ *     3. DECLARE A DBCONTEXT OBJECT IN STARTUP.CS AS A SERVICE. BUNDLE THE CONNECTION
+ *        STRING INTO IT AND PROVIDE IT AS A SERVICE TO THE APPLICATION VIA DEPENDENCY
+ *        INJECTION
+ * 
+ *        A Context class is a Service. You can register services with the Dependency
+ *        Injection Framework in your project during application startup. This is usually
+ *        done in Startup.cs's ConfigureServices() method.
  *
+ *        If you want to see an commented out implementation of this third approach, go
+ *        to Startup.cs and check the ConfigureServices() method. 
+ *
+ *        To register the Context object as a service, first you have to define the
+ *        configuration data in a connection string. You can do this either inline in
+ *        ConfigureServices(), or following best practices, in the appsettings.json file. 
+ *
+ *        This line of code adds the connection string to the Context class, then
+ *        declares the database Context Service:
+ * 
+ *
+ *            services.AddDbContext<Context>(options => options.UseNpgsql(connectionString));
+ *
+ * 
+ *        As with other services, a Context will be registered with an IServiceCollection.
+ *        When the application starts, a service provider will be built using the list of
+ *        services defined in IServiceCollection. The Service Provider will resolve and
+ *        inject dependencies into application classes as required. For instance, the
+ *        Service Provider will provide the Context service to Controller classes, so
+ *        that they can interface with the database as part of their duties.
+ *
+ * 
+ * In this project, I've chosen to do the configuration externally (Approach 2). Look in
+ * the 'Data' folder and open MyDbContextFactory.cs. A DbContextOptionsBuilder object is
+ * created, loaded with config data. This object is then used to instantiate and create a
+ * new Context object. 
+ *
+ ***************************************************************************************************
  *
  * STEP 4: DECLARING THE SCHEMA: DEFINING ENTITY RELATIONSHIPS
  *
@@ -136,6 +193,8 @@
  * 
  * See the Context class below and read the comments to see all the details of data model
  * declaration. 
+ *
+ ***************************************************************************************************
  *
  * SOURCES
  *
