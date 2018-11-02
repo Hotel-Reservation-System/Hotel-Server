@@ -40,9 +40,27 @@
  * WRITING AND CONFIGURING A CONTEXT CLASS
  *
  * Before starting work on the Context class, you should have already finished writing
- * model classes.
+ * model classes. You will have to consult them repeatedly to complete the schema.
  *
+ * Entity Framework Core will need a Context object to start a new database session. It
+ * will contain two major things, the SCHEMA, which is a map of the layout of a specific
+ * database and the CONNECTION STRING, which is a configuration information such as
+ * database providers, hostname (the name of program on which the database is running),
+ * database name, database login credentials etc.
+ *
+ * The comments below are divided into 4 sections. Steps 1, 2 and 3 are about writing the
+ * Schema. Step 4 is about declaring the connection string and configuring how the
+ * Context session object will be instantiated. Once the Context session object has been
+ * created, it will made available to other services that need it. 
+ *
+ *     Step 1: Inherit from DbContext Class
+ *     Step 2: Define Data Structures in the Schema that Correspond to Tables in the Database
+ *     Step 3: Declaring Entities and Defining Inter-Entity Relationships
+ *     Step 4: Configuring the Instantiation of the Context Object
  * 
+ *
+ ***************************************************************************************************
+ *
  * STEP 1: INHERIT FROM DBCONTEXT CLASS
  *
  * When you write a Context class, first set it to inherit from DbContext. Call the class
@@ -52,7 +70,7 @@
  *
  ***************************************************************************************************
  *
- * STEP 2: DEFINE DATA STRUCTURES THAT CORRESPOND TO TABLES IN THE DATABASE
+ * STEP 2: DEFINE DATA STRUCTURES IN THE SCHEMA THAT CORRESPOND TO TABLES IN THE DATABASE
  * 
  * The next thing you have to do is define tables from the database as properties in
  * this class. When EF Core translates database records into C# objects, it will store
@@ -149,7 +167,10 @@
  *
  * This step is an somewhat of deviation, as it's about configuring the instantiation of
  * the Context object, not about the schema. However, it is a necessary process, if not
- * easy to understand. Do note that section may contain inaccuracies and errors.
+ * easy to understand. 
+ *
+ * Do note that this section may contain inaccuracies and errors.
+ *
  *
  * A Context object needs to have configuration information regarding the database loaded
  * into it before it can instantiated. This bundle of config data is often called a
