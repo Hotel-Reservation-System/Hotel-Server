@@ -191,10 +191,19 @@ namespace Hotel_Server
             // IServiceCollection. Normally, services are grouped together like this.
             services.AddMvc();
             
-            // See Database Setup.txt, Section 3.3.
-            // If you want to configure configure the Context class, DbContextOptions and the 
-            // Connection string via Dependency Injection, this is the place to do it. Here
-            // is an example: 
+            // DECLARING DBCONTEXT AND MAKING IT AVAILABLE AS A SERVICE VIA 
+            // DEPENDENCY INJECTION
+            //
+            // See 'Step 4: Configuring the Instantiation of the Context Object' in
+            // Context.cs for more information about this section. The short version: 
+            // the Context object needs to have a connection string and other
+            // configuration data loaded into it. There are several way to do this. This
+            // project uses Approach 2. The segment below illustrates an alternate 
+            // implementation, Approach 3. 
+            //
+            // If you want to configure configure the Context class, DbContextOptions and
+            // the Connection string via Dependency Injection, this is the place to do
+            // it. Here is an example: 
 
 //            var connectionString = "Host=localhost;" +
 //                                   "Username=postgres;" +
@@ -208,8 +217,9 @@ namespace Hotel_Server
          *
          * This method will let you configure the ASP.NET Core Middleware Pipeline. This
          * will let you control how your application will process and respond to HTTP
-         * requests. This method can also accept dependencies which can be injected via
-         * the Dependency Injection framework.
+         * requests. This method can also initialize dependencies which have been
+         * injected by the Dependency Injection framework in the ConfigureServices()
+         * method.
          *
          * The Configure() method has two parameters: IApplicationBuilder and
          * IHostingEnvironment. The first will be used to build the middleware pipeline
