@@ -194,16 +194,18 @@ namespace Hotel_Server
             // DECLARING DBCONTEXT AND MAKING IT AVAILABLE AS A SERVICE VIA 
             // DEPENDENCY INJECTION
             //
-            // See 'Step 4: Configuring the Instantiation of the Context Object' in
-            // Context.cs for more information about this section. The short version: 
-            // the Context object needs to have a connection string and other
-            // configuration data loaded into it. There are several way to do this. This
-            // project uses Approach 2. The segment below illustrates an alternate 
+            // See 'Step 4: Configuring the Loading of Config Data Into the Context
+            // Object' in Context.cs for more information about this section. The short
+            // version:
+            //
+            // The Context object needs to have a connection string and other
+            // configuration data loaded into it. There are several way to do this. While
+            // this project uses Approach 2, this segment illustrates an alternate 
             // implementation, Approach 3. 
             //
-            // If you want to configure configure the Context class, DbContextOptions and
-            // the Connection string via Dependency Injection, this is the place to do
-            // it. Here is an example: 
+            // If you want to configure the Context class, DbContextOptions and the
+            // Connection string via Dependency Injection, this is the place to do it.
+            // Here is an example: 
 
 //            var connectionString = "Host=localhost;" +
 //                                   "Username=postgres;" +
