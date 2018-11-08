@@ -226,7 +226,7 @@
  *
  ***************************************************************************************************
  *
- * STEP 4: CONFIGURING THE INSTANTIATION OF THE CONTEXT OBJECT
+ * STEP 4: CONFIGURING THE LOADING OF CONFIG DATA INTO THE CONTEXT OBJECT
  *
  * This step is about configuring the instantiation of the Context object. This is a
  * necessary process, if not one that is easy to understand. Do note that this section
@@ -336,10 +336,12 @@ namespace Hotel_Server.Database
             
         }
         
+        
         /* APPROACH 1: SUPPLYING DbContextOptions BY OVERRIDING OnConfiguring()
          * (See Step 4, Approach 1 in this file.)
          *
-         * This project implements Approach 2.
+         * This project implements Approach 2. However, this section illustrates
+         * Approach 1.
          * 
          * If you choose to, you can do declare configuration data in the OnConfiguring()
          * method. You have to specify the connection string and any other config data
