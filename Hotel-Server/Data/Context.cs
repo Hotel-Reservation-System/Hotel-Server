@@ -1,60 +1,106 @@
-﻿/* CONTEXT CLASS (aka DBCONTEXT CLASS)
+﻿/* 1. PARTS OF THE SCHEMA
  *
- * When the Hotel-Server program is run, EF Core will try to talk to the database. Recall
- * that EF Core will attempt to do two-way translations between the program and the
- * database:
+ * When the Hotel-Server program is run, it will need to contact the database. It's
+ * EF Core's responsibility to talk to the database. Recall that EF Core will attempt to
+ * do two-way translations between the program and the database:
  *
  * 
  *                PROGRAM <----> ENTITY FRAMEWORK CORE <----> DATABASE
  *
  * 
- * Before it can do this, it needs a map of the database to which it is trying to talk.
- * Enter Context class, which is a repository of one of the things EF Core needs to act
- * as ORM for this project, namely, the Schema. As a reminder, the Schema contains a
- * specific definition of the topology of a database, the entities in it and their
- * relationships at a point in time, usually capturing the current state.
+ * To talk to a database, Entity Framework Core will need several things:
  *
- * Context class is an integral part of Entity Framework Core. It must inherit from an
- * EF Core class called Microsoft.EntityFrameworkCore.DbContext, which is often known as
- * DbContext class. From the docs[1]: "A DbContext instance represents a session with the
- * database and can be used to query and save instances of your entities." Put
- * succinctly, the DbContext class helps EF Core talk to the database.
+ * 
+ *     * A Map to the Layout of the Database: THE SCHEMA    (Context class)
+ *     * The Database's CONFIGURATION LOADOUT               (DbContextOptions class)
  *
- * In this custom class, you, the programmer, must define the schema to your project's
- * database. The programmer must provide very specific parameters for Tables and other
- * entities in the database. As such, it serves as a bridge between the data model
- * (classes that model database entities) and database entities (records stored in the
- * database).
+ *
+ * Both these things are part of this class, the Context class. Entity Framework Core
+ * will need a Context object to start a new database session. A DbContextOptions class
+ * is a property of a Context object: a DbContextOptions object must be passed to a
+ * Context object when the latter is instantiated.
  *
  * When the project starts, one of the first things EF Core will do is instantiate an
- * object from the Context class that you have provided. This context object will be
- * provided to Controller classes, where it will serve as a map to the database, its
- * entities and their relationships. This will help Controllers to carry out CRUD
- * operations on the database.
+ * object from the Context class that you have written. This context object will be
+ * provided to Controller classes, where it will be used to start a new database session.
+ * This will help Controllers to carry out CRUD operations on the database.
+ *
+ * Let's examine the two parts of the schema in the two following sections.
+ *
+ ***************************************************************************************************
+ *
+ * 1.1 THE SCHEMA
+ * 
+ * The Schema is discussed in greater in '2.3 Databases - Concepts and Usage.txt' in the
+ * 'Docs' folder. Check section '3.2.2 The Program-side Representation of Database
+ * Entities: The Data Model vs. The Schema'.
+ * 
+ * However, permit me to provide a brief explanation of the schema again: It is a map to
+ * the database. It contains information about an application's entity types and how they
+ * map to the database. The schema specifically defines the entities in a database and
+ * their relationships at a single point in time. Usually, the schema defines the
+ * current state of a database's topology. Entity Framework Core needs a schema for every
+ * database with which it has to interface.
+ *
+ * A database's schema is defined in a class that is generically called 'Context'. This
+ * class plays an integral role in Entity Framework Core's operations. A Context class
+ * must inherit from an EF Core class called 'Microsoft.EntityFrameworkCore.DbContext',
+ * which is often known as DbContext class. The docs explains that[1]: "A DbContext
+ * instance represents a session with the database and can be used to query and save
+ * instances of your entities." Put succinctly, a Context session object helps EF Core
+ * talk to the database.
+ * 
+ * The Context class is where you, the programmer, must define the schema to your
+ * project's database. You must provide very specific definitions for Tables and other
+ * database entities, as well as their relationships. With this information, a Context
+ * object can serve as a bridge between the data model (classes that model database
+ * entities) and database entities (records stored in the database).
+ *
+ ***************************************************************************************************
+ *
+ * 1.2 THE CONFIGURATION LOADOUT
+ * 
+ * Configuration information pertaining to a database also needs to be declared. This
+ * includes: 
+ * 
+ *
+ *     * Database Provider (A library that lets EF Core to talk a given vendor's
+ *       database)
+ *     * "Any necessary connection string or identifier of the database instance,
+ *       typically passed as an argument to the provider selection method..."[2]. This
+ *       includes stuff like:
+ *         * Hostname (the name of program/computer on which the database is running)
+ *         * The Database's Name
+ *         * The Database Port (The on which it listens for requests).
+ * 
+ *     * "Any provider-level optional behavior selectors, typically also chained inside
+ *       the call to the provider selection method"[2]
+ *     * "Any general EF Core behavior selectors, typically chained after or before the
+ *       provider selector method"[2]
+ *     * Database Login Credentials
+ * 
+ *
+ * This information is contained in a DbContextOptions class, which itself is a property
+ * of a Context class. 
  *
  * 
  ***************************************************************************************************
  ***************************************************************************************************
  *
  *
- * WRITING AND CONFIGURING A CONTEXT CLASS
+ * 2. WRITING AND CONFIGURING A CONTEXT CLASS
  *
  * Before starting work on the Context class, you should have already finished writing
  * model classes. You will have to consult them repeatedly to complete the schema.
  *
- * Entity Framework Core will need a Context object to start a new database session. It
- * will contain two major things, the SCHEMA, which is a map of the layout of a specific
- * database and the CONNECTION STRING, which is a configuration information such as
- * database providers, hostname (the name of program on which the database is running),
- * database name, database login credentials etc.
- *
  * The comments below are divided into 4 sections. Steps 1, 2 and 3 are about writing the
- * Schema. Step 4 is about declaring the connection string and configuring how the
- * Context session object will be instantiated. Once the Context session object has been
- * created, it will made available to other services that need it. 
+ * Schema. Step 4 is about declaring the database configuration loadout and configuring
+ * how the Context session object will be instantiated. The Context session object needs
+ * to be created and made available to program services that need it.
+ * 
  *
  *     Step 1: Inherit from DbContext Class
- *     Step 2: Define Data Structures in the Schema that Correspond to Tables in the Database
+ *     Step 2: Declare a DbSet<Table-Name> Property for Each Table in Your Database
  *     Step 3: Declaring Entities and Defining Inter-Entity Relationships
  *     Step 4: Configuring the Instantiation of the Context Object
  * 
@@ -64,17 +110,21 @@
  * STEP 1: INHERIT FROM DBCONTEXT CLASS
  *
  * When you write a Context class, first set it to inherit from DbContext. Call the class
- * whatever you want, plus the "Context" suffix; e.g. ACMEContext, SchoolContext,
- * HotelContext etc. or just Context as I have for this project. It's a good idea to name
- * it after the database, as each database requires its own Context class.
+ * whatever you want, plus the "-Context" suffix; e.g. 'ACMEContext', 'SchoolContext',
+ * 'HotelContext' etc. or just 'Context' as I have for this project. It's a good idea to
+ * name it after the database, as each database requires its own Context class.
  *
  ***************************************************************************************************
  *
- * STEP 2: DEFINE DATA STRUCTURES IN THE SCHEMA THAT CORRESPOND TO TABLES IN THE DATABASE
+ * STEP 2: DECLARE A DBSET<TABLE-NAME> PROPERTY FOR EACH TABLE IN YOUR DATABASE
  * 
- * The next thing you have to do is define tables from the database as properties in
- * this class. When EF Core translates database records into C# objects, it will store
- * them in these data structures. From Microsoft's DbContext docs[1]:
+ * The next thing you have to do is add one property to the class for each table that
+ * exists in the database. Each of these properties have to be DbSet data structures. Why
+ * are you doing this? When EF Core translates records from the database into C# objects,
+ * it will store them in these data structures. Hotel objects in the Hotels DbSet data
+ * structure, HotelRoom objects in the HotelRooms data structure, and so forth.
+ *
+ * From Microsoft's DbContext docs[1]:
  *
  * 
  *     Typically you create a class that derives from DbContext and contains
@@ -83,28 +133,37 @@
  *     instance of the derived context is created.
  * 
  *
- * Consult the data model classes. Those will be the tables in your database. In step 3,
- * you have to add DbSet<T> data structures as properties to the Context class, one to
- * represent each table from the database. You will have one property for every model
- * class. Give each data structure a plural name, after the table/data model they are
- * representing. Here's an example data structure from this file:
+ * First, you need to consult the data model classes (in the Models/Tables folder in the
+ * 'Common' project), because they model table entities in your database.
+ *
+ * Then you have to add DbSet<T> data structures as properties to the Context class. You
+ * will have to represent each table from the database. You do this by declaring a DbSet
+ * object, and inserting the name of one model class in place of 'TEntity' in
+ * 'DbSet<TEntity>'. Give each data structure a plural name, after the table/data model
+ * they are representing. Repeat this process for all your data model classes.
+ *
+ * Here's an example data structure from this file:
  *
  * 
- *         public virtual DbSet<Hotel> Hotels { get; set; }
+ *     public virtual DbSet<Hotel> Hotels { get; set; }
+ *
+ *
+ * See the properties in this file if you want more examples of how DbSet<TEntity>
+ * properties are to be declared.
  *
  ***************************************************************************************************
  *
  * STEP 3: THE SCHEMA: DECLARING ENTITIES AND DEFINING INTER-ENTITY RELATIONSHIPS
  *
  * In this section, I'll lightly delve into how to define the schema for this project's
- * database. Open up the the Model classes (in project Common) and use information from
- * them as a guide. The docs tell us how EF Core detects the schema:
+ * database. Open up the the relevant Model class and consult it frequently when doing
+ * this. The docs tell us how EF Core detects the schema:
  *
  * 
  *     The model is discovered by running a set of conventions over the entity classes
- *     found in the DbSet<TEntity> properties on the derived context. To further configure
- *     the model that is discovered by convention, you can override the
- *     OnModelCreating(ModelBuilder) method.
+ *     found in the DbSet<TEntity> properties on the derived context. To further
+ *     configure the model that is discovered by convention, you can override the
+ *     'OnModelCreating(ModelBuilder)' method.
  *
  *
  * Recall that data model classes are C# representations of tables that exist in your
@@ -137,8 +196,8 @@
  *
  * Once the table name has been declared, you have to declare its properties as columns
  * in the table. To do this, first consult the model class and study its properties;
- * switch back to the entity declaration block here in the Context and declare all the 
- * properties in it. 
+ * switch back to the entity declaration block here in the Context and declare these 
+ * properties. 
  * 
  * While you're doing declaring properties, you should provide each property in this
  * entity block with appropriate limitations like character limits for a column, whether
@@ -148,49 +207,54 @@
  * integrity by preventing poor quality information from entering the database.
  *
  * After declaring tables and their columns, you can start defining inter-entity
- * relationships, as shown here for the HotelRoom entity: 
+ * relationships. Invoke the 'entity.HasOne' property on a dependent entity (HotelRooms)
+ * and specify the exact nature of this entity to an independent entity (Hotel). Here is
+ * an example declaration for the HotelRoom entity: 
  *
- * 
- *     entity.HasOne(e => e.Hotel)              // 1. HotelRoom can be owned by only ONE Hotel object.
- *         .WithMany(e => e.HotelRooms)         // 2. A Hotel object can have many HotelRooms. (One-to-Many Relationship)
+ *     // In the first two lines, a One-to-Many relationship is defined.  
+ *     entity.HasOne(e => e.Hotel)              // 1. HotelRoom can be owned by only ONE Hotel object. (The 'One' side.)
+ *         .WithMany(e => e.HotelRooms)         // 2. A Hotel object can have many HotelRooms. (The 'Many' Relationship)
  *         .HasForeignKey(e => e.HotelId)       // 3. The HotelRoom table has 'HotelId' as foreign key.
  *         .OnDelete(DeleteBehavior.Cascade);   // 4. Delete a hotel and all its hotels rooms will
  *                                              //    be deleted as well.
  *
  * 
- * See the Context class below and read the comments to see all the details of data model
- * declaration. 
+ * See the Context class below and read all the comments to get a better understanding of
+ * how entity and inter-entity relationships are defined.
+ *
+ * This concludes the writing of the schema.
  *
  ***************************************************************************************************
  *
  * STEP 4: CONFIGURING THE INSTANTIATION OF THE CONTEXT OBJECT
  *
- * This step is an somewhat of deviation, as it's about configuring the instantiation of
- * the Context object, not about the schema. However, it is a necessary process, if not
- * easy to understand. 
- *
- * Do note that this section may contain inaccuracies and errors.
- *
+ * This step is about configuring the instantiation of the Context object. This is a
+ * necessary process, if not one that is easy to understand. Do note that this section
+ * may contain inaccuracies and errors.
  *
  * A Context object needs to have configuration information regarding the database loaded
- * into it before it can instantiated. This bundle of config data is often called a
- * connection string. This includes pieces of data like: Host's name, the database's name
- * and authentication credentials for the database.
+ * into it before it can instantiated. This includes pieces of data like: Host's name,
+ * the database's name and authentication credentials for the database. This bundle of
+ * config data is often contains the connection string and other other data. This data is
+ * usually encapsulated within a DbContextOptions object.
  *
- * That makes sense: a Context object contains a map to the layout of a particular
- * database, so configuration and access information for that database should be folded
- * into the Context object. There are three ways of configuring the connection string and
- * adding it to Context objects:
+ * Loading configuration data into a Context object makes sense: a Context object
+ * contains a map to the layout of a particular database, so configuration and access
+ * information for that database should be folded into the Context object too.
+ *
+ * There are three ways of configuring the configuration loadout and adding it to Context
+ * objects:
  * 
  *
  *     1. WITHIN THE CONTEXT CLASS
  *        "Override the OnConfiguring(DbContextOptionsBuilder) method to configure the
- *        database (and other options) to be used for the context."[1]
+ *        database (and other options) to be used for the context."[1] See an example
+ *        below in the Context class.
  *
  * 
  *     2. OUTSIDE THE CONTEXT CLASS: IN A DbContextFactory CLASS, USE A
- *        DbContextOptionsBuilder OBJECT TO BUILD A DbContextOptions<TContext> OBJECT
- *        THAT BUNDLES THE CONNECTION STRING. THEN PASS IT TO THE CONTEXT CONSTRUCTOR
+ *        DbContextOptionsBuilder OBJECT TO BUNDLE CONFIGURATION DATA INTO A
+ *        DbContextOptions<TContext> OBJECT, THEN PASS IT TO THE CONTEXT CONSTRUCTOR
  * 
  *        "Alternatively, if you would rather perform configuration externally instead of
  *        inline in your context, you can use DbContextOptionsBuilder<TContext> (or
@@ -198,8 +262,8 @@
  *        (or DbContextOptions) and pass it to a base constructor of DbContext."[1]
  *
  * 
- *     3. DECLARE A DBCONTEXT OBJECT IN STARTUP.CS AS A SERVICE. BUNDLE THE CONNECTION
- *        STRING INTO IT AND PROVIDE IT AS A SERVICE TO THE APPLICATION VIA DEPENDENCY
+ *     3. DECLARE A DBCONTEXT OBJECT IN STARTUP.CS AS A SERVICE. BUNDLE CONFIGURATION
+ *        DATA INTO IT AND PROVIDE IT AS A SERVICE TO THE APPLICATION VIA DEPENDENCY
  *        INJECTION
  * 
  *        A Context class is a Service. You can register services with the Dependency
@@ -213,8 +277,8 @@
  *        configuration data in a connection string. You can do this either inline in
  *        ConfigureServices(), or following best practices, in the appsettings.json file. 
  *
- *        This line of code adds the connection string to the Context class, then
- *        declares the database Context Service:
+ *        This line of code adds the connection string/config data to the Context class,
+ *        then declares the database Context as a service:
  * 
  *
  *            services.AddDbContext<Context>(options => options.UseNpgsql(connectionString));
@@ -225,7 +289,7 @@
  *        services defined in IServiceCollection. The Service Provider will resolve and
  *        inject dependencies into application classes as required. For instance, the
  *        Service Provider will provide the Context service to Controller classes, so
- *        that they can interface with the database as part of their duties.
+ *        that they can talk to the database as part of their duties.
  *
  * 
  * In this project, I've chosen to do the configuration externally (Approach 2). Look in
@@ -233,16 +297,15 @@
  * object is created and provided with configuration data which includes the Context
  * class, host name, database name and database login credentials. The DbContextOptionsBuilder
  * object will load the connection string and other config data into a DbContextOptions
- * object.
- *
- * The DbContextOptions object is then passed to the Context class's constructor, where it
- * becomes a part of the newly instantiated Context object. 
+ * object. The DbContextOptions object is then passed to the Context class's constructor,
+ * where it becomes a part of the newly instantiated Context object. 
  *
  ***************************************************************************************************
  *
  * SOURCES
  *
- * 1: https://docs.microsoft.com/en-us/ef/core/api/microsoft.entityframeworkcore.dbcontext
+ * 1: https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext
+ * 2: https://docs.microsoft.com/en-us/ef/core/api/microsoft.entityframeworkcore.dbcontext
  */
 
 
@@ -267,19 +330,31 @@ namespace Hotel_Server.Database
         public virtual DbSet<BedType> BedTypes { get; set; }
         
         
-        // CONTEXT OBJECT INSTANTIATION APPROACH 1 (See Step 4, Approach 1)
-        //
-        // This is a Context class constructor that "initializes a new instance of the 
-        // DbContext class using the specified options." 
-        // 
-        // If you choose to, you can do all Context object instantiation and configuration
-        // in the constructor. You have to specify the connection string (possibly in a)
-        // DbContextOptions object. However, this project implements Approach 2.
+        // Context Constructor
         public Context(DbContextOptions options) : base(options)
         {
             
         }
-
+        
+        /* APPROACH 1: SUPPLYING DbContextOptions BY OVERRIDING OnConfiguring()
+         * (See Step 4, Approach 1 in this file.)
+         *
+         * This project implements Approach 2.
+         * 
+         * If you choose to, you can do declare configuration data in the OnConfiguring()
+         * method. You have to specify the connection string and any other config data
+         * you want. Here is an example:
+         *
+         *
+         *     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+         *     {
+         *         optionsBuilder.UseNpgsql("Host=localhost;" +
+         *                                  "Username=postgres;" +
+         *                                  "Password=password;" +
+         *                                  "Database=HotelsDb");
+         *     }
+         */
+    
 
         // DECLARING THE SCHEMA
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -295,7 +370,7 @@ namespace Hotel_Server.Database
             // object, EF Core will perform the operations listed in the curly brackets. 
             modelBuilder.Entity<Hotel>(entity =>
             {
-                // DECLARING COLUMNS AND THEIR CHARACTERISTICS
+                // DECLARING COLUMNS AND THEIR CONSTRAINTS
                 //
                 // Note that every entity has a property check made on it, of this form:
                 // 
@@ -314,12 +389,12 @@ namespace Hotel_Server.Database
                 //
                 //    entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 //
-                // There are two limits/annotations that have to be made to the 'Name' 
-                // property: the max character count is set to 100 and the field is made
-                // mandatory. It must have a value entered if you want to save the value
-                // in the database. It would be wise to consult the database for your 
-                // project and ascertain that it imposes the same rules as the ones 
-                // defined in the schema.
+                // There are two constraint annotations that have to be made to the
+                // 'Name' property: the max character count is set to 100 and the field
+                // is made mandatory. It must have a value entered if you want to save
+                // the value in the database. It would be wise to consult the database
+                // for your project and ascertain that it imposes the same integrity
+                // constraints as the ones defined here in the schema.
                 //
                 // There are several methods of this kind: HasMaxLength(), HasColumnType(),
                 // and others to do a similar thing as Data Annotation Attributes did in
@@ -363,28 +438,28 @@ namespace Hotel_Server.Database
 
                 // DEFINING THE 'R' in ORM (OBJECT-RELATIONS)
                 
-                // Here, the relationship between Hotel and HotelRoom objects are
-                // detailed. Let's talk about inter-table relationships. In database
+                // Here, the relationship between Hotel and HotelRoom entities are
+                // configured. Let's talk about inter-table relationships. In database
                 // lingo, an entity can have One-to-Many, Many-to-Many and One-to-One
                 // relationships to other entities. In the following code block, we will
-                // be defining these inter-relationships.
+                // be defining such inter-relationships.
                 //
                 // This code block defines the relationship between two entities, Hotel
-                // and HotelRoom, from the perspective of the HotelRoom entity. (This
-                // entity block is for HotelRoom after all.) 
+                // and HotelRoom, from the perspective of the HotelRoom entity. (After
+                // all, this entity block is for HotelRoom.) 
                 //
                 // One Hotel can own multiple HotelRoom objects. The first line declares
                 // the 'One' side of the relationship. The second line declares the
                 // 'Many' side of the relationship.
                 //
                 // The third line declares a HotelRoom object has a foreign key property
-                // called HotelId. The fourth line specifies what happens when a Hotel
+                // called 'HotelId'. The fourth line specifies what happens when a Hotel
                 // object is deleted: logically, all its HotelRoom properties get deleted
                 // too. In short, if the principal entity is deleted, so are the dependent
                 // entities.
                 
-                entity.HasOne(e => e.Hotel)              // 1. HotelRoom can be owned by only ONE Hotel object.
-                    .WithMany(e => e.HotelRooms)         // 2. A Hotel object can have many HotelRooms. (One-to-Many Relationship)
+                entity.HasOne(e => e.Hotel)              // 1. A HotelRoom can be owned by only ONE Hotel object. (The 'One' Side)
+                    .WithMany(e => e.HotelRooms)         // 2. A Hotel object can have many HotelRooms. (The 'Many' Side)
                     .HasForeignKey(e => e.HotelId)       // 3. The HotelRoom table has 'HotelId' as foreign key.
                     .OnDelete(DeleteBehavior.Cascade);   // 4. Delete a hotel and all its hotels rooms will 
                                                          //    be deleted as well.
