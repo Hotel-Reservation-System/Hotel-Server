@@ -33,12 +33,14 @@ namespace Hotel_Server
             // On the line below, the Host is declared and turned on. 
             var host = BuildWebHost(args);
 
-            // Creates the scope within which operations are performed.
+            // Creates the scope within which this program's services and operations are
+            // executed.
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
+                    // POPULATE THE DATABASE
                     // 1. Get a database context instance from the dependency injection container.
                     var context = services.GetRequiredService<Context>();
                     // 2. Call the seed method, passing to it the context.
