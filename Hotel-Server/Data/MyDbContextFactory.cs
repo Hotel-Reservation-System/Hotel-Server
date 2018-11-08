@@ -5,12 +5,12 @@
  * Context object which is fed the Schema (from Data/Context.cs) and other configuration
  * data (from this file).
  *
- * There are three possible ways of doing this; see 'Step 4: Configuring the Instantiation
- * of the Context Object' in Context.cs for a full explanation. 
+ * There are three possible ways of doing this; see 'Step 4: Configuring the Loading of
+ * Config Data Into the Context Object' in Context.cs for a full explanation. 
  *
- * This class, MyDbContextFactory, is a factory that creates such a database session
- * object. Connection string related values, such as host name, database providers,
- * database login credentials etc. are defined here in this class in a
+ * This class, MyDbContextFactory, is a factory that creates a DbContextOptions object.
+ * Configuration and connection string related values, such as host name, database
+ * providers, database login credentials etc. are defined here in a
  * DbContextOptionsBuilder<TContext> class. DbContextOptionsBuilder loads all this data
  * into a DbContextOptions object, which in turn gets passed to a newly created Context
  * object.
@@ -51,11 +51,11 @@ namespace Hotel_Server.D
             builder.UseNpgsql("Host=localhost;" +
                               "Username=postgres;" +
                               "Password=password;" +
-                              "Database=HotelManagement");
+                              "Database=HotelsDb");
             
             // CREATE A NEW CONTEXT OBJECT, INTO WHICH THE DbContextOptionsBuilder
-            // OBJECT WILL LOAD A DbContextOptions OBJECT THAT CONTAINS THE CONNECTION
-            // STRING
+            // OBJECT WILL LOAD A DbContextOptions OBJECT THAT CONTAINS THE CONFIGURATION
+            // DATA
             return new Context(builder.Options);
         }
     }
