@@ -1,121 +1,141 @@
 ﻿/* INTRODUCTION TO CONTROLLER CLASSES AND ENDPOINTS
  * 
- * One of the main purposes of the Hotel-Server project is to define controllers (The other is to 
- * set up the Data Access Layer.). The Controller refers to the C in the MVC pattern. What is a
- * controller? From an MSDN article[1]:
+ * One of the main purposes of the Hotel-Server project is to define controllers (The
+ * other is to set up the Data Access Layer.). The Controller refers to the C in the MVC
+ * pattern. What is a controller? From an MSDN article[1]:
  *
- *     Controllers process incoming requests, handle user input and interactions, and execute
- *     appropriate application logic. A controller class typically calls a separate view component
- *     to generate the HTML markup for the request.
+ * 
+ *     Controllers process incoming requests, handle user input and interactions, and
+ *     execute appropriate application logic. A controller class typically calls a
+ *     separate view component to generate the HTML markup for the request.
  *
- * Simply put, controllers are classes that contain business logic methods which respond to user
- * input. When a request comes in, the controller will process it. To do this, one or more of the
- * methods in the controller may query the database to read and alter models. Then, it may issue
- * updates to the View. The updated View may be returned as a response to the user request.
+ * 
+ * Simply put, controllers are classes that contain business logic methods which respond
+ * to user input. When a request comes in, the controller will process it. To do this,
+ * one or more of the methods in the controller may query the database to read and alter
+ * models. Then, it may issue updates to the View. The updated View may be returned as a
+ * response to the user request.
  *
- * Controller classes contain ACTION METHODS, which perform ACTIONS and return results called
- * ACTION RESULTS.
+ * Controller classes contain ACTION METHODS, which perform ACTIONS and return results
+ * called ACTION RESULTS.
  *
  *
  * CONTROLLER CLASSES
  * 
  * Here's a little more on Controllers[2]:
+ * 
  *
- *     A controller is used to define and group a set of actions. An action (or action method) is a
- *     method on a controller which handles requests. Controllers logically group similar actions
- *     together. This aggregation of actions allows common sets of rules, such as routing, caching,
- *     and authorization, to be applied collectively. Requests are mapped to actions through
- *     routing.
- *
+ *     A controller is used to define and group a set of actions. An action (or action
+ *     method) is a method in a controller which handles requests. Controllers logically
+ *     group similar actions together. This aggregation of actions allows common sets of
+ *     rules, such as routing, caching, and authorization, to be applied collectively.
+ *     Requests are mapped to actions through routing.
+ * 
  *     By convention, controller classes:
+ *
+ * 
  * 
  *         * Reside in the project's root-level Controllers folder
  *         * Inherit from Microsoft.AspNetCore.Mvc.Controller
  *
- *     A controller is an instantiable class in which at least one of the following conditions is
- *     true:
+ * 
+ *     A controller is an instantiable class in which at least one of the following
+ *     conditions is true:
+ * 
  *
  *     * The class name is suffixed with "Controller".
  *     * The class inherits from a class whose name is suffixed with "Controller".
  *     * The class is decorated with the [Controller] attribute.
+ * 
  *
  *     A controller class must not have an associated [NonController] attribute...
  *
- *     The controller is a UI-level abstraction. Its responsibilities are to ensure request data is
- *     valid and to choose which view (or result for an API) should be returned. In well-factored
- *     apps, it doesn't directly include data access or business logic. Instead, the controller
- *     delegates to services handling these responsibilities.
+ *     The controller is a UI-level abstraction. Its responsibilities are to ensure
+ *     request data is valid and to choose which view (or result for an API) should be
+ *     returned. In well-factored apps, it doesn't directly include data access or
+ *     business logic. Instead, the controller delegates to services handle these
+ *     responsibilities.
  *
  * 
  * From the first source[1], here is an excerpt that explains the class hierarchy:
  *
- *     The base class for all controllers is the ControllerBase class, which provides general MVC
- *     handling. The Controller class inherits from ControllerBase and is the default
- *     implement[ation] of a controller. The Controller class is responsible for the following
- *     processing stages:
- *
- *         * Locating the appropriate action method to call and validating that it can be called.
- *         * Getting the values to use as the action method's arguments.
- *         * Handling all errors that might occur during the execution of the action method.
- *
- * The ControllerBase supports MVC Controllers WITHOUT View support. The Controller class is the
- * base class for an MVC controller with View support. The Controller class has useful properties
- * related to Request and Response objects built into it. It appears that either .NET Core or
- * Entity Framework Core magically instantiates this class behind the scenes and uses it direct
- * control flow. 
  * 
- * The Controller for this project is the class AllControllers. (Note that its name appears to 
- * violate the requirement that controllers need to have the suffix -Controller.)
+ *     The base class for all controllers is the ControllerBase class, which provides
+ *     general MVC handling. The Controller class inherits from ControllerBase and is
+ *     the default implement[ation] of a controller. The Controller class is responsible
+ *     for the following processing stages:
+ *
+ *         * Locating the appropriate action method to call and validating that it can be
+ *           called.
+ *         * Getting the values to use as the action method's arguments.
+ *         * Handling all errors that might occur during the execution of the action
+ *           method.
+ *
+ * 
+ * The ControllerBase supports MVC Controllers WITHOUT View support. The Controller class
+ * is the base class for an MVC controller with View support. The Controller class has
+ * useful properties related to Request and Response objects built into it. It appears
+ * that either .NET Core or Entity Framework Core magically instantiates this class
+ * behind the scenes and uses it direct control flow. 
+ * 
+ * The Controller for this project is the class AllControllers. (Note that its name
+ * appears to violate the requirement that controllers need to have the suffix
+ * -Controller.)
  *
  *
  * ACTIONS/ACTION METHODS
  *
- * ACTIONS/ACTION METHODS appear to ASP.NET Core jargon for ENDPOINTS. What are endpoints?
+ * ACTIONS/ACTION METHODS appear to ASP.NET Core jargon for ENDPOINTS. What are
+ * endpoints?
  * 
- * In a non-networked program, a class would contain regular methods that control application flow
- * by reacting to user actions. But for networked projects such as this one, where a multi-tier
- * architecture separates the project into a user-facing client program, a server-based database
- * backend and a Common class library, the client must communicate to the database backend over a
- * network. In this context, 'Network' can refer to the internet or LANs such as your home network.
- * If the client and server are running on the same machine, the communication happens only on the
- * local network.
+ * In a non-networked program, a class would contain regular methods that control
+ * application flow by reacting to user actions. But for networked projects such as this
+ * one, where a multi-tier architecture separates the project into a user-facing client
+ * program, a server-based database backend and a Common class library, the client must
+ * communicate to the database backend over a network. In this context, 'Network' can
+ * refer to the internet or LANs such as your home network. If the client and server are
+ * running on the same machine, the communication happens only on the local network.
  *
- * To facilitate inter-program communication over a network, Hotel-Server must have its Controller 
- * class (AllControllers) expose an API to said network. Through this API, any network-based 
- * program can communicate with the database. In the case of networked programs, APIs are exposed 
- * through public methods called ENDPOINTS. In the context of a Web API project, Endpoints are just
- * public methods inside Controller classes that can be called over a network. All endpoints are 
- * controller methods, but not all controller methods are endpoints. Controllers can have private,
- * helper methods.
+ * To facilitate inter-program communication over a network, Hotel-Server must have its
+ * Controller class (AllControllers) expose an API to said network. Through this API, any
+ * network-based program can communicate with the database. In the case of networked
+ * programs, APIs are exposed through public methods called ENDPOINTS. In the context of
+ * a Web API project, Endpoints are just public methods inside Controller classes that
+ * can be called over a network. All endpoints are controller methods, but not all
+ * controller methods are endpoints, because Controllers can have private, helper
+ * methods.
  * 
  * Here's the ASP.NET team's explanation for Actions[2]:
  *
- *     Public methods on a controller, except those decorated with the [NonAction] attribute, are
- *     actions. Parameters on actions are bound to request data and are validated using model
- *     binding. Model validation occurs for everything that's model-bound. The ModelState.IsValid
- *     property value indicates whether model binding and validation succeeded.
+ * 
+ *     Public methods on a controller, except those decorated with the [NonAction]
+ *     attribute, are actions. Parameters on actions are bound to request data and are
+ *     validated using model binding. Model validation occurs for everything that's
+ *     model-bound. The 'ModelState.IsValid' property value indicates whether model
+ *     binding and validation succeeded.
  *
- *     Action methods should contain logic for mapping a request to a business concern. Business
- *     concerns should typically be represented as services that the controller accesses through
- *     dependency injection. Actions then map the result of the business action to an application
- *     state.
+ *     Action methods should contain logic for mapping a request to a business
+ *     concern. Business concerns should typically be represented as services that the
+ *     controller accesses through dependency injection. Actions then map the result of
+ *     the business action to an application state.
  *
- *     Actions can return anything, but frequently return an instance of IActionResult (or
- *     Task<IActionResult> for async methods) that produces a response. The action method is
- *     responsible for choosing what kind of response. The action result does the responding.
+ *     Actions can return anything, but frequently return an instance of IActionResult
+ *     (or Task<IActionResult> for async methods) that produces a response. The action
+ *     method is responsible for choosing what kind of response. The action result does
+ *     the responding.
  *
  *
  * ACTION RESULTS
  * 
- * The Controller class has predefined methods with predefined return values. As noted at in the
- * previous paragraph, most method return values indirectly implement the same interface:
- * IActionResult.
+ * The Controller class has predefined methods with predefined return values. As noted in
+ * the previous paragraph, most method return values indirectly implement the same
+ * interface: IActionResult.
  *
- * The ActionResult abstract class is an implementation of IActionResult. Most Controller class
- * return data types derive from ActionResult. Look for methods that return objects ending in the
- * word 'Result'. These data types usually implement IActionResult. Examples: ContentResult,
- * EmptyResult, FileResult, HttpStatusCodeResult, JavaScriptResult, JsonResult, RedirectResult and
- * RedirectToRouteResult. 
+ * The ActionResult abstract class is an implementation of IActionResult. Most Controller
+ * class return data types derive from ActionResult. Look for methods that return objects
+ * ending in the word 'Result'. These data types usually implement IActionResult.
+ * Examples: ContentResult, EmptyResult, FileResult, HttpStatusCodeResult,
+ * JavaScriptResult, JsonResult, RedirectResult and RedirectToRouteResult. 
  *
  * 
  * SOURCES:
@@ -130,18 +150,19 @@
  * 
  * REST ARCHITECTURE
  * 
- * AllControllers implements the REST (Representational State Transfer) architecture. It's an
- * architecture for managing state information in designing distributed systems. "It is not a
- * standard but a set of constraints, such as being stateless, having a client/server relationship,
- * and a uniform interface. REST is not strictly related to HTTP, but it is most commonly 
- * associated with it." [1] All network-facing APIs i.e. Endpoints, that are intended for 
- * communicating over the internet use the HTTP protocol to send and receive requests.
+ * AllControllers implements the REST (Representational State Transfer) architecture. It's
+ * an architecture for managing state information in designing distributed systems. "It
+ * is not a standard but a set of constraints, such as being stateless, having a
+ * client/server relationship, and a uniform interface. REST is not strictly related to
+ * HTTP, but it is most commonly associated with it." [1] All network-facing APIs i.e.
+ * Endpoints, that are intended for communicating over the internet use the HTTP protocol
+ * to send and receive requests. 
  *
- * Therefore, in AllControllers, there are many endpoints that feature HTTP requests such as GET, 
- * PUT, POST  etc. These endpoints implement Create, Read, Update and Delete (CRUD) operations for 
- * Hotel, HotelRoom and RoomReservation objects. The other tables in the database are lookup tables, 
- * on which CRUD operations will not be performed; for this reason, only these three tables have 
- * endpoints in this project.
+ * Therefore, in AllControllers, there are many endpoints that feature HTTP requests such
+ * as GET, PUT, POST  etc. These endpoints implement Create, Read, Update and Delete
+ * (CRUD) operations for Hotel, HotelRoom and RoomReservation objects. The other tables
+ * in the database are lookup tables, on which CRUD operations will not be performed; for
+ * this reason, only these three tables have endpoints in this project.
  *
  * 
  **************************************************************************************************
@@ -163,15 +184,15 @@
  * VISUAL STUDIO
  * 
  * In Visual Studio, right-click the Controller folder, select 
- * Add | Controller | (API Controller with actions, using Entity Framework). In the message box 
- * that pops up, select the Model class (Hotel, HotelRoom or RoomReservation), the Data Context 
- * Class (Context.cs), and the name of the Controller. Do this three times to generate controllers 
- * for Hotel, HotelRoom and RoomReservation objects. HotelController.cs is an amalgamation of 
- * these three files. 
+ * Add | Controller | (API Controller with actions, using Entity Framework). In the
+ * message box that pops up, select the Model class (Hotel, HotelRoom or RoomReservation),
+ * the Data Context Class (Context.cs), and the name of the Controller. Do this three times
+ * to generate controllers for Hotel, HotelRoom and RoomReservation objects.
+ * HotelController.cs is an amalgamation of these three files. 
  * 
  * INTELLIJ RIDER
- * As of September 11, 2017, this feature does not exist in IntelliJ Rider.[2] You may be able to 
- * generate it through the terminal.[] 
+ * As of September 11, 2017, this feature does not exist in IntelliJ Rider.[2] You may be
+ * able to generate it through the terminal.[] 
  * 
  * Go the the main program folder (Hotel-Server) and find the project folder (also named 
  * Hotel-Server). Open a command prompt window. If you want to see general options, run 
