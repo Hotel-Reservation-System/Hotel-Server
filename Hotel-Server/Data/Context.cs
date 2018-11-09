@@ -242,36 +242,37 @@
  * contains a map to the layout of a particular database, so configuration and access
  * information for that database should be folded into the Context object too.
  *
- * There are three ways of configuring the configuration loadout and adding it to Context
- * objects:
+ * There are three possible ways of configuring the configuration loadout and adding it
+ * to Context objects:
  * 
  *
- *     1. WITHIN THE CONTEXT CLASS
+ *     1. APPROACH 1: DECLARE IT WITHIN THE CONTEXT CLASS IN THE OnConfiguring() METHOD
+ * 
  *        "Override the OnConfiguring(DbContextOptionsBuilder) method to configure the
  *        database (and other options) to be used for the context."[1] See an example
  *        below in the Context class.
  *
  * 
- *     2. OUTSIDE THE CONTEXT CLASS: IN A DbContextFactory CLASS, USE A
- *        DbContextOptionsBuilder OBJECT TO BUNDLE CONFIGURATION DATA INTO A
+ *     2. APPROACH 2: DECLARE IT OUTSIDE THE CONTEXT CLASS: IN A DbContextFactory CLASS,
+ *        USE A DbContextOptionsBuilder OBJECT TO BUNDLE CONFIGURATION DATA INTO A
  *        DbContextOptions<TContext> OBJECT, THEN PASS IT TO THE CONTEXT CONSTRUCTOR
  * 
  *        "Alternatively, if you would rather perform configuration externally instead of
  *        inline in your context, you can use DbContextOptionsBuilder<TContext> (or
- *        DbContextOptionsBuilder) to externally create an instance of DbContextOptions<TContext>
- *        (or DbContextOptions) and pass it to a base constructor of DbContext."[1]
+ *        DbContextOptionsBuilder) to externally create an instance of
+ *        DbContextOptions<TContext> (or DbContextOptions) and pass it to a base
+ *        constructor of DbContext."[1]
  *
  * 
- *     3. DECLARE A DBCONTEXT OBJECT IN STARTUP.CS AS A SERVICE. BUNDLE CONFIGURATION
- *        DATA INTO IT AND PROVIDE IT AS A SERVICE TO THE APPLICATION VIA DEPENDENCY
- *        INJECTION
+ *     3. APPROACH 3: DECLARE A DBCONTEXT OBJECT IN STARTUP.CS AS A SERVICE. BUNDLE
+ *        CONFIGURATION DATA INTO IT AND PROVIDE IT AS A SERVICE TO THE APPLICATION VIA
+ *        DEPENDENCY INJECTION
  * 
  *        A Context class is a Service. You can register services with the Dependency
  *        Injection Framework in your project during application startup. This is usually
- *        done in Startup.cs's ConfigureServices() method.
- *
- *        If you want to see an commented out implementation of this third approach, go
- *        to Startup.cs and check the ConfigureServices() method. 
+ *        done in Startup.cs's ConfigureServices() method. If you want to see an commented
+ *        out implementation of this third approach, go to Startup.cs and check the
+ *        ConfigureServices() method. 
  *
  *        To register the Context object as a service, first you have to define the
  *        configuration data in a connection string. You can do this either inline in
