@@ -547,7 +547,7 @@ complex (page 22)[8]:
 
     Although simple, the single-project monolithic solution has some disadvantages. As 
     the project’s size and complexity grows, the number of files and folders will continue 
-    to grow as well. User Interface (UIconcerns (models, views, controllers) reside in 
+    to grow as well. User Interface (UI concerns (models, views, controllers) reside in 
     multiple folders, which are not grouped together alphabetically. This issue only gets 
     worse when additional UI-level constructs, such as Filters or ModelBinders, are added 
     in their own folders. Business logic is scattered between the Models and Services 
@@ -610,10 +610,10 @@ explains the functions of these layers and their interrelationships[8]:
     responsibility. 
     
     One disadvantage of this traditional layering approach is that compile-time 
-    dependencies run from the top to the bottom. That is, the UI layer depends on the BLL, 
-    which depends on the DAL. This means that the BLL, which usually holds the most 
-    important logic in the application, is dependent on data access implementation details 
-    (and often on the existence of a database). Testing business logic in such an 
+    dependencies run from the top to the bottom. That is, the UI layer depends on the 
+    BLL, which depends on the DAL. This means that the BLL, which usually holds the most 
+    important logic in the application, is dependent on data access implementation 
+    details (and often on the existence of a database). Testing business logic in such an 
     architecture is often difficult, requiring a test database. The dependency inversion 
     principle can be used to address this issue, as you’ll see in the next section. 
        
@@ -635,8 +635,8 @@ on page 28-29[8]:
     Applications that follow the Dependency Inversion Principle as well as the 
     Domain-Driven Design (DDD) principles tend to arrive at a similar architecture. This 
     architecture has gone by many names over the years. One of the first names was 
-    Hexagonal Architecture, followed by Ports-and-Adapters. More recently, it’s been cited
-    as the Onion Architecture or Clean Architecture. The most recent name, Clean 
+    Hexagonal Architecture, followed by Ports-and-Adapters. More recently, it’s been 
+    cited as the Onion Architecture or Clean Architecture. The most recent name, Clean 
     Architecture, is used to describe this architecture in this e-book. 
     
     Note: The term Clean Architecture can be applied to applications that are built using 
@@ -710,26 +710,26 @@ What's the point of using layers and tiers? Rockford Lhotka explains[9]:
 
     Why do we layer software? Primarily to gain the benefits of logical organization and 
     grouping of like functionality. Translated to tangible outcomes, logical layers offer 
-    reuse, easier maintenance and shorter development cycles. In the final analysis, proper 
-    layering of software reduces the cost to develop and maintain an application. Layering 
-    is almost always a wonderful thing! 
+    reuse, easier maintenance and shorter development cycles. In the final analysis, 
+    proper layering of software reduces the cost to develop and maintain an application. 
+    Layering is almost always a wonderful thing! 
 
     Why do we deploy layers onto multiple tiers? Primarily to obtain a balance between 
     performance, scalability, fault tolerance and security. While there are various other 
-    reasons for tiers, these four are the most common. The funny thing is that it is almost 
-    impossible to get optimum levels of all four attributes – which is why it is always a 
-    trade-off between them.
+    reasons for tiers, these four are the most common. The funny thing is that it is 
+    almost impossible to get optimum levels of all four attributes – which is why it is 
+    always a trade-off between them.
 
 
 He continues on and later in the article, he makes a few practical comments about tiers:
 
 
-    Tiers imply process and/or network boundaries. A 1-tier model has all the layers running 
-    in a single memory space (process) on a single machine. A 2-tier model has some layers
-    running in one memory space and other layers in a different memory space. At the very 
-    least these memory spaces exist in different processes on the same computer, but more 
-    often they are on different computers. Likewise, a 3-tier model has two boundaries. 
-    In general terms, an n-tier model has n-1 boundaries.
+    Tiers imply process and/or network boundaries. A 1-tier model has all the layers 
+    running in a single memory space (process) on a single machine. A 2-tier model has 
+    some layers running in one memory space and other layers in a different memory space. 
+    At the very least these memory spaces exist in different processes on the same 
+    computer, but more often they are on different computers. Likewise, a 3-tier model 
+    has two boundaries. In general terms, an n-tier model has n-1 boundaries.
     
     Crossing a boundary is expensive. It is on the order of 1000 times slower to make a 
     call across a process boundary on the same machine than to make the same call within 
@@ -750,26 +750,26 @@ He continues on and later in the article, he makes a few practical comments abou
     your system. But there really are good arguments and reasons for adding tiers, and 
     it is important to accommodate them as appropriate.
     
-    The reality is that almost all systems today are at least 2-tier. Unless you are using 
-    an Access or dBase style database your Data layer is running on its own tier – typically 
-    inside of SQL Server, Oracle or DB2. So for the remainder of my discussion I’ll primarily 
-    focus on whether you should use a 2-tier or 3-tier model...
+    The reality is that almost all systems today are at least 2-tier. Unless you are 
+    using an Access or dBase style database your Data layer is running on its own tier – 
+    typically inside of SQL Server, Oracle or DB2. So for the remainder of my discussion 
+    I’ll primarily focus on whether you should use a 2-tier or 3-tier model...
 
     ...the question remains whether to configure an application for 2 or 3 tiers. 
     
     Ultimately this question can only be answered by doing a cost-benefit analysis for 
     your particular environment. You need to weigh the additional complexity and cost of 
-    a 3-tier deployment against the benefits it might bring in terms of scalability, fault 
-    tolerance or security.
+    a 3-tier deployment against the benefits it might bring in terms of scalability, 
+    fault tolerance or security.
 
 
 2.5.5 CREATING ABSTRACTION LAYERS USING LAYERS AND TIERS
 
 In section 2.4.3, it was established that layers bring high cohesion to your application,
-while tiers bring loose coupling. I provided some discussion on the benefits they bring to 
-your application, but I want to bring up the concept of abstraction and abstraction layers. 
-Layers and tiers are used to create abstraction layers in your application, which in turn 
-bring the aforementioned benefits. 
+while tiers bring loose coupling. I provided some discussion on the benefits they bring 
+to your application, but I want to bring up the concept of abstraction and abstraction 
+layers. Layers and tiers are used to create abstraction layers in your application, which 
+in turn bring the aforementioned benefits. 
 
 Hanmer explains how tiers and layers are used to create abstraction layers in your 
 application[2]:
@@ -931,7 +931,7 @@ successfully separate concerns:
 To avoid spaghetti code, the program's code has been partitioned into three distinct 
 layers, modelled after the layers in N-tier architecture. However, once the program gets
 big enough, it probably will not be modular enough, because all the layers run on the 
-same machine. 
+same machine (i.e. the layer belong to the same solution). 
 
 It also limits this program to being a 1-tier architecture. That means that all three 
 layers are packaged in a single executable and run on the same machine. The absence of 
@@ -973,7 +973,7 @@ This application is less tightly coupled than the 1-tier application, so making 
 like swapping out the database become easier. The Presentation and Business Logic layers 
 are still coupled, making it likely that any changes to one layer could affect the other. 
 
-In a 3-tier application, you would have, three programs running on three different 
+In a 3-tier application, you would have, three sub-programs running on three different 
 machines: a client application running on the user's PC or perhaps on a web server, an 
 App server program (containing the Business Logic Layer and DAL) running on an 
 Application Server, and the Database backend will run on a Database Server:
