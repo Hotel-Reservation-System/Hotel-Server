@@ -59,21 +59,22 @@ usually cannot be designed as a single monolithic application. Why? Because in a
 networked program, work is not being done by a single monolithic program that runs on a 
 single computer. A networked program necessitates a Distributed Architectural Style.
 
-Web applications are often comprised of two, three or more components, which are 
-organized into layers and physically separated into tiers. The application's layers live 
-within one of its tiers. The application's tiers are standalone sub-programs with a 
-designated set of responsibilities. Each sub-program is usually designed to run on a 
-separate machine, but all sub-programs can run on the same computer if needed. However,
-this usually happens only in development and testing environments.
+Web applications are often comprised of two, three or more components. In an application
+like this, code is organized into layers (.NET projects) and physically separated into 
+tiers (via .NET solutions). The application's layers live within one of its tiers. The 
+application's tiers are standalone sub-programs with a designated set of responsibilities. 
+Each sub-program is usually designed to run on a separate machine, but all sub-programs 
+can run on the same computer if needed. However, this usually happens only in development 
+and testing environments.
 
 That's right, as non-networked programs can choose a monolithic architecture or not as
 the developers please, the standout difference is that web applications must almost 
 always implement a distributed architectural pattern. In practice, most web apps use 
 one of the multitier patterns. A web application can have several tiers, such as: a 
-Client Application, an App Server and a Database Server. These sub-programs usually run 
-on separate machines and communicate with each other over the network (the internet, 
-institutional intranets etc.) to coordinate towards accomplishing the application's 
-purpose.
+Client Application, an App Server and a Database Server. These sub-programs are designed
+to run on separate machines and communicate with each other over the network (like the 
+internet or institutional intranets) to coordinate towards accomplishing the 
+application's purpose.
 
 As web applications tend to have multiple layers and tiers that are spread out over 
 multiple machines, its resources and duties are distributed over multiple devices. Hence
@@ -144,7 +145,7 @@ special duty, a role that only it can perform for the application. In the client
 architectural pattern, the client acts as a conduit, displaying information and taking 
 requests from the user. The server's duty is do the processing and data management. 
 
-A P2P architecture is different; it tends to produce monolithic programs that contains 
+A P2P architecture is different; it tends to produce monolithic programs that contain 
 all or most modules of the application. For this reason, P2P peers are said to be equally 
 privileged because every peer has the same capabilities and responsibilities. A peer can 
 act as both client and server and does processing on the local machine. The results of 
@@ -197,8 +198,8 @@ Programs with a client-server architecture have two parts:
 
     * SERVER: The server will respond to client requests by sending back resources or 
       doing the operation that the user asked for. The server in this model handles two
-      functions, application processing and data management. In this model, the Client 
-      is the Service Provider.
+      functions, application processing and data management. In this model, the Server is 
+      the Service Provider.
 
 
 These sub-programs are designed to run on two separate machines. Here is a simple 
@@ -574,16 +575,16 @@ that happens is that one framework might put one aspect of the program under one
 implementations. For this reason, there is a lot of confusion on this topic. In the 
 explanation that follows, I have tried to explain MVC as its implemented in ASP.NET Core.
 
-If you check sections '2.2 Architectural Styles' and '2.3 Architectural Patterns' section 
-of the file '1.1 Architectures & Patterns.txt', you'll note that MVC is an architectural 
-pattern that falls under the architectural style of Interactive Systems. Interactive 
-Systems are computer systems (a bundle of hardware and software) that has lots of 
-interaction between humans and the computer system. Desktop and laptop PCs and mobile 
-devices are good examples of interactive systems. Embedded devices, for instance the ones
-in your car's engine or in a factory's conveyor belt are examples of systems with 
-relatively little human-computer interaction. Interactive applications are things like 
-games, word processors, CLI apps. All of these applications take substantial user input 
-as part of their normal functioning.
+If you check sections '2.2 Architectural Styles' and '2.3 Architectural Patterns' of the 
+file '1.1 Architectures & Patterns.txt', you'll note that MVC is an architectural pattern 
+that falls under the architectural style of Interactive Systems. Interactive Systems are 
+computer systems (a bundle of hardware and software) that has lots of interaction between 
+humans and the computer system. Desktop and laptop PCs and mobile devices are good 
+examples of interactive systems. Embedded devices, for instance the ones in your car's 
+engine or in a factory's conveyor belt are examples of systems with relatively little 
+human-computer interaction. Interactive applications are things like games, word 
+processors, CLI apps. All of these applications take substantial user input as part of 
+their normal functioning.
 
 Interactive systems and applications are designed to respond to human requests. This is 
 where MVC comes in: It appears to be an architectural pattern that best suited to 
