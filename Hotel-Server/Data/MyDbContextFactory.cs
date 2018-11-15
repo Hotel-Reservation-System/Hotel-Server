@@ -50,7 +50,7 @@ namespace Hotel_Server.D
             // connection string to the Npgsql() method to configure the database. 
             builder.UseNpgsql("Host=localhost;" +
                               "Username=postgres;" +
-                              "Password=password;" +
+                              "Password=67890;" +
                               "Database=HotelsDb");
             
             // CREATE A NEW CONTEXT OBJECT, INTO WHICH THE DbContextOptionsBuilder
