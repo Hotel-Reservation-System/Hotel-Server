@@ -51,7 +51,7 @@ namespace Hotel_Server.D
             builder.UseNpgsql("Host=localhost;" +
                               "Username=postgres;" +
                               "Password=67890;" +
-                              "Database=HotelsDb");
+                              "Database=HRSPDb");
             
             // CREATE A NEW CONTEXT OBJECT, INTO WHICH THE DbContextOptionsBuilder
             // OBJECT WILL LOAD A DbContextOptions OBJECT THAT CONTAINS THE CONFIGURATION
