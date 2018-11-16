@@ -758,7 +758,8 @@ Here is a answer from StackOverflow that expands on migrations[6]:
     
     - Ric .Net    
     
-Let's take a look at migrations file. Taken from the file called, 
+Leaving aside the Seed method, which appears to from another framework, let's take a look 
+at a migrations file. Taken from the file called, 
 '20180128032156_CreateHotelHotelRoomRoomTypeBedTypeRoomReservationTables.cs', this is the 
 Logical schema for the Hotel table: 
 
@@ -859,7 +860,10 @@ passed to the database.
 The following sections mention some of them, but others may be required: 
 
 
-4.1 THE CONNECTION STRING
+
+
+
+4.X THE CONNECTION STRING
 
 What is a connection string?[7]:
 
@@ -871,16 +875,17 @@ application between environments, such as development, testing, and production."
 A connection string is database-related information that you must provide to start a 
 session with it. This might include: the hostname of the computer on which the database 
 is running, the database's name, user authentication information and DB configuration 
-data. 
+data. You might also include flags intended for ASP.NET Core or the Database itself in
+your connection string.
 
-See the second article in the sources section for more information. 
+See the seventh article in the sources section for more information. 
  
 
 4.2 THE CONTEXT CLASS (aka DbContext class)
 
 A Context class is an important EF Core class that represents a session with the 
 database. According to 'Entity Framework Core: DbContext'[8], DbContext is the class 
-where you can do all of these things:
+with which you can do all of these things:
 
     
    * Manage database connection
@@ -892,8 +897,10 @@ where you can do all of these things:
    * Transaction management
    
 
-Aside from representing a session with the database, a Context class also contains the 
-SCHEMA for the database. This is why you need to create a Context class in your project.
+A Context class contains the SCHEMA as well as configuration data (of which the 
+connection string is usually one part) for a particular database. This bundle of 
+information is necessary to start a session with the database. This is why you need to 
+create a Context class in your project. 
 
 There are two approaches you can take, depending on whether you have an existing 
 database. If you are starting a greenfield project WITHOUT an existing database, you go 
@@ -914,7 +921,7 @@ program to talk to it, you use the EXISTING DATABASE approach.
 
 Let's look at the NEW DATABASE approach: you have to create a Context class that inherits 
 from 'Microsoft.EntityFrameworkCore.DbContext'. It can be named Context, DbContext, 
-HotelContext or something similar. Just append the word 'Context' to the filename. 
+HotelContext or something similar.
 
 Once you create a new Context class, you have to define the schema in it. This includes:
 
@@ -924,7 +931,7 @@ Once you create a new Context class, you have to define the schema in it. This i
     * Defining relationships between entities (by declaring them in the OnModelCreating() 
       method) 
 
-Consult Context.cs to learn more about these things. 
+See 'Context.cs' in the 'Data' folder for much more information on the schema. 
 
 
 4.3 INITIATING A NEW SESSION WITH YOUR DATABASE
