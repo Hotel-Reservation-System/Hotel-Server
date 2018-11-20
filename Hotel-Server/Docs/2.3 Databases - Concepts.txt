@@ -17,7 +17,7 @@ this communication?
     2.3   Other Database Concepts and Terms to Learn Before Proceeding to Section 3
     
     3.    Application-Database Communication Concepts
-    3.1   Entity Framework Core
+    3.1   Entity Framework Core: An Object-Relational Mapper (ORM)
     3.2   How Does Entity Framework Core Translate Data To and From the Database?
     3.2.1 Database Providers
     3.2.2 The Program-side Representation of Database Entities: The Data Model vs. The Schema
@@ -320,15 +320,18 @@ Learn and know the distinction between various types of keys.
 
 3. APPLICATION DATABASE COMMUNICATION CONCEPTS
 
-3.1 ENTITY FRAMEWORK CORE
+3.1 ENTITY FRAMEWORK CORE: AN OBJECT-RELATIONAL MAPPER (ORM)
 
-When you start up a program that uses a database, as this one does, one of the first 
-things the program will do is try and talk to the database. A database usually 
-understands only the the SQL language. When you connect a database to a program written 
-in C# or another general purpose programming language, you need an translator program to 
-translate SQL to C# and vice versa. A program that translates SQL to a general purpose 
-programming language like Java, C# or JavaScript and vice versa is called an 
-OBJECT-RELATIONAL MAPPER (ORM).
+When you start up a program that stores data in a discrete database, as this one does, 
+one of the first things the program will do is try and talk to the database. A database 
+usually understands only the the SQL language. When you connect a database to a program 
+written in C# or another general purpose programming language, you need an translator 
+program/library to translate from SQL to C# and vice versa. A program that translates SQL 
+to a general purpose programming language like Java, C# or JavaScript and vice versa is 
+called an OBJECT-RELATIONAL MAPPER (ORM).
+
+When the program runs, the ORM sits between the program and the database, translating C#
+instructions into SQL and the reverse, as illustrated in this diagram:
 
 
                                           +---------+
@@ -361,10 +364,13 @@ between a app server like Hotel-Server and its database. When you hook it up to 
 source, such as a database, an ORM reads in raw SQL data and turns it into collections of 
 C# objects for use in the program. By doing this, EF Core is translating data as it is 
 represented in the database into a data representation that C# programs would understand.
-
 Entity Framework Core is the standard ORM solution in the .NET world, provided by 
-Microsoft for .NET Core projects. You'll need several nuget packages to get EF Core 
-functionality: 
+Microsoft for .NET Core projects. 
+
+
+3.1.1 EFC PACKAGES & TOOLS
+
+You'll need several nuget packages to get EF Core functionality: 
 
 
     Microsoft.EntityFrameworkCore, 
@@ -373,18 +379,50 @@ functionality:
     
     
 Fortunately, all these packages come with the Microsoft.AspNetCore.All metapackage, which 
-appears to be mandatory for all ASP.NET Core projects. If you want to use the command 
-line interface while working with migrations, you will have to install this package, 
-which must done separately:
+appears to be mandatory for all ASP.NET Core projects. 
+
+If you want to use the command line interface, which you will need while working with 
+migrations, note that there are two sets of tools available:
 
 
-    Microsoft.EntityFrameworkCore.Tools.DotNet (For Migrations. Tools for the Command-line 
-                                                Interface. )
-                                                
+    1. Cross Platform .NET Core Command-Line Interface (CLI) Tools
+    2. Visual Studio's Package Manager Console Tools  
 
-Note: The docs say that "You have to install this package by editing the .csproj file; 
-you can't use the install-package command or the package manager GUI."
 
+Due to the Visual Studio centric nature of the VSPMC tools, I will be focusing on the 
+first option. To get access to the .NET Core CLI tools, all that needs to be done is 
+install the .NET Core SDK (for ASP.NET Core 2.1+ projects). In this set of tools, most
+commands being with 'dotnet ef'.
+
+
+3.1.2 ENTITY FRAMEWORK CORE CONCEPTS:
+
+
+Entity Framework Core has several major concepts:
+
+    1. Model: A POCO class that contains only properties. Model classes define business
+       entities. Business entities are objects on which the program performs operations.
+       They are usually stored in the database, which is why EF Core needs model classes:
+       to understand the C# representation of the business entity.
+         
+    2. DbSet: "A DbSet represents the collection of all entities in the context, or that 
+       can be queried from the database, of a given type." Business entities are stored
+       in DbSets. When you declare a DbSet, just pass a model class to as a generic to 
+       it. E.g. DbSet<Hotel>. How you can store Hotel entities in it. 
+    
+    3. Context/DbContext class: A Context class defines the schema for a database. In it, 
+       all the tables in a database are declared as DbSet properties. Then, these tables
+       have their columns as well as field value constraints declared. Finally, the 
+       schema declares inter-table relationships (One-to-One, One-to-Many, Many-to-Many).
+       
+    4. Database Providers: "Entity Framework Core can access many different databases 
+       through plug-in libraries called database providers." To get EF Core running, add
+       a database provider library to the App Server part of your application. You will 
+       need a different provider for every database.  
+
+
+For more about concepts 2 and 3, see section 3.2.2 in this file; also consult 
+Data/Context.cs. For more on Database Providers, consult Section 3.2.1 of this file.
 
 
 3.2 HOW DOES ENTITY FRAMEWORK CORE TRANSLATE INFORMATION TO AND FROM THE DATABASE?
@@ -804,34 +842,71 @@ Logical schema for the Hotel table:
 
 GENERATING, APPLYING AND REMOVING MIGRATIONS
     
-Migrations are generated or applied with CLI commands. 
-
-Migrations files for .NET Core projects can be generated either through .NET Core CLI or 
-terminals built into IDEs. Note that Jetbrains Rider cannot and does not support Visual 
-Studio's Package Manager Console commands. Check if this changes in the future.
-
 What happens when a migration is generated? When the command is given, it appears that 
-Entity Framework Core combines the existing Schema with type information and data 
-annotations from Model classes to generate a migration file. Generating a Migration will 
-create a new file in the Migrations folder. It will contain a a user-named class that is 
-a subclass of Entity Framework Core's Migration class. You may need to manually remove 
-things from either method if it added more than the changes you made to the Schema. Make 
-sure you read the migration file before applying it.
+Entity Framework Core combines the existing Schema with data from Model classes to 
+generate a migration file. Generating a Migration will create a new file in the 
+Migrations folder. It will contain a a user-named class that is a subclass of Entity 
+Framework Core's Migration class. You may need to manually remove things from either 
+method if it added more than the changes you made to the Schema. Make sure you read the 
+migration file before applying it.
 
-Here are two basic commands for generating and using migrations. Check the Entity 
-Framework Core docs for more.
+Migrations are generated or applied with CLI commands. Note that there are two sets of 
+CLI tools provided by Microsoft, one that is Visual-Studio only and the other is cross-
+platform tooling that comes with every installation of the .NET Core SDK. The
+
+The commands given below are for the cross-platform CLI tools only. You can issue these
+commands by switching to the 'Terminal' tab in JetBrains Rider. Check the Entity 
+Framework Core docs for more commands.
+
 
     1. GENERATING MIGRATIONS: Creates a new migration. The migration name should describe 
-       in pascal case, the changes you made to the data model. 
+       the changes you made to the data model in pascal case (E.g. "PascalCaseExample"). 
     
-       Visual Studio: add-migration <MigrationName> 
-       E.g.: add-migration AddUserUserPreferenceUserInformationRoleUserRoleTables
+       Command: dotnet ef migrations add <Migration-Name>
+       
+       E.g. 1: dotnet ef migrations add InitialMigration
+       E.g. 2: dotnet ef migrations add AddUserUserPreferenceUserInformationRoleUserRoleTables
+    
+       According to Microsoft Docs' article on Migrations[7], the following things happen
+       when you execute this command: 
+       
+           Three files are added to your project under the Migrations directory:
+           
+           * 00000000000000_InitialCreate.cs--The main migrations file. Contains the 
+             operations necessary to apply the migration (in Up()) and to revert it 
+             (in Down()).
+             
+           * 00000000000000_InitialCreate.Designer.cs--The migrations metadata file. 
+             Contains information used by EF.
+             
+           * MyContextModelSnapshot.cs--A snapshot of your current model. Used to 
+             determine what changed when adding the next migration.
     
     
     2. UPDATING DATABASE TO THE LATEST MIGRATION: Runs the Up() method of all migrations. 
     
-       Visual Studio: update-database
+       Command: dotnet ef database update 
 
+
+       VARIATION 1: UPDATE DATABASE TO A SPECIFIED MIGRATION
+       
+       Command: dotnet ef database update <Migration-Name>
+       
+       E.g. 1: dotnet ef database update 20180904195021_InitialCreate
+       
+    
+    3. REVERT THE LAST MIGRATION: Rolls back the last applied migration.
+    
+       Command: dotnet ef migrations remove [-f]  [--force]
+       
+    4. LIST AVAILABLE MIGRATIONS.
+    
+       Command: dotnet ef migrations list
+        
+
+There are many more commands available. These commands are not restricted to migrations
+either. There are commands to drop databases, query for DbContext information, scaffold a
+DbContext from an existing database and more. 
 
     
 MIGRATIONS: THE WORKFLOW 
