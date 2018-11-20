@@ -198,16 +198,19 @@ and for heavier duty software.
  
 2.3 OTHER DATABASE CONCEPTS AND TERMS TO LEARN BEFORE PROCEEDING TO SECTION 3
 
-There is much more to learn about databases before proceeding to Section 3. Here are 
-lists of such things, mostly taken from Caleb Curry's website.[3]
+There is much more to learn about databases before proceeding to Section 3. A full 
+explanation of all these concepts is outside the scope of this document. For this reason, 
+this section will merely list these concepts. You have to study them and familiarize 
+yourself with them before proceeding to following sections. The following lists are mostly 
+taken from Caleb Curry's website.[3]
 
 
-SQL
+1. SQL
 
 You should know the basics of SQL, because this is the language of databases.
  
 
-DATA & DATABASES
+2. DATA & DATABASES
 
     * Data
     * Database
@@ -219,7 +222,7 @@ DATA & DATABASES
     * Referential Integrity 
 
 
-DATABASE COMPONENTS
+3. DATABASE COMPONENTS
 
     * Entity
     * Attribute
@@ -238,13 +241,8 @@ DATABASE COMPONENTS
     * Naming Conventions
     * Keys
     
-    
-PRACTICES
-    
-    * Database Normalization
-    
 
-CONCEPTUAL DATABASE DESIGN CONCEPTS
+4. CONCEPTUAL DATABASE DESIGN CONCEPTS
 
 Andy Oppel explains 'Conceptual Database Design' on page 30: [1]
 
@@ -266,11 +264,11 @@ These are the concepts related to 'Conceptual Database Design':
     * Business Rules
     
     
-LOGICAL & PHYSICAL DESIGN CONCEPTS
+5. LOGICAL & PHYSICAL DESIGN CONCEPTS
 
 Andy Oppel explains these concepts on page 30: [1]
 
-Logical Database Design
+Logical Database Design:
 
 
     …is the process of translating, or mapping, the conceptual design into a logical 
@@ -280,7 +278,7 @@ Logical Database Design
     or part of this design step.
 
 
-Physical Database Design
+Physical Database Design:
 
     The final design step is physical database design, which involves mapping the logical 
     design to one or more physical designs, each tailored to the particular DBMS that 
@@ -300,12 +298,14 @@ These are the concepts related to Logical and Physical Database Design:
     * CHECK Constraints
     * Constraint Enforcement Using Triggers
     * Views
+    * Database Normalization
 
 
-ENTITY-RELATIONSHIP MODEL
+6. ENTITY-RELATIONSHIP MODEL
 
-In the context of a database, an entity–relationship model (ER model for short) 
-describes relationships between instances of entities.
+In the context of a database, an entity–relationship model (ER model for short) describes 
+relationships between instances of entities. These relationships are expressed using 
+keys.
 
 
     * Keys (Primary, Foreign, Compound, Alternate etc.)
