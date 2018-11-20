@@ -192,8 +192,8 @@ electronic devices like phones, PDAs, MP3 players as well as web browsers. If yo
 low footprint, high-quality database, go with SQLite.
 
 PostgreSQL is a open source, fully featured RDBMS. It's more powerful than MySQL/MariDB,
-but it has better data integrity. It will serve well as the database for web applications
-and for other kinds of heavier duty software.   
+and it has better data integrity. It will serve well as the database for web applications
+and for heavier duty software.   
  
  
 2.3 OTHER DATABASE CONCEPTS AND TERMS TO LEARN BEFORE PROCEEDING TO SECTION 3
@@ -207,7 +207,7 @@ SQL
 You should know the basics of SQL, because this is the language of databases.
  
 
-DATA
+DATA & DATABASES
 
     * Data
     * Database
@@ -235,20 +235,25 @@ DATABASE COMPONENTS
     * Entry
     * Database Design
     * Schema
-    * Normalize
     * Naming Conventions
     * Keys
+    
+    
+PRACTICES
+    
+    * Database Normalization
     
 
 CONCEPTUAL DATABASE DESIGN CONCEPTS
 
-Andy Oppel explains on page 30: [1]
+Andy Oppel explains 'Conceptual Database Design' on page 30: [1]
 
     … involves studying and modeling the data in a technology-independent manner. The 
     conceptual data model that results can be theoretically implemented on any database 
     or even on a flat file system. The person who performs conceptual database design 
     is often called a data modeler.
 
+These are the concepts related to 'Conceptual Database Design':
 
     * Entity vs. Entity-Type
     * External Entities
@@ -263,7 +268,7 @@ Andy Oppel explains on page 30: [1]
     
 LOGICAL & PHYSICAL DESIGN CONCEPTS
 
-Andy Oppel explains on page 30: [1]
+Andy Oppel explains these concepts on page 30: [1]
 
 Logical Database Design
 
@@ -283,17 +288,18 @@ Physical Database Design
     will run. The person who performs physical database design is usually the DBA.
 
 
+These are the concepts related to Logical and Physical Database Design:
+
     * Tables
     * Columns and Data Types
     * Constraints
     * Primary Key Constraints
-    * Primary Key Constraints
-    * Intersection Tables
+    * Foreign Key Constraints
     * Intersection Tables
     * NOT NULL Constraints
     * CHECK Constraints
     * Constraint Enforcement Using Triggers
-    * View
+    * Views
 
 
 ENTITY-RELATIONSHIP MODEL
@@ -303,6 +309,9 @@ describes relationships between instances of entities.
 
 
     * Keys (Primary, Foreign, Compound, Alternate etc.)
+    
+    
+Learn and know the distinction between various types of keys.
  
  
 ****************************************************************************************************
