@@ -4,10 +4,120 @@ This program will store data in a PostgreSQL database and it will use Entity Fra
 Core (EFC) as the ORM. 
 
 
-    4.    Setting Up the Database
+    2.    Installing PostgreSQL
+    2.1   The Installation Process
+    2.2   Post-Installation Setup
+    2.3   Creating a New Server Instance
+    
+    Setting Up the Database
     4.1   The Connection String
     4.2   The Context Class
     4.3   Initiating a New Session with Your Database
+
+
+2. POSTGRESQL: INSTALLATION AND CONFIGURATION
+
+I'll be using PostgreSQL 11.1 as the database for this project. On page xxxix, the 
+PostgreSQL Manual v11.1 provides a short explanation of what PostgreSQL is: "PostgreSQL 
+is an object-relational database management system (ORDBMS) based on  POSTGRES, Version 
+4.2, developed at the University of California at Berkeley Computer Science Department." 
+[]
+
+
+2.1 THE INSTALLATION PROCESS
+
+PostgreSQL has several distributions. As of November 2018, PostgreSQL's website offers 
+two graphical installers, one from BigSQL and the other from EnterpriseDB. I recommend 
+the BigSQL distro as its installer is less finicky. The installation process should be 
+fairly straightforward. Just be sure to write down the values for these fields, because 
+you will need them later:
+
+
+1. HOST NAME: The name or IP address of the computer you are running PostgreSQL. In 
+   computer networking, 'localhost' is a hostname that means "this computer". You should
+   use this value unless you're doing advanced work like installing to a server.
+
+2. DEFAULT USER NAME: PostgreSQL normally creates a default user. By default, the user 
+   name is 'postgres'.
+
+3. DEFAULT USER'S PASSWORD: This is something you must specify. 
+
+4. DEFAULT DATABASE NAME: PostgreSQL creates a default database for the default user. The 
+   default name of this database is 'postgres'. 
+
+5. DEFAULT POSTGRESQL PORT: This is the port that PostgreSQL server listens on for 
+   incoming requests. The default port number is 5432. Don't change it unless you know 
+   what you're doing.
+   
+   
+When you install a PostgreSQL distro, you are installing the database server and an 
+assortment of command line utilities. The PostgreSQL distro may also come with a 
+graphical client, which you will need to interact with the database.
+ 
+You can use a database-agnostic client like DBeaver, but I have had poor experiences with
+it. I prefer pgAdmin 4 even though its a Web client. It is ugly but it works. Whatever 
+your preference, if you want a graphical client, make sure to install it before 
+continuing.
+
+
+2.2 POST-INSTALLATION SETUP
+ 
+CHECK IF THE PATH VARIABLES HAVE BEEN CONFIGURED CORRECTLY
+
+First, you have to check if the installation went smoothly. You also need to know if the
+PATH environment variables have been set correctly by the installer. You can check this 
+by opening a command prompt window and typing in this command: 
+
+
+    psql -U postgres postgres
+    
+    
+The command is formatted like this: 'psql -U [user_name] [database_name]'.  You are 
+calling up psql, which is an interactive terminal application frontend to PostgreSQL. 
+Then, you are logging into the default superuser account, 'postgres' and requesting the 
+default database, 'postgres'. 
+
+If the command prompt changes to 'postgres=#', then you have successfully logged into 
+PostgreSQL. This means that your path variables are properly configured. 
+                                                                                  
+If this login attempt fails, navigate to the PostgreSQL installation directory and find 
+the 'bin' and 'lib' directories. In Windows Explorer, go to System Properties > 
+Advanced System Settings. In the 'Advanced' tab of the 'System Properties' window, click 
+on the 'Environment Variables' button. Go to the 'System Variables' section and scroll, 
+searching for 'PATH'. Click on 'Edit...' and add the addresses of the 'bin' and 'lib' 
+folders here. 
+                                                                                  
+Make sure you don't insert any spaces; just simply add an ';' and paste the first link. 
+Repeat this process for the second link. Click 'OK' and do the same for the rest of the 
+open windows. Now the environment variables should be configured. Try connecting to it
+again.
+
+Lastly, if you have a local firewall or specific networking requirements, see to it that
+PostgreSQL is properly configured and routed.
+
+
+
+2.3 CREATING A NEW SERVER INSTANCE
+
+After installation, you have to create and turn on a PostgreSQL server instance and 
+connect your client (Pgadmin) to it. It appears that this step has to be done via either 
+PgAdmin or the terminal, because PostgreSQL does not seem to install and boot up a server 
+by default. If you try to connect to the PostgreSQL Server through another client like 
+DBeaver, the attempt will fail because the Server has not been created yet.
+           
+Boot up pgAdmin 4. When it opens up a tab in your browser, go to the black menu bar at 
+the top of the webpage. Go to Object > Create > Server.
+           
+In the 'General' tab, give the server a name. In the 'Connection' tab, give this value 
+for the 'Host name/Address' field: localhost. Fill out the 'Password' field as well, 
+then check the 'Save Password?' checkbox. If you save the password, you will 
+automatically be logged into the Server every time you open PgAdmin 4. 
+           
+Go with the defaults in the other tabs, at least for PostgreSQL v11.1. Click the 'Save' 
+button. If you go to the 'Browser' pane on the left of the screen and click on the plus 
+sign next to 'Servers', the tree should expand and your new Server should be visible 
+there. Click on the plus sign next to it to see its contents. The default database, 
+'postgres', should be displayed there.
 
 
 4. DATABASE CONFIGURATION
@@ -19,19 +129,12 @@ passed to the database.
 
 The following sections mention some of them, but others may be required: 
 
+2.1 POSTGRESQL'S ARCHITECTURE
 
-4.1 INSTALLING AND SETTING UP AN RDBMS, CONNECTING TO ITS SERVER AND CREATING A DATABASE
+Before installing PostgreSQL, here's a rather long quote from Page 3, Chapter 1, 
+Section 1.2 of the PostgreSQL manual. It explains the architectural fundamentals of 
+PostgreSQL[]:
 
-I'll be using PostgreSQL 11.1 as the database for this project. On page xxxix, the 
-PostgreSQL Manual v11.1 provides a short explanation of what it is: "PostgreSQL is an 
-object-relational database management system (ORDBMS) based on  POSTGRES, Version 4.2, 
-developed at the University of California at Berkeley Computer Science Department." []
-
-
-4.1.1 POSTGRESQL'S ARCHITECTURE
-
-Here's a longer segment from Chapter 1, Section 1.2 of the PostgreSQL manual (page 3) 
-that explains the architectural fundamentals of PostgreSQL[]:
 
     Before we proceed, you should understand the basic PostgreSQL system architecture. 
     Understanding how the parts of PostgreSQL interact will make this chapter somewhat 
@@ -66,104 +169,6 @@ that explains the architectural fundamentals of PostgreSQL[]:
     for client connections, whereas client and associated server processes come and go. 
     (All of this is of course invisible to the user. We only mention it here for 
     completeness.)
-
-
-4.1.2 INSTALLING POSTGRESQL
-
-PostgreSQL has several distributions. As of November 2018, PostgreSQL's website offers 
-two graphical installers, one from BigSQL and the other from EnterpriseDB. The 
-installation process should be fairly straightforward. Just be sure to write down the
-values for these fields, because you may need them later:
-
-
-1. HOST NAME: The name or IP address of the computer you are running PostgreSQL. In 
-   computer networking, 'localhost' is a hostname that means "this computer". You should
-   use this value unless you're doing advanced work like installing to a server.
-
-2. DEFAULT USER NAME: PostgreSQL normally creates a default user. By default, the user 
-   name is 'postgres'.
-
-3. DEFAULT USER'S PASSWORD: This is something you must specify. 
-
-4. DEFAULT DATABASE NAME: PostgreSQL creates a default database for the default user. The 
-   default name of this database is 'postgres'. 
-
-5. DEFAULT POSTGRESQL PORT: This is the port that PostgreSQL server listens on for 
-   incoming requests. The default port number is 5432. Don't change it unless you know 
-   what you're doing.
-   
-   
-When you install a PostgreSQL distro, you are installing the database server and an 
-assortment of command line utilities. The PostgreSQL distro may also come with a 
-graphical client, which you will need to interact with the database.
- 
-You can use a database-agnostic client like DBeaver, but I have had bad experiences with
-it. I prefer pgAdmin 4. Whatever your preference, if you want a graphical client, make 
-sure to install it before continuing.
-
-
-4.1.3 POST-INSTALLATION SETUP
- 
-CHECK IF THE PATH VARIABLES HAVE BEEN CONFIGURED CORRECTLY
-
-First, you have to check if the installation went smoothly. You also need to know if the
-PATH environment variables have been set correctly by the installer. You can check this 
-by opening a command prompt window and typing in this command: 
-
-
-    psql -U postgres postgres. 
-    
-    
-The command is formatted like this: 'psql -U [user_name] [database_name]'.  You are 
-calling up psql, which is an interactive terminal application frontend to PostgreSQL. 
-Then, you are logging into the default superuser account, 'postgres' and the default 
-database, 'postgres'. 
-
-If the command prompt changes to 'postgres=#', then you have successfully logged into 
-PostgreSQL. This means that your path variables are properly configured. 
-                                                                                  
-If this login attempt fails, navigate to the PostgreSQL installation directory and find 
-the 'bin' and 'lib' directories. In Windows Explorer, go to System Properties > 
-Advanced System Settings. In the 'Advanced' tab of the 'System Properties' window, click 
-on the 'Environment Variables' button. Go to the 'System Variables' section and scroll, 
-searching for 'PATH'. Click on 'Edit...' and add the addresses of the 'bin' and 'lib' 
-folders here. 
-                                                                                  
-Make sure you don't insert any spaces; just simply add an ';' and paste the first link. 
-Repeat this process for the second link. Click 'OK' and do the same for the rest of the 
-open windows. Now the environment variables should be configured. Try connecting to it
-again.
-
-Lastly, if you have a local firewall or specific networking requirements, see to it that
-PostgreSQL is properly configured and routed.
-
-
-4.1.4 SETTING UP THE DATABASE
-
-After installation, you have to create and turn on a PostgreSQL server instance and 
-connect your client to it. Then, you have to create a new database for this project.
-
-
-STEP 1: CREATE A NEW SERVER
-           
-The next thing you have to do create a server. It appears that this step has to be done 
-via either PgAdmin or the terminal, because PostgreSQL does not seem to install and boot 
-up a server by default. If you try to connect to the PostgreSQL Server through another 
-client like DBeaver, the attempt will fail because the Server has not been created yet.
-           
-Boot up pgAdmin 4. When it opens up a tab in your browser, go to the black menu bar at 
-the top of the webpage. Go to Object > Create > Server.
-           
-In the 'General' tab, give the server a name. In the 'Connection' tab, give this value 
-for the 'Host name/Address' field: localhost. Fill out the 'Password' field as well, 
-then check the 'Save Password?' checkbox. If you save the password, you will 
-automatically be logged into the Server every time you open PgAdmin 4. 
-           
-Go with the defaults in the other tabs, at least for PostgreSQL v11.1. Click the 'Save' 
-button. If you go to the 'Browser' pane on the left of the screen and click on the plus 
-sign next to 'Servers', the tree should expand and your new Server should be visible 
-there. Click on the plus sign next to it to see its contents. The default database, 
-'postgres', should be displayed there.
 
 
 STEP 2: CREATE A NEW DATABASE
@@ -389,6 +394,8 @@ See the fourth article for information more about these options.
 
 
 SOURCES
+
+01: PostgreSQL v11.1 Manual (November 2018)
 
 07: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
 08: http://www.entityframeworktutorial.net/efcore/entity-framework-core-dbcontext.aspx
