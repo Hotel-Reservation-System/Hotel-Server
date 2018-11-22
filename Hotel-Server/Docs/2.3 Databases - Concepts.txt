@@ -941,29 +941,11 @@ In the Production, Demo and other Environments:
 
 4.1 THE CONSEQUENCES OF POOR DATABASE DESIGN 
 
-When you design your database, at some point you should be planning out the tables in it 
-and their relationships. This is usually done in the 'Logical Database Design' phase. As 
-a part of this phase, you have to do something called 'Database Normalization'. 
-
-Here is an introductory description of it[8]:
-
-
-    Database Normalization is a technique of organizing the data in the database. 
-    Normalization is a systematic approach of decomposing tables to eliminate data 
-    redundancy (repetition) and undesirable characteristics like Insertion, Update and 
-    Deletion Anomalies. It is a multi-step process that puts data into tabular form, 
-    [and] removing duplicated data from the relation tables.
-    
-    Normalization is used for mainly two purposes,
-    
-    * Eliminating redundant data, AND
-    * Ensuring data dependencies make sense i.e data is logically stored.
-    
-    
-In short, it is possible to design a database so poorly such that data redundancies or 
-database anomalies become possible. Redundant data is self-explanatory, so what are 
-'Database Anomalies'? An anomaly is an aberrant behaviour in the database that occurs due
-to poor design. There are three kinds of database anomalies:
+   
+To keep it short, it is possible to design a database so poorly such that data 
+redundancies or database anomalies become possible. Redundant data is self-explanatory, 
+so what are 'Database Anomalies'? An anomaly is an aberrant behaviour in the database 
+that occurs due to poor design. There are three kinds of database anomalies:
 
 
     * INSERTION ANOMALY: is a situation that occurs when you cannot insert a new record 
@@ -1001,11 +983,51 @@ to poor design. There are three kinds of database anomalies:
       source.
 
 
-The best way to avoid anomalies is to normalize your tables. Normalization should be done
-for every database you design. 
+The best way to avoid anomalies is to apply 'Database Normalization' your tables. 
 
 
 4.2 NORMALIZATION
+
+Here is an introductory description of Normalization[8]:
+
+
+    Database Normalization is a technique of organizing the data in the database. 
+    Normalization is a systematic approach of decomposing tables to eliminate data 
+    redundancy (repetition) and undesirable characteristics like Insertion, Update and 
+    Deletion Anomalies. It is a multi-step process that puts data into tabular form, 
+    [and] removing duplicated data from the relation tables.
+    
+    Normalization is used for mainly two purposes,
+    
+    * Eliminating redundant data, AND
+    * Ensuring data dependencies make sense i.e data is logically stored.
+    
+    
+When you design your database, you will have to do something called 'Entity-Relationship 
+Modelling'. This is the process of planning out tables in your database and their
+relationships to other tables. ER Modelling is dominated by "big picture" consideration 
+of your program's data needs. Based on your conclusions, you should iteratively identify 
+the relevant entities in your database, their attributes and their relationships. 
+
+Once you produced a tentative database design, you should have some idea of what tables 
+you will have in your database, their names, their attributes (columns) and their 
+relationships to other tables. Designing inter-table relationships means that you should 
+have decided on primary keys for most of your tables.
+
+Following the ER Modelling process, you will then apply the process of 'Database 
+Normalization'. Normalization is applied at the "micro level"; you will focus on one 
+entity (table) and consider its components and characteristics.
+
+Normalization should be done for every database you design. You should do it as part of
+the initial design and whenever you revisit and tweak your database. When you apply 
+normalization to your database, you will usually end up creating a few new tables. 
+
+Normalization will make your database easier and more reliable to work with. 
+Normalization will reduce unwanted duplicate data in the database and increase its 
+robustness. This will make it harder to create invalid states in the database or enter 
+poor quality data into it. This should make it easier to maintain, edit and modify your 
+database.  
+
 
 4.2.1 FUNCTIONAL DEPENDENCY
 
@@ -1053,11 +1075,104 @@ constraint between two attributes.
 4.2.2 THE NORMAL FORMS
 
 The Normal Forms were developed by Edgar Codd, the father of relational databases. 
+Normalization theory defines 6 Normal Forms, of which the first three are treated like an 
+essential block. The first three forms should be applied to all databases. The fourth 
+form is not necessary in many cases, and the fifth form comes into play only very rarely.
+The sixth form is treated like a theoretical oddity.  
 
     
 1. FIRST NORMAL FORM (1NF)
    
-   
+First Normal Form:
+
+
+    Prohibits multiple values in one column. Every field (the intersection of a row and a 
+    column) must contain at most, one value. Relational Databases can handle many things, 
+    but they are not equipped to handle muti-value fields. 
+    
+    If applying 1NF creates a situation where you have repeating groups within a table, 
+    this is also a violation of First Normal Form. This is a sign that you need to create
+    a new table, into which you will need to move all related data. 
+     
+    
+This principle is hard to understand in the abstract, so consider the table below. It 
+contains a list of employees, the Ids, names, emails etc. Each employee will be issued 
+corporate devices like laptops and phones, whose serials need to be tracked, which will 
+be done in the last column, which is an attribute called 'DeviceSerial'.
+
+
+    +------------+-----------+----------+-----------------------+--------------+
+    | EmployeeId | FirstName | LastName |         Email         | DeviceSerial |
+    +------------+-----------+----------+-----------------------+--------------+
+    |       0001 | Jack      | Hill     | jack_hill@hotmail.com | AD9F8AFAF98D |
+    |       0002 | Jill      | Hill     | jhill@gmail.com       | AD89AFLL35L4 |
+    |       0003 | Simon     | Says     | ss@outlook.com        | SDF90AF87GG8 |
+    +------------+-----------+----------+-----------------------+--------------+
+
+
+So far, this table lets the company track the devices they given to employees and as a
+bonus, complies with 1NF. However, what happens if employees are given more than one 
+device? The table below shows you a clear violation of 1NF:
+
+
++------------+-----------+----------+-----------------------+--------------------------------------------+
+| EmployeeId | FirstName | LastName |         Email         |                DeviceSerial                |
++------------+-----------+----------+-----------------------+--------------------------------------------+
+|       0001 | Jack      | Hill     | jack_hill@hotmail.com | AD9F8AFAF98D, SD8GD8DFHFH0                 |
+|       0002 | Jill      | Hill     | jhill@gmail.com       | AD89AFLL35L4 | RIQO98L239DS | 0J78G8J8G7GJ |
+|       0003 | Simon     | Says     | ss@outlook.com        | SDF90AF87GG8                               |
++------------+-----------+----------+-----------------------+--------------------------------------------+
+
+
+The easiest solution to the problem is to add additional devices to the DeviceSerial 
+column, separated by commas and other delimiters. This is something you should NEVER do 
+in a database. 
+
+How else can you track multiple values in a database? The next obvious solution is to add
+additional columns for devices, so that you can track one device per column. See the 
+diagram below:
+
+
++------------+-----------+----------+-----------------------+---------------+---------------+---------------+
+| EmployeeId | FirstName | LastName |         Email         | DeviceSerial1 | DeviceSerial2 | DeviceSerial3 |
++------------+-----------+----------+-----------------------+---------------+---------------+---------------+
+|       0001 | Jack      | Hill     | jack_hill@hotmail.com | AD9F8AFAF98D  | SD8GD8DFHFH0  |               |
+|       0002 | Jill      | Hill     | jhill@gmail.com       | AD89AFLL35L4  | RIQO98L239DS  | 0J78G8J8G7GJ  |
+|       0003 | Simon     | Says     | ss@outlook.com        | SDF90AF87GG8  |               |               |
++------------+-----------+----------+-----------------------+---------------+---------------+---------------+
+
+
+Unfortunately, this is also something you should NEVER do, because it violates First
+Normal Form. Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2,
+DeviceSerial3 etc., is called a REPEATING GROUP. The existence of repeating groups also
+violates First Normal Form. The classic sign of a repeating group is identical column
+names with different numbers tacked on the end of it to make unique names. 
+
+Repeating groups are a sign of inflexible design. What happens when employees from the 
+quality control department need to be given 10 different devices each? Repeating groups 
+do not scale well. Giving an employee a new device should not necessitate changes to a 
+database's schema. 
+
+No, the correct response to such a problem is to create a new table that tracks devices,
+with EmployeeId as foreign key. By creating a new table, you can establish a one-to-many
+relationship between the 'Employee' and 'Devices' table, where the 'One' side is the 
+'Employee' table and the 'Many' side being the 'Devices' table. See a sample 'Devices' 
+table: 
+
+    
+    +--------------+------------+------------+-----------------------+
+    | DeviceSerial | EmployeeId | DeviceType |      Description      |
+    +--------------+------------+------------+-----------------------+
+    | AD89AFLL35L4 |       0001 | Iphone     | 5th gen Apple iPhone. |
+    | AD9F8AFAF98D |       0003 | Printer    | HP Printer #2839      |
+    | SDF90AF87GG8 |       0003 | Laptop     | Dell Latitude 910     |
+    | 0J78G8J8G7GJ |       0002 | Camera     | Canon XTS Pro 510     |
+    +--------------+------------+------------+-----------------------+
+    
+    
+2. SECOND NORMAL FORM (2NF)
+      
+    
 
 
     
