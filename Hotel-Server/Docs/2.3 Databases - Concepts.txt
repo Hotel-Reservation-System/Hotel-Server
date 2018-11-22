@@ -258,10 +258,10 @@ These are the concepts related to 'Conceptual Database Design':
     * Entity vs. Entity-Type
     * External Entities
     * Attributes
-    * Relationships
-    * One-to-One Relationships
-    * One-to-Many Relationships
-    * Many-to-Many Relationship
+    * Cardinal Relationships (Inter-Table Relationships):
+        * One-to-One Relationships
+        * One-to-Many Relationships
+        * Many-to-Many Relationship
     * Recursive Relationships 
     * Business Rules
     
@@ -494,7 +494,7 @@ defined:
      4) Migrations                  (Generated into the Data/Migrations Folder)
 
 
-The next three sections explain these concepts.
+The next three sections explain these concepts in greater detail.
 
 
 3.4.1 DATABASE PROVIDERS
@@ -716,7 +716,7 @@ in:
 
 3.4.3 MIGRATIONS
 
-1. WHAT ARE MIGRATION? WHY DO WE NEED THEM?
+3.4.3.1 WHAT ARE MIGRATION? WHY DO WE NEED THEM?
 
 During the course of developing a software solution, your program and its database will
 grow and change. This section will focus on managing change in databases.
@@ -777,7 +777,7 @@ automatically and reliably to the schema version of your choice.
 Typical location of migration files: Data/Migrations/ 
 
 
-2. THE CONTENTS OF A MIGRATIONS FILE
+3.4.3.2 THE CONTENTS OF A MIGRATIONS FILE
 
 Every migration file will contain an Up() and Down() method. The Up() method contains 
 transformations to the schema of the Database. The Down() method just rolls back 
@@ -844,7 +844,7 @@ Logical schema for the Hotel table:
     }
     
 
-3. GENERATING, APPLYING AND REMOVING MIGRATIONS
+3.4.3.3 GENERATING, APPLYING AND REMOVING MIGRATIONS
     
 What happens when a migration is generated? When the command is given, it appears that 
 Entity Framework Core combines the existing Schema with data from Model classes to 
@@ -913,7 +913,7 @@ either. There are commands to drop databases, query for DbContext information, s
 DbContext from an existing database and more. 
 
     
-4. MIGRATIONS: THE WORKFLOW 
+3.4.3.4 MIGRATIONS: THE WORKFLOW 
 
 This is the workflow for changing the schema and generating migrations:
 
@@ -936,6 +936,134 @@ In the Production, Demo and other Environments:
 
 ****************************************************************************************************
 ****************************************************************************************************
+    
+4. DATABASE NORMALIZATION
+
+4.1 THE CONSEQUENCES OF POOR DATABASE DESIGN 
+
+When you design your database, at some point you should be planning out the tables in it 
+and their relationships. This is usually done in the 'Logical Database Design' phase. As 
+a part of this phase, you have to do something called 'Database Normalization'. 
+
+Here is an introductory description of it[8]:
+
+
+    Database Normalization is a technique of organizing the data in the database. 
+    Normalization is a systematic approach of decomposing tables to eliminate data 
+    redundancy (repetition) and undesirable characteristics like Insertion, Update and 
+    Deletion Anomalies. It is a multi-step process that puts data into tabular form, 
+    [and] removing duplicated data from the relation tables.
+    
+    Normalization is used for mainly two purposes,
+    
+    * Eliminating redundant data, AND
+    * Ensuring data dependencies make sense i.e data is logically stored.
+    
+    
+In short, it is possible to design a database so poorly such that data redundancies or 
+database anomalies become possible. Redundant data is self-explanatory, so what are 
+'Database Anomalies'? An anomaly is an aberrant behaviour in the database that occurs due
+to poor design. There are three kinds of database anomalies:
+
+
+    * INSERTION ANOMALY: is a situation that occurs when you cannot insert a new record 
+      into a table because of an unnecessary dependency on a piece of data that is either 
+      unavailable or, due to poor design, resides in another table. 
+      
+      Another variation of this anomaly is the case where a table's poor design creates 
+      unnecessary data redundancy within this table. In this case, when you insert a 
+      record into a table, you will have to manually ensure that the values of redundant 
+      fields match those in other records. 
+      
+      E.g.: A database that cannot add a customer information to its Customers table 
+      until the customer actually makes a purchase.
+      
+      
+    * DELETION ANOMALY: is the opposite of the Insert anomaly. This is a situation where
+      the deletion of one entity/record causes unintended data loss of another entity or
+      record.
+      
+      E.g.: Using the previous example, a deletion anomaly occurs if we delete a customer 
+      invoice, which due to poor design, causes the deletion of that customer's 
+      information. As in the insertion example, this happened because information about 
+      two entities, namely customers and invoices, was incorrectly combined into a single
+      table. 
+      
+      
+    * UPDATE ANOMALY: arises when updating a field in one record makes it necessary to
+      update multiple records. This is a clear sign of data redundancy in your database.
+      
+      E.g.: If making changes to a customer's address in the Invoice table necessitates
+      changes to all other records in that table for this customer, this is an update 
+      anomaly. The Invoice table should have only a single source of truth for an 
+      attribute. Attributes should be captured once and stored once. References must be
+      made to it in other tables. All references must point to this single, original 
+      source.
+
+
+The best way to avoid anomalies is to normalize your tables. Normalization should be done
+for every database you design. 
+
+
+4.2 NORMALIZATION
+
+4.2.1 FUNCTIONAL DEPENDENCY
+
+To normalize tables, you have to understand the concept of 'Functional Dependency'. 
+A functional dependency is a relationship between two attributes. Usually, this is 
+referring to the relationship between a Primary Key (PK) attribute and a second non-key 
+attribute within a table.  
+
+For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
+on Attribute A, if at any moment in time there is exactly one instance of B for any given 
+instance of A. Phrased another way: If Attribute A functionally determines Attribute B, 
+the value of an instance of A uniquely determines a value for B. Therefore, A is a 
+determinant (i.e. a unique identifier) of B and B is a dependent of A. This relationship 
+is visually represented like this:
+
+    
+    A -> B 
+
+
+It is read like this: "A (functionally) determines B."
+
+Let's take a concrete example[9]: In a table, suppose there are two columns with a 
+functionally dependent relationship: 'Social Security Number' and 'Employee Name'. The 
+'Employee Name' attribute is functionally dependent on the 'SSN' attribute because an SSN 
+uniquely identifies an employee. Note that the reverse does not hold true; names do not 
+uniquely identify a SSN. If there were other non-key attributes in the table, for example
+'Employee Address' and 'Birth Date', the 'SSN' attribute could functionally determine 
+them too.
+
+Why is this important? In a StackOverflow answer, NealB explains[10]:
+
+
+    Sets of functional dependencies may be used to synthesize relations (tables). The 
+    definition of the first 3 normal forms, including Boyce Codd Normal Form (BCNF) is 
+    stated in terms of how a given set of relations represent functional dependencies. 
+    Fourth and fifth normal forms involve Multi-Valued dependencies (another kettle of 
+    fish).
+ 
+ 
+Normalization applies what are called 'Forms' to tables. As NealB notes, the first three
+forms require understanding of functional dependencies. Functional dependency acts as a
+constraint between two attributes. 
+
+
+4.2.2 THE NORMAL FORMS
+
+The Normal Forms were developed by Edgar Codd, the father of relational databases. 
+
+    
+1. FIRST NORMAL FORM (1NF)
+   
+   
+
+
+    
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 SOURCES
@@ -947,3 +1075,5 @@ SOURCES
 05: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
 06: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
 07: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
+08: https://www.studytonight.com/dbms/database-normalization.php
+09: https://www.techopedia.com/definition/19504/functional-dependency
