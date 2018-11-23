@@ -1081,24 +1081,28 @@ form is not necessary in many cases, and the fifth form comes into play only ver
 The sixth form is treated like a theoretical oddity.  
 
     
-1. FIRST NORMAL FORM (1NF)
+4.2.2.1 FIRST NORMAL FORM (1NF)
    
 First Normal Form:
 
 
     Prohibits multiple values in one column. Every field (the intersection of a row and a 
     column) must contain at most, one value. Relational Databases can handle many things, 
-    but they are not equipped to handle muti-value fields. 
+    but they are not equipped to handle multi-value fields. 
     
     If applying 1NF creates a situation where you have repeating groups within a table, 
     this is also a violation of First Normal Form. This is a sign that you need to create
-    a new table, into which you will need to move all related data. 
+    a new table. You need to identify a group of related data and move this data into the
+    new table. 
+    
+    Ensure that a primary key exists for each table, by which you can uniquely identify 
+    any given record (a row).  
      
     
 This principle is hard to understand in the abstract, so consider the table below. It 
-contains a list of employees, the Ids, names, emails etc. Each employee will be issued 
-corporate devices like laptops and phones, whose serials need to be tracked, which will 
-be done in the last column, which is an attribute called 'DeviceSerial'.
+contains a list of employees, their Ids, names, emails etc. Each employee may be issued 
+corporate devices like laptops and phones, whose serials need to be tracked. This will 
+be done in the last column, which is called 'DeviceSerial'.
 
 
     +------------+-----------+----------+-----------------------+--------------+
@@ -1125,8 +1129,9 @@ device? The table below shows you a clear violation of 1NF:
 
 
 The easiest solution to the problem is to add additional devices to the DeviceSerial 
-column, separated by commas and other delimiters. This is something you should NEVER do 
-in a database. 
+column, separated by commas and other delimiters. However, this is something you should 
+NEVER do in a database. As I said before: databases are just not designed to hold more 
+than one value per field. 
 
 How else can you track multiple values in a database? The next obvious solution is to add
 additional columns for devices, so that you can track one device per column. See the 
@@ -1170,8 +1175,105 @@ table:
     +--------------+------------+------------+-----------------------+
     
     
-2. SECOND NORMAL FORM (2NF)
+You can use EmployeeId to query the 'Devices' table, and find how the devices that any 
+given person has been loaned. There are no repeating groups in a tables or repeating 
+values in any field.
+
+As was the case in this example, it is very common for the solution to a normalization 
+problem being the creation of a new table.
+  
+    
+4.2.2.2 SECOND NORMAL FORM (2NF)
       
+    The first requirement for Second Normal Form is that all the requirements of First
+    Normal Form are in full effect. The implementation of 1NF must be in place in order
+    to fully apply 2NF. 
+    
+    Second Normal Form (and Third Normal Form) is concerned with the relationship between 
+    Key columns and Non-key columns. More specifically, 2NF is only a problem for tables 
+    that use a composite primary key. This is a primary key that is composed of values 
+    from two or more columns. If you use a composite key, you must pay close attention to 
+    its relationship to other non-key columns in the table. 
+    
+    If your table does use a composite key, all non-key attributes must be functionally 
+    dependent on the entirety of the composite key. As a composite key is composed of two 
+    or more keys, it is possible for a non-key attribute to be dependent on only one of 
+    the component keys of the composite key. To re-iterate: 2NF demands that all non-key 
+    attributes must be fully dependent on all keys of the composite primary key. 
+    
+    
+Once again, this is hard to understand without a actual example, so consider the example
+table below. This is a 'Shipments Received' table. The 'Shipment#' and 'Part#' columns 
+together form a composite key for the table. This has been done because the 'Shipment#' 
+column alone cannot uniquely identify a part; a Cooling Gasket can be part of multiple 
+shipments. However, when 'Shipment#' is combined with 'Part#', you can use that to 
+uniquely identify the other non-key columns. Or at least, that's what should happen if
+2NF were in effect. However, while this table complies with 1NF, it fails to comply with 
+Second Normal Form.   
+
+
+    +-----------+--------+---------------+-----------------+------------+-------------+
+    | Shipment# | Part#  | DateOfArrival |    PartName     | Quantity   | Price (CAD) |
+    +-----------+--------+---------------+-----------------+------------+-------------+
+    |       532 | 183490 | 2018/08/23    | Cooling Gasket  |         43 |         125 |
+    |       329 | 109834 | 2018/03/11    | Sprocket Wrench |        118 |          35 |
+    |       623 | 958943 | 2018/09/02    | Fizzy Whizzler  |         12 |        1500 |
+    |       497 | 183490 | 2018/06/17    | Cooling Gasket  |         11 |         125 |
+    |       648 | 958943 | 2018/11/13    | Fizzy Whizzler  |         25 |        1500 |
+    +-----------+--------+---------------+-----------------+------------+-------------+
+
+
+Why? Because two columns, 'PartName' and 'Price', are not functionally dependent on the
+composite key. In fact, these columns fail to have have a dependency on either 'Part#'
+or 'Shipment#', so they are not even partially dependent on the composite key. You'll 
+notice that multiple entries exist for 'Cooling Gasket' and 'Fizzy Whizzler' and their 
+associated prices. Neither 'PartName' nor 'Price' can be uniquely determined by either of 
+the component parts of the composite key, or the composite key as a whole. Thus, this 
+table fails to be 2NF-compliant. 
+
+Why is any of this important? This is important because at least a few columns, 'Part#', 
+'PartName' and 'Price' respectively, are linked to each other, but that link is not being
+managed by the database. What if someone changes a part number, but fails to change its
+associated part name or its price? Did you get a shipment of 'Sprocket Wrenches' or part 
+number 34910 on a certain date? Which is the incorrect value? Chaos will rule in the 
+database, as part numbers and names change and start conflicting with each other. 
+
+You do not want error-prone humans in charge of making sure values do not conflict in a 
+database. There could be millions of records! By implementing 2NF, you offload that 
+responsibility on to the database itself. 
+
+How can you fix this problem and bring this table into compliance with 2NF? Once again, 
+the solution is to create a new table. You have to create a new 'Parts' table and move 
+the 'PartName' and 'Prices' fields into it:
+
+
+    +--------+-----------------+-------+
+    | Part#  |    PartName     | Price |
+    +--------+-----------------+-------+
+    | 183490 | Cooling Gasket  |   125 |
+    | 109834 | Sprocket Wrench |    35 |
+    | 958943 | Fizzy Whizzler  |  1500 |
+    +--------+-----------------+-------+
+    
+    
+The 'Part#' attribute will act as a primary key for this field. In 'Shipments Received', 
+you can remove these fields and make the table smaller, like this: 
+
+
+    +-----------+--------+---------------+----------+
+    | Shipment# | Part#  | DateOfArrival | Quantity |
+    +-----------+--------+---------------+----------+
+    |       532 | 183490 | 2018/08/23    |       43 |
+    |       329 | 109834 | 2018/03/11    |      118 |
+    |       623 | 958943 | 2018/09/02    |       12 |
+    |       497 | 183490 | 2018/06/17    |       11 |
+    |       648 | 958943 | 2018/11/13    |       25 |
+    +-----------+--------+---------------+----------+
+
+
+Then, you have to connect these two tables with a One-to-Many relationship. 'Shipments 
+Received' would be 'Many' side and the 'Parts' table would be the 'One' side.  
+    
     
 
 
