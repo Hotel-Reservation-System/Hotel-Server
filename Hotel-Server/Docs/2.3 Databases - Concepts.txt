@@ -1073,7 +1073,7 @@ is visually represented like this:
 
 It is read like this: "A (functionally) determines B."
 
-Let's take a concrete example[9]: In a table, suppose there are two columns with a 
+Let's take a concrete example[10]: In a table, suppose there are two columns with a 
 functionally dependent relationship: 'Social Security Number' and 'Employee Name'. The 
 'Employee Name' attribute is functionally dependent on the 'SSN' attribute because an SSN 
 uniquely identifies an employee. Note that the reverse does not hold true; names do not 
@@ -1081,7 +1081,7 @@ uniquely identify a SSN. If there were other non-key attributes in the table, fo
 'Employee Address' and 'Birth Date', the 'SSN' attribute could functionally determine 
 them too.
 
-Why is this important? In a StackOverflow answer, NealB explains[10]:
+Why is this important? In a StackOverflow answer, NealB explains[11]:
 
 
     Sets of functional dependencies may be used to synthesize relations (tables). The 
@@ -1091,9 +1091,9 @@ Why is this important? In a StackOverflow answer, NealB explains[10]:
     fish).
  
  
-Normalization applies what are called 'Forms' to tables. As NealB notes, the first three
-forms require understanding of functional dependencies. Functional dependency acts as a
-constraint between two attributes. 
+Normalization applies what are called 'Normal Forms' to tables. As NealB notes, the first 
+three forms require understanding of functional dependencies. Functional dependency acts 
+as a constraint between two attributes. 
 
 
 4.2.2 THE NORMAL FORMS
@@ -1330,7 +1330,5 @@ SOURCES
 07: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
 08: https://en.wikipedia.org/wiki/Database_normalization
 09: https://www.studytonight.com/dbms/database-normalization.php
-
-
-
-09: https://www.techopedia.com/definition/19504/functional-dependency
+10: https://www.techopedia.com/definition/19504/functional-dependency
+11: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
