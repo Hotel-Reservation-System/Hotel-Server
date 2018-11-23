@@ -1078,7 +1078,7 @@ The Normal Forms were developed by Edgar Codd, the father of relational database
 Normalization theory defines 6 Normal Forms, of which the first three are treated like an 
 essential block. The first three forms should be applied to all databases. The fourth 
 form is not necessary in many cases, and the fifth form comes into play only very rarely.
-The sixth form is treated like a theoretical oddity.  
+The sixth form seems to be treated like a theoretical oddity.  
 
     
 4.2.2.1 FIRST NORMAL FORM (1NF)
@@ -1091,18 +1091,18 @@ First Normal Form:
     but they are not equipped to handle multi-value fields. 
     
     If applying 1NF creates a situation where you have repeating groups within a table, 
-    this is also a violation of First Normal Form. This is a sign that you need to create
-    a new table. You need to identify a group of related data and move this data into the
-    new table. 
+    this is also a violation of First Normal Form. It is a sign that you need to create
+    a new table. Identify a group of related data in the table and move it into the new 
+    table. 
     
     Ensure that a primary key exists for each table, by which you can uniquely identify 
     any given record (a row).  
      
     
-This principle is hard to understand in the abstract, so consider the table below. It 
-contains a list of employees, their Ids, names, emails etc. Each employee may be issued 
-corporate devices like laptops and phones, whose serials need to be tracked. This will 
-be done in the last column, which is called 'DeviceSerial'.
+This principle is hard to understand in the abstract, so consider the table below. It is
+an 'Employee' table, which contains a list of employees, their Ids, names, emails etc. 
+Each employee may be issued corporate devices like laptops and phones, whose serials need 
+to be tracked. This will be done in the last column, which is called 'DeviceSerial'.
 
 
     +------------+-----------+----------+-----------------------+--------------+
@@ -1116,7 +1116,9 @@ be done in the last column, which is called 'DeviceSerial'.
 
 So far, this table lets the company track the devices they given to employees and as a
 bonus, complies with 1NF. However, what happens if employees are given more than one 
-device? The table below shows you a clear violation of 1NF:
+device? The easiest solution to the problem is to add additional devices to the 
+DeviceSerial column, separated by commas and other delimiters. This is what it would look
+like:
 
 
 +------------+-----------+----------+-----------------------+--------------------------------------------+
@@ -1128,14 +1130,19 @@ device? The table below shows you a clear violation of 1NF:
 +------------+-----------+----------+-----------------------+--------------------------------------------+
 
 
-The easiest solution to the problem is to add additional devices to the DeviceSerial 
-column, separated by commas and other delimiters. However, this is something you should 
-NEVER do in a database. As I said before: databases are just not designed to hold more 
-than one value per field. 
+However, this is something you should NEVER do in a database. It is a violation of 1NF. 
+As I said before: databases are just not designed to hold more than one value per field. 
+Multiple values in a field get treated like a single value. Searching for data becomes 
+extremely difficult in a database that fails 1NF compliance. The bigger problem is that
+this practice retards a database's full abilities to categorize and manage data. If you
+use multi-value fields, you are now responsible for enforcing data types, and other 
+constraints for potentially millions of records. So, don't go there. Let your database
+manage the data and enforce types and constraints. All you have to do to offload this 
+responsibility is put one value in a field.  
 
-How else can you track multiple values in a database? The next obvious solution is to add
-additional columns for devices, so that you can track one device per column. See the 
-diagram below:
+However, we still have multiple values to track. How else can you track them? The next 
+obvious solution is to add additional columns for devices, so that you can track one 
+device per column. See the table below:
 
 
 +------------+-----------+----------+-----------------------+---------------+---------------+---------------+
@@ -1147,8 +1154,8 @@ diagram below:
 +------------+-----------+----------+-----------------------+---------------+---------------+---------------+
 
 
-Unfortunately, this is also something you should NEVER do, because it violates First
-Normal Form. Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2,
+Unfortunately, this is also something you should NEVER do, because this too violates 
+First Normal Form. Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2,
 DeviceSerial3 etc., is called a REPEATING GROUP. The existence of repeating groups also
 violates First Normal Form. The classic sign of a repeating group is identical column
 names with different numbers tacked on the end of it to make unique names. 
@@ -1159,10 +1166,11 @@ do not scale well. Giving an employee a new device should not necessitate change
 database's schema. 
 
 No, the correct response to such a problem is to create a new table that tracks devices,
-with EmployeeId as foreign key. By creating a new table, you can establish a one-to-many
-relationship between the 'Employee' and 'Devices' table, where the 'One' side is the 
-'Employee' table and the 'Many' side being the 'Devices' table. See a sample 'Devices' 
-table: 
+with EmployeeId as foreign key. You can move the 'DeviceSerial' column to this new table
+and add new ones, like 'DeviceType' and 'Description' to help the business better track 
+its devices. After doing this, you can establish a one-to-many relationship between the 
+'Employee' and 'Devices' table, where the 'One' side is the 'Employee' table and the 
+'Many' side being the 'Devices' table. This is what the 'Devices' table might look like: 
 
     
     +--------------+------------+------------+-----------------------+
@@ -1175,31 +1183,32 @@ table:
     +--------------+------------+------------+-----------------------+
     
     
-You can use EmployeeId to query the 'Devices' table, and find how the devices that any 
-given person has been loaned. There are no repeating groups in a tables or repeating 
+You can use 'EmployeeId' to query the 'Devices' table, and find the devices that any 
+given employee had been loaned. There are no repeating groups in tables or repeating 
 values in any field.
 
-As was the case in this example, it is very common for the solution to a normalization 
-problem being the creation of a new table.
+Note that, as was the case in this example, it is very common for the solution to a 
+normalization problem being the creation of a new table.
   
     
 4.2.2.2 SECOND NORMAL FORM (2NF)
       
     The first requirement for Second Normal Form is that all the requirements of First
-    Normal Form are in full effect. The implementation of 1NF must be in place in order
-    to fully apply 2NF. 
+    Normal Form are in full effect. Full compliance with 1NF is a mandatory for full 
+    compliance with 2NF.
     
     Second Normal Form (and Third Normal Form) is concerned with the relationship between 
     Key columns and Non-key columns. More specifically, 2NF is only a problem for tables 
     that use a composite primary key. This is a primary key that is composed of values 
     from two or more columns. If you use a composite key, you must pay close attention to 
-    its relationship to other non-key columns in the table. 
+    its relationship to other non-key columns in that table. 
     
-    If your table does use a composite key, all non-key attributes must be functionally 
-    dependent on the entirety of the composite key. As a composite key is composed of two 
-    or more keys, it is possible for a non-key attribute to be dependent on only one of 
-    the component keys of the composite key. To re-iterate: 2NF demands that all non-key 
-    attributes must be fully dependent on all keys of the composite primary key. 
+    If your table does use a composite key, 2NF demands that all non-key attributes must 
+    be functionally dependent on the entirety of the composite key. As a composite key is 
+    composed of two or more keys, it is possible for a non-key attribute to be dependent 
+    on only one of the component keys of the composite key. 2NF will not accept partial
+    dependence; it demands that all non-key attributes must be fully dependent on all 
+    constituent attributes of the composite primary key. 
     
     
 Once again, this is hard to understand without a actual example, so consider the example
@@ -1224,27 +1233,26 @@ Second Normal Form.
 
 
 Why? Because two columns, 'PartName' and 'Price', are not functionally dependent on the
-composite key. In fact, these columns fail to have have a dependency on either 'Part#'
-or 'Shipment#', so they are not even partially dependent on the composite key. You'll 
-notice that multiple entries exist for 'Cooling Gasket' and 'Fizzy Whizzler' and their 
+composite key. In fact, these columns fail to have a dependency on either 'Part#' or 
+'Shipment#', so they are not even partially dependent on the composite key. You'll notice 
+that multiple entries exist for 'Cooling Gasket' and 'Fizzy Whizzler' and their 
 associated prices. Neither 'PartName' nor 'Price' can be uniquely determined by either of 
-the component parts of the composite key, or the composite key as a whole. Thus, this 
+the component keys of the composite key, or the composite key as a whole. Thus, this 
 table fails to be 2NF-compliant. 
 
 Why is any of this important? This is important because at least a few columns, 'Part#', 
 'PartName' and 'Price' respectively, are linked to each other, but that link is not being
-managed by the database. What if someone changes a part number, but fails to change its
-associated part name or its price? Did you get a shipment of 'Sprocket Wrenches' or part 
-number 34910 on a certain date? Which is the incorrect value? Chaos will rule in the 
-database, as part numbers and names change and start conflicting with each other. 
-
-You do not want error-prone humans in charge of making sure values do not conflict in a 
-database. There could be millions of records! By implementing 2NF, you offload that 
-responsibility on to the database itself. 
+managed by the database. What if someone updates a part number in this table, but fails 
+to change its associated part name or its price? Now you face the question: Did you get a 
+shipment of 'Sprocket Wrenches' or part number 34910 on a given date? Which is the 
+incorrect value? Chaos will rule in the database, as part numbers and names change and 
+start conflicting with each other. You do not want error-prone humans in charge of making 
+sure values do not conflict in a database. A database could have millions of records! The 
+point of implementing 2NF is to offload that responsibility on to the database itself. 
 
 How can you fix this problem and bring this table into compliance with 2NF? Once again, 
 the solution is to create a new table. You have to create a new 'Parts' table and move 
-the 'PartName' and 'Prices' fields into it:
+the 'PartName' and 'Prices' columns into it:
 
 
     +--------+-----------------+-------+
@@ -1256,8 +1264,8 @@ the 'PartName' and 'Prices' fields into it:
     +--------+-----------------+-------+
     
     
-The 'Part#' attribute will act as a primary key for this field. In 'Shipments Received', 
-you can remove these fields and make the table smaller, like this: 
+The 'Part#' attribute will act as a primary key for this field. In the 'Shipments 
+Received' table, you can remove these fields and make the table smaller, like this: 
 
 
     +-----------+--------+---------------+----------+
@@ -1272,7 +1280,9 @@ you can remove these fields and make the table smaller, like this:
 
 
 Then, you have to connect these two tables with a One-to-Many relationship. 'Shipments 
-Received' would be 'Many' side and the 'Parts' table would be the 'One' side.  
+Received' would be 'Many' side and the 'Parts' table would be the 'One' side. This brings
+the table into compliance with 1NF and the requirements peculiar to 2NF, making it fully 
+compliant with Second Normal Form.
     
     
 
