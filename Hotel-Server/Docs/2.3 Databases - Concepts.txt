@@ -941,29 +941,23 @@ In the Production, Demo and other Environments:
 
 4.1 THE CONSEQUENCES OF POOR DATABASE DESIGN 
 
-   
-To keep it short, it is possible to design a database so poorly such that data 
-redundancies or database anomalies become possible. Redundant data is self-explanatory, 
-so what are 'Database Anomalies'? An anomaly is an aberrant behaviour in the database 
-that occurs due to poor design. There are three kinds of database anomalies:
+To keep it short, our natural instincts for creating tables and storing data in a 
+database typically lead to terrible database designs. Poorly designed databases are prone 
+to data redundancies or database anomalies. Redundant data is self-explanatory, so what 
+are database anomalies? An anomaly is an aberrant behaviour in a database that occurs due 
+to poor design. There are three kinds of database anomalies:
 
 
     * INSERTION ANOMALY: is a situation that occurs when you cannot insert a new record 
-      into a table because of an unnecessary dependency on a piece of data that is either 
-      unavailable or, due to poor design, resides in another table. 
-      
-      Another variation of this anomaly is the case where a table's poor design creates 
-      unnecessary data redundancy within this table. In this case, when you insert a 
-      record into a table, you will have to manually ensure that the values of redundant 
-      fields match those in other records. 
+      into a table because the table requires a piece of data that is unavailable to you. 
       
       E.g.: A database that cannot add a customer information to its Customers table 
       until the customer actually makes a purchase.
       
       
     * DELETION ANOMALY: is the opposite of the Insert anomaly. This is a situation where
-      the deletion of one entity/record causes unintended data loss of another entity or
-      record.
+      the deletion of one entity/record causes unintended deletion of another entity or
+      record. Deletion anomalies result in unexpected data loss.
       
       E.g.: Using the previous example, a deletion anomaly occurs if we delete a customer 
       invoice, which due to poor design, causes the deletion of that customer's 
@@ -972,23 +966,46 @@ that occurs due to poor design. There are three kinds of database anomalies:
       table. 
       
       
-    * UPDATE ANOMALY: arises when updating a field in one record makes it necessary to
-      update multiple records. This is a clear sign of data redundancy in your database.
+    * UPDATE ANOMALY: arises when the same information can be expressed on multiple rows 
+      of a table. This makes it possible for the same information to exist in multiple
+      records. If a table design permits this error, then over time, it will almost 
+      certainly lead to data inconsistencies when one record is updated but the other one 
+      is not.
       
-      E.g.: If making changes to a customer's address in the Invoice table necessitates
-      changes to all other records in that table for this customer, this is an update 
-      anomaly. The Invoice table should have only a single source of truth for an 
-      attribute. Attributes should be captured once and stored once. References must be
-      made to it in other tables. All references must point to this single, original 
-      source.
+      E.g.: Suppose you have a Student table where its possible to have a student's 
+      information sstored in more than one record. If one of these records is updated, 
+      say the address is changed, you now have two records for one student, with 
+      conflicting addresses. This is a clear sign of data redundancy design error in your 
+      table.
+      
+      Your tables should have only a single source of truth for an attribute. Attributes 
+      should be captured once and stored once in one field only. If needed, you can make 
+      references to it in other tables. All references must point to this single, 
+      original source.
 
 
-The best way to avoid anomalies is to apply 'Database Normalization' your tables. 
+The best way to avoid anomalies is to normalize your database. This is a reference to a 
+practice called 'Database Normalization'. 
 
 
 4.2 NORMALIZATION
 
-Here is an introductory description of Normalization[8]:
+Here is an introductory description of Normalization from Wikipedia's article[8]:
+
+
+    Database normalization is the process of restructuring a relational database in 
+    accordance with a series of so-called normal forms in order to reduce data redundancy 
+    and improve data integrity. It was first proposed by Edgar F. Codd as an integral 
+    part of his relational model.
+    
+    Normalization entails organizing the columns (attributes) and tables (relations) of a 
+    database to ensure that their dependencies are properly enforced by database 
+    integrity constraints. It is accomplished by applying some formal rules either by a 
+    process of synthesis (creating a new database design) or decomposition (improving an 
+    existing database design).
+
+
+Here's an alternate definition[9]:
 
 
     Database Normalization is a technique of organizing the data in the database. 
@@ -1007,26 +1024,33 @@ When you design your database, you will have to do something called 'Entity-Rela
 Modelling'. This is the process of planning out tables in your database and their
 relationships to other tables. ER Modelling is dominated by "big picture" consideration 
 of your program's data needs. Based on your conclusions, you should iteratively identify 
-the relevant entities in your database, their attributes and their relationships. 
+the relevant entities (tables) in your database, their attributes (columns) and their 
+relationships. 
 
 Once you produced a tentative database design, you should have some idea of what tables 
-you will have in your database, their names, their attributes (columns) and their 
-relationships to other tables. Designing inter-table relationships means that you should 
-have decided on primary keys for most of your tables.
+you will have in your database, their names, their attributes and their relationships to 
+other tables. Designing inter-table relationships means that you should have decided on 
+primary keys for most of your tables.
 
 Following the ER Modelling process, you will then apply the process of 'Database 
 Normalization'. Normalization is applied at the "micro level"; you will focus on one 
-entity (table) and consider its components and characteristics.
+entity (table) and consider its attributes and other characteristics. The general idea
+behind normalization is that a table is about a specific topic and that only columns
+related to the topic must be included in the table. Our natural instincts at table design 
+typically lead to tables that contain duplicate data. The other big problem is that poor
+table design results in tables that fail to take advantage of the database's ability to
+check and impose data integrity constraints. This can lead to wrongly typed data, 
+multi-field values and other types of data integrity problems.
 
-Normalization should be done for every database you design. You should do it as part of
-the initial design and whenever you revisit and tweak your database. When you apply 
-normalization to your database, you will usually end up creating a few new tables. 
+You should normalizae every database you design. You should do normalization as part of
+the initial design and whenever you revisit and tweak your database's schema. The process
+of normalizing your database often results in the creation of new tables.
 
 Normalization will make your database easier and more reliable to work with. 
-Normalization will reduce unwanted duplicate data in the database and increase its 
-robustness. This will make it harder to create invalid states in the database or enter 
-poor quality data into it. This should make it easier to maintain, edit and modify your 
-database.  
+Normalization will reduce unwanted duplicate data in the database, thereby decreasing its
+size and increasing integrity and robustness of the data stored therein. This will make 
+it harder to create invalid states in the database or enter poor quality data into it. 
+This should make it easier to maintain, edit and modify your database.  
 
 
 4.2.1 FUNCTIONAL DEPENDENCY
@@ -1285,6 +1309,8 @@ the table into compliance with 1NF and the requirements peculiar to 2NF, making 
 compliant with Second Normal Form.
     
     
+4.2.2.3 THIRD NORMAL FORM
+
 
 
     
@@ -1302,5 +1328,9 @@ SOURCES
 05: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
 06: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
 07: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
-08: https://www.studytonight.com/dbms/database-normalization.php
+08: https://en.wikipedia.org/wiki/Database_normalization
+09: https://www.studytonight.com/dbms/database-normalization.php
+
+
+
 09: https://www.techopedia.com/definition/19504/functional-dependency
