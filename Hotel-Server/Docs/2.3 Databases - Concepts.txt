@@ -1239,22 +1239,22 @@ normalization problem is the creation of a new table.
     
 4.2.2.2 SECOND NORMAL FORM (2NF)
       
-    The first requirement for Second Normal Form is that all the requirements of First
-    Normal Form are in full effect. Full compliance with 1NF is a mandatory for full 
-    compliance with 2NF.
+    * The first requirement for Second Normal Form is that the table is in First Normal
+      Form. Full compliance with 1NF is a mandatory requirement for full compliance with 
+      2NF.
     
-    Second Normal Form (and Third Normal Form) is concerned with the relationship between 
-    Key columns and Non-key columns. More specifically, 2NF is only a problem for tables 
-    that use a composite primary key. This is a primary key that is composed of values 
-    from two or more columns. If you use a composite key, you must pay close attention to 
-    its relationship to other non-key columns in that table. 
+    * Second Normal Form (and Third Normal Form) is concerned with the relationship 
+      between Key columns and Non-key columns. More specifically, 2NF is only a problem 
+      for tables that use a composite primary key. This is a primary key that is composed 
+      of values from two or more columns. If you use a composite key, you must pay close
+      attention to its relationship to other non-key columns in that table. 
     
-    If your table does use a composite key, 2NF demands that all non-key attributes must 
-    be functionally dependent on the entirety of the composite key. As a composite key is 
-    composed of two or more keys, it is possible for a non-key attribute to be dependent 
-    on only one of the component keys of the composite key. 2NF will not accept partial
-    dependence; it demands that all non-key attributes must be fully dependent on all 
-    constituent attributes of the composite primary key. 
+      If your table does use a composite key, 2NF demands that all non-key attributes 
+      must be functionally dependent on the entirety of the composite key. As a composite 
+      key is composed of two or more keys, it is possible for a non-key attribute to be 
+      dependent on only one of the component keys of the composite key. 2NF will not 
+      accept partial dependence; it demands that all non-key attributes must be fully 
+      dependent on all constituent attributes of the composite primary key. 
     
     
 Once again, this is hard to understand without a actual example, so consider the example
@@ -1284,7 +1284,10 @@ composite key. In fact, these columns fail to have a dependency on either 'Part#
 that multiple entries exist for 'Cooling Gasket' and 'Fizzy Whizzler' and their 
 associated prices. Neither 'PartName' nor 'Price' can be uniquely determined by either of 
 the component keys of the composite key, or the composite key as a whole. Thus, this 
-table fails to be 2NF-compliant. 
+table fails to be 2NF-compliant. If the offending non-key columns were dependent on 
+either 'Part#' or 'Shipment#', they would be partially dependent on the composite key.
+Partial dependence also fails 2NF: all non-key columns must depend on the entirety of the
+composite key.  
 
 Why is any of this important? This is important because at least a few columns, 'Part#', 
 'PartName' and 'Price' respectively, are linked to each other, but that link is not being
@@ -1325,10 +1328,10 @@ Received' table, you can remove these fields and make the table smaller, like th
     +-----------+--------+---------------+----------+
 
 
-Then, you have to connect these two tables with a One-to-Many relationship. 'Shipments 
+Then you have to connect these two tables with a One-to-Many relationship. 'Shipments 
 Received' would be 'Many' side and the 'Parts' table would be the 'One' side. This brings
-the table into compliance with 1NF and the requirements peculiar to 2NF, making it fully 
-compliant with Second Normal Form.
+the table into compliance with 1NF and as well as the requirements peculiar to 2NF, 
+making it fully compliant with Second Normal Form.
     
     
 4.2.2.3 THIRD NORMAL FORM
