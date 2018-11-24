@@ -1107,21 +1107,27 @@ The sixth form seems to be treated like a theoretical oddity.
     
 4.2.2.1 FIRST NORMAL FORM (1NF)
    
-First Normal Form:
+First Normal Form is a property of a relation (table). These are 1NF criteria:
 
 
-    Prohibits multiple values in one column. Every field (the intersection of a row and a 
-    column) must contain at most, one value. Relational Databases can handle many things, 
-    but they are not equipped to handle multi-value fields. 
+    * To eliminate anomalies and data redundancy, create a separate table for each set of
+      related data. Each table should have a primary key to uniquely identify records. 
+      
+    * All values in a column must be of the same domain (data type). 
+      
+    * A field (the intersection of a row and a column) must, at most, contain only one 
+      piece of data. This piece of data must be atomic, i.e. it cannot be divided into 
+      smaller pieces. This applies to all fields in all tables. 1NF prohibits multi-value 
+      fields. Do not use commas, semi-colons or other delimiters to put multiple values 
+      into a field.
     
-    If applying 1NF creates a situation where you have repeating groups within a table, 
-    this is also a violation of First Normal Form. It is a sign that you need to create
-    a new table. Identify a group of related data in the table and move it into the new 
-    table. 
-    
-    Ensure that a primary key exists for each table, by which you can uniquely identify 
-    any given record (a row).  
-     
+    * Eliminate repeating groups from tables. Repeating groups are columns with the same
+      name, but different numbers at the end. They are a special case of multi-value 
+      fields. They usually occur when you try to get rid of multi-value fields by 
+      creating new columns. The best way to eliminate repeating groups is to study the 
+      table, find and identify the set of data related to repeating groups and move them 
+      into a new table. 
+          
     
 This principle is hard to understand in the abstract, so consider the table below. It is
 an 'Employee' table, which contains a list of employees, their Ids, names, emails etc. 
@@ -1155,14 +1161,15 @@ like:
 
 
 However, this is something you should NEVER do in a database. It is a violation of 1NF. 
-As I said before: databases are just not designed to hold more than one value per field. 
-Multiple values in a field get treated like a single value. Searching for data becomes 
-extremely difficult in a database that fails 1NF compliance. The bigger problem is that
-this practice retards a database's full abilities to categorize and manage data. If you
-use multi-value fields, you are now responsible for enforcing data types, and other 
-constraints for potentially millions of records. So, don't go there. Let your database
-manage the data and enforce types and constraints. All you have to do to offload this 
-responsibility is put one value in a field.  
+Relational Databases can handle many things, but they are not equipped to handle 
+multi-value fields. Multiple values in a field get treated like a single value. Searching 
+for data becomes extremely difficult in a database that fails 1NF compliance. The bigger 
+problem is that this practice retards a database's full abilities to categorize and 
+manage data. If you use multi-value fields, you are now responsible for enforcing data 
+types, and other data integrity constraints for potentially millions of records. So, 
+don't go there. Let your database manage the data and enforce types and constraints. All 
+you have to do to offload this responsibility to the database is put a maximum of one 
+value in a field.  
 
 However, we still have multiple values to track. How else can you track them? The next 
 obvious solution is to add additional columns for devices, so that you can track one 
@@ -1194,7 +1201,20 @@ with EmployeeId as foreign key. You can move the 'DeviceSerial' column to this n
 and add new ones, like 'DeviceType' and 'Description' to help the business better track 
 its devices. After doing this, you can establish a one-to-many relationship between the 
 'Employee' and 'Devices' table, where the 'One' side is the 'Employee' table and the 
-'Many' side being the 'Devices' table. This is what the 'Devices' table might look like: 
+'Many' side being the 'Devices' table. This is the modified 'Employees' table may look 
+like:
+
+    
+    +------------+-----------+----------+-----------------------+
+    | EmployeeId | FirstName | LastName |         Email         |
+    +------------+-----------+----------+-----------------------+
+    |       0001 | Jack      | Hill     | jack_hill@hotmail.com |
+    |       0002 | Jill      | Hill     | jhill@gmail.com       |
+    |       0003 | Simon     | Says     | ss@outlook.com        |
+    +------------+-----------+----------+-----------------------+
+
+
+This is what the 'Devices' table might look like: 
 
     
     +--------------+------------+------------+-----------------------+
@@ -1208,11 +1228,13 @@ its devices. After doing this, you can establish a one-to-many relationship betw
     
     
 You can use 'EmployeeId' to query the 'Devices' table, and find the devices that any 
-given employee had been loaned. There are no repeating groups in tables or repeating 
-values in any field.
+given employee has been loaned. With this design modification, there are no repeating 
+groups in tables or repeating values in any field.
 
-Note that, as was the case in this example, it is very common for the solution to a 
-normalization problem being the creation of a new table.
+Note that the trouble with the original table was that table's design was too lenient:
+You are to only put a set of related data in a table, but the original design allowed 
+extraneous data in. Often, as was the case in this example, the typical solution to a 
+normalization problem is the creation of a new table.
   
     
 4.2.2.2 SECOND NORMAL FORM (2NF)
