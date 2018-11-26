@@ -1058,7 +1058,8 @@ This should make it easier to maintain, edit and modify your database.
 To normalize tables, you have to understand the concept of 'Functional Dependency'. 
 A functional dependency is a relationship between two attributes. Usually, this is 
 referring to the relationship between a Primary Key (PK) attribute and a second non-key 
-attribute within a table.  
+attribute within a table. Functional dependency acts as a constraint between two 
+attributes. 
 
 For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
 on Attribute A, if at any moment in time there is exactly one instance of B for any given 
@@ -1091,9 +1092,8 @@ Why is this important? In a StackOverflow answer, NealB explains[11]:
     fish).
  
  
-Normalization applies what are called 'Normal Forms' to tables. As NealB notes, the first 
-three forms require understanding of functional dependencies. Functional dependency acts 
-as a constraint between two attributes. 
+Normalization applies what are called 'Normal Forms' to tables. The second and third 
+normal forms require understanding of functional dependencies. 
 
 
 4.2.2 THE NORMAL FORMS
@@ -1197,10 +1197,10 @@ do not scale well. Giving an employee a new device should not necessitate change
 database's schema. 
 
 No, the correct response to such a problem is to create a new table that tracks devices,
-with EmployeeId as foreign key. You can move the 'DeviceSerial' column to this new table
-and add new ones, like 'DeviceType' and 'Description' to help the business better track 
-its devices. After doing this, you can establish a one-to-many relationship between the 
-'Employee' and 'Devices' table, where the 'One' side is the 'Employee' table and the 
+with 'EmployeeId' as foreign key. You can move the 'DeviceSerial' column to this new 
+table and add new ones, like 'DeviceType' and 'Description' to help the business better 
+track its devices. After doing this, you can establish a one-to-many relationship between 
+the 'Employee' and 'Devices' table, where the 'One' side is the 'Employee' table and the 
 'Many' side being the 'Devices' table. This is the modified 'Employees' table may look 
 like:
 
@@ -1227,8 +1227,8 @@ This is what the 'Devices' table might look like:
     +--------------+------------+------------+-----------------------+
     
     
-You can use 'EmployeeId' to query the 'Devices' table, and find the devices that any 
-given employee has been loaned. With this design modification, there are no repeating 
+You can use 'EmployeeId' to query the 'Devices' table and find a list of all devices that
+a given employee had been loaned. With this design modification, there are no repeating 
 groups in tables or repeating values in any field.
 
 Note that the trouble with the original table was that table's design was too lenient:
@@ -1238,21 +1238,25 @@ normalization problem is the creation of a new table.
   
     
 4.2.2.2 SECOND NORMAL FORM (2NF)
+
+These are the requirements for Second Normal Form: 
       
     * The first requirement for Second Normal Form is that the table is in First Normal
       Form. Full compliance with 1NF is a mandatory requirement for full compliance with 
       2NF.
     
-    * Second Normal Form (and Third Normal Form) is concerned with the relationship 
-      between Key columns and Non-key columns. More specifically, 2NF is only a problem 
-      for tables that use a composite primary key. This is a primary key that is composed 
-      of values from two or more columns. If you use a composite key, you must pay close
-      attention to its relationship to other non-key columns in that table. 
+    * Second Normal Form is concerned with the relationship between Key columns and 
+      Non-key columns. More specifically, 2NF is only a problem for tables that use a 
+      composite primary key. This is a primary key that is composed of values from two or 
+      more columns. If you use a composite key, you must pay close attention to its 
+      relationship to other non-key columns in that table. If a table has a single-
+      attribute primary key, which is usually the case the majority of the time, then you 
+      do not have to worry: the table is automatically compliant with 2NF. 
     
       If your table does use a composite key, 2NF demands that all non-key attributes 
       must be functionally dependent on the entirety of the composite key. As a composite 
       key is composed of two or more keys, it is possible for a non-key attribute to be 
-      dependent on only one of the component keys of the composite key. 2NF will not 
+      dependent on only some of the component keys of the composite key. 2NF will not 
       accept partial dependence; it demands that all non-key attributes must be fully 
       dependent on all constituent attributes of the composite primary key. 
     
@@ -1336,6 +1340,61 @@ making it fully compliant with Second Normal Form.
     
 4.2.2.3 THIRD NORMAL FORM
 
+These are the requirements of Third Normal Form:
+
+    * The first requirement for Third Normal Form is that the table is in Second Normal
+      Form. As 2NF requires compliance with 1NF, effecting 3NF first requires compliance
+      with both First and Second Normal Form. Full compliance with 1NF and 2NF is a 
+      mandatory pre-requisite for full compliance with 3NF.
+      
+    * 3NF is concerned with the relationship between Non-key attributes. Third Normal 
+      Form calls for the elimination of all 'Transitive Dependencies' in your tables. 
+      Oppel defines this term on page 203[1]: "An attribute that depends on another 
+      attribute that is not the primary key of the relation is said to be transitively 
+      dependent." 
+      
+      Put another way, 3NF demands that no non-key attribute (columns that are NOT part 
+      of the primary key) must be functionally dependant on any other non-key field in 
+      the table. Restated again: One or more non-key column(s) should not be the 
+      determinant (i.e. able to uniquely identify) of values in another non-key column in 
+      the same table.  
+
+
+Let's go to an example. See the 'OrderItem' table below. It tracks customer orders, 
+product ordered, quantity and other such values. This table complies with 1NF and 2NF,
+but 3NF. Why? See if you can spot the issue: 
+
+
+    +--------+---------+-----------+----------+------------+-------+
+    |   Id   | OrderId | ProductId | Quantity | Unit Price | Total |
+    +--------+---------+-----------+----------+------------+-------+
+    | 257939 |  398489 | BC32-5    |        7 |         12 |    84 |
+    | 257940 |  398490 | NB82-9    |       15 |         57 |   855 |
+    | 257941 |  398491 | OH29-1    |      150 |          5 |   750 |
+    | 257942 |  398491 | VP10-8    |       15 |         25 |   375 |
+    +--------+---------+-----------+----------+------------+-------+
+
+
+The problem lies with the last three columns. The 'Total' column depends on the 
+'Quantity' and 'Unit Price' columns: its values are a product of the latter two columns.
+A non-key field is dependant on two non-key fields, violating 3NF. It is a very common 
+mistake to put easily derivable information in a new column, but you should NOT do this.
+
+If the values of one non-key can be ascertained from another field(s), it may lead to 
+hard-to-resolve conflicts. If an order is updated and its quantity or unit price changed, 
+the 'Total' column does not automatically get updated. If you fail to update the total, 
+and notice the discrepancy at a later time, you face a serious problem: which of the 
+values is wrong? Is it the 'Quantity' value, 'Unit Price' or the 'Total'? This is the 
+reason why 3NF exists; to prevent your database from devolving into a chaotic mess of 
+conflicting values.
+
+You can resolve this problem by removing the transitively dependent column from the 
+table. But if the information in the 'Total' column is valuable to you, can you keep it
+somehow? Yes, you can. Many databases offer the option of defining a read-only 'Computed' 
+or 'Calculated' column that is not really a part of the table. However, if you've defined
+such a column, it will show up when you open the table. Its values cannot be changed 
+directly as they are automatically calculated by the database from the two columns it 
+depends on. In this way, you can comply with 3NF and retain a computed column.
 
 
     
