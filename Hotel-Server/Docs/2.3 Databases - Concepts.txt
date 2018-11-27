@@ -1042,7 +1042,7 @@ table design results in tables that fail to take advantage of the database's abi
 check and impose data integrity constraints. This can lead to wrongly typed data, 
 multi-field values and other types of data integrity problems.
 
-You should normalizae every database you design. You should do normalization as part of
+You should normalize every database you design. You should do normalization as part of
 the initial design and whenever you revisit and tweak your database's schema. The process
 of normalizing your database often results in the creation of new tables.
 
@@ -1056,23 +1056,23 @@ This should make it easier to maintain, edit and modify your database.
 4.2.1 FUNCTIONAL DEPENDENCY
 
 To normalize tables, you have to understand the concept of 'Functional Dependency'. 
-A functional dependency is a relationship between two attributes. Usually, this is 
-referring to the relationship between a Primary Key (PK) attribute and a second non-key 
-attribute within a table. Functional dependency acts as a constraint between two 
-attributes. 
+A functional dependency is a relationship between two attributes; it acts as a constraint 
+between two attributes. Usually, this is referring to the relationship between a Primary 
+Key (PK) attribute and a second non-key attribute within a table. 
 
 For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
 on Attribute A, if at any moment in time there is exactly one instance of B for any given 
 instance of A. Phrased another way: If Attribute A functionally determines Attribute B, 
 the value of an instance of A uniquely determines a value for B. Therefore, A is a 
-determinant (i.e. a unique identifier) of B and B is a dependent of A. This relationship 
-is visually represented like this:
+determinant of B and B is a dependent of A. (A determinant is an attribute that determines
+the value of another attribute.) This relationship is visually represented like this:
 
     
     A -> B 
 
 
-It is read like this: "A (functionally) determines B."
+It is read like this: "A (functionally) determines B". 
+The Inverse: "B depends on A."
 
 Let's take a concrete example[10]: In a table, suppose there are two columns with a 
 functionally dependent relationship: 'Social Security Number' and 'Employee Name'. The 
@@ -1099,27 +1099,57 @@ normal forms require understanding of functional dependencies.
 4.2.2 THE NORMAL FORMS
 
 The Normal Forms were developed by Edgar Codd, the father of relational databases. 
-Normalization theory defines 6 Normal Forms, of which the first three are treated like an 
-essential block. The first three forms should be applied to all databases. The fourth 
-form is not necessary in many cases, and the fifth form comes into play only very rarely.
-The sixth form seems to be treated like a theoretical oddity.  
+Normalization theory defines 6 major Normal Forms and a number of minor forms. The first
+three Normal Forms are treated like an essential block. If you bring your database into
+compliance with the first three forms, you will be protected against well over 90% of 
+redundancy and data integrity issues in most databases.   
+
+Therefore, you should apply the first three forms to all databases. Following that, you 
+should consider the Boyce-Codd Normal Form (BCNF or 3.5NF), which is considered to be a 
+minor extension to the Third Normal Form. The fourth and fifth forms come into play only 
+very rarely. The sixth form seems to be treated like a theoretical oddity.  
+
+
+4.2.2.0 UNNORMALIZED FORM (UNF or 0NF)
+
+This is the state of a table or database before you have applied the Normal Forms. An 
+unnormalized database will suffer from data redundancy and data integrity issues due to
+their violation of the Normal Forms. 
+
+The Forms are mainly properties of a relation. In database terminology, a relation is 
+equivalent to a table. Therefore, you have to scrutinize every table in your database to
+ensure that each of the forms is applied. 
 
     
 4.2.2.1 FIRST NORMAL FORM (1NF)
    
-First Normal Form is a property of a relation (table). These are 1NF criteria:
+These are the criteria of First Normal Form:
 
 
     * To eliminate anomalies and data redundancy, create a separate table for each set of
-      related data. Each table should have a primary key to uniquely identify records. 
+      related data. You should define a primary key in each table to uniquely identify 
+      records. 
       
-    * All values in a column must be of the same domain (data type). 
+    * An attribute is a vertical column in a table. All values in a column must be of the 
+      same domain (data type). 
       
-    * A field (the intersection of a row and a column) must, at most, contain only one 
-      piece of data. This piece of data must be atomic, i.e. it cannot be divided into 
-      smaller pieces. This applies to all fields in all tables. 1NF prohibits multi-value 
-      fields. Do not use commas, semi-colons or other delimiters to put multiple values 
-      into a field.
+    * In a relation, a field is the intersection of a row and a column. It is the most 
+      fundamental unit of storage in a database. You can store a data fragment in it.
+      This piece of data must be atomic, i.e. a piece of data that cannot or should not 
+      be divided into smaller pieces. (For example of the latter case, you can divide 
+      date values into separate year, month and date columns, but this is widely regarded 
+      as a poor idea.) 
+      
+    * A field must, at most, contain only one piece of data. 1NF prohibits multi-value 
+      fields. This applies to all fields in all tables. Do not use commas, semi-colons or 
+      other delimiters to put multiple values into a field. Databases treat multi-value
+      fields as a single value. 
+      
+      Applying 1NF lets the database track, store and display data in a tabular format. 
+      Breaking 1NF will mean that the database is no longer tracking the extra values in
+      multi-value fields. This will prevent the database from applying data integrity 
+      constraints to them. This will lead to an increase in the amount of low-quality 
+      or conflicting data in your database.
     
     * Eliminate repeating groups from tables. Repeating groups are columns with the same
       name, but different numbers at the end. They are a special case of multi-value 
@@ -1247,9 +1277,9 @@ These are the requirements for Second Normal Form:
     
     * Second Normal Form is concerned with the relationship between Key columns and 
       Non-key columns. More specifically, 2NF is only a problem for tables that use a 
-      composite primary key. This is a primary key that is composed of values from two or 
-      more columns. If you use a composite key, you must pay close attention to its 
-      relationship to other non-key columns in that table. If a table has a single-
+      composite primary key. A composite key is a primary key that is composed of values 
+      from two or more columns. If you use a composite key, you must pay close attention 
+      to its relationship to other non-key columns in that table. If a table has a single-
       attribute primary key, which is usually the case the majority of the time, then you 
       do not have to worry: the table is automatically compliant with 2NF. 
     
@@ -1338,7 +1368,7 @@ the table into compliance with 1NF and as well as the requirements peculiar to 2
 making it fully compliant with Second Normal Form.
     
     
-4.2.2.3 THIRD NORMAL FORM
+4.2.2.3 THIRD NORMAL FORM (3NF)
 
 These are the requirements of Third Normal Form:
 
@@ -1357,7 +1387,8 @@ These are the requirements of Third Normal Form:
       of the primary key) must be functionally dependant on any other non-key field in 
       the table. Restated again: One or more non-key column(s) should not be the 
       determinant (i.e. able to uniquely identify) of values in another non-key column in 
-      the same table.  
+      the same table. Expressed yet another way: 3NF requires that all non-key attributes
+      must be dependent on only the primary key. 
 
 
 Let's go to an example. See the 'OrderItem' table below. It tracks customer orders, 
@@ -1394,7 +1425,12 @@ somehow? Yes, you can. Many databases offer the option of defining a read-only '
 or 'Calculated' column that is not really a part of the table. However, if you've defined
 such a column, it will show up when you open the table. Its values cannot be changed 
 directly as they are automatically calculated by the database from the two columns it 
-depends on. In this way, you can comply with 3NF and retain a computed column.
+depends on. In this way, you can both comply with 3NF and retain a computed column that 
+cannot be corrupted by human error. 
+
+
+4.2.2.4 BOYCE-CODD NORMAL FORM (BCNF or 3.5NF)
+
 
 
     
