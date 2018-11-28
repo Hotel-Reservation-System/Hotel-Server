@@ -1053,7 +1053,9 @@ it harder to create invalid states in the database or enter poor quality data in
 This should make it easier to maintain, edit and modify your database.  
 
 
-4.2.1 FUNCTIONAL DEPENDENCY
+4.2.1 PRE-REQUISITE CONCEPTS
+
+4.2.1.1 FUNCTIONAL DEPENDENCY
 
 To normalize tables, you have to understand the concept of 'Functional Dependency'. 
 A functional dependency is a relationship between two attributes; it acts as a constraint 
@@ -1071,7 +1073,7 @@ the value of another attribute.) This relationship is visually represented like 
     A -> B 
 
 
-It is read like this: "A (functionally) determines B". 
+It is read like this: "A (functionally) determines B" OR "A derives B."
 The Inverse: "B depends on A."
 
 Let's take a concrete example[10]: In a table, suppose there are two columns with a 
@@ -1093,7 +1095,20 @@ Why is this important? In a StackOverflow answer, NealB explains[11]:
  
  
 Normalization applies what are called 'Normal Forms' to tables. The second and third 
-normal forms require understanding of functional dependencies. 
+normal forms as well as the Boyce-Codd Normal Form (which is considered to be 3.5 Normal
+Form) require understanding of functional dependencies. 
+
+
+4.2.1.2 PRIME AND NON-PRIME ATTRIBUTES
+
+A candidate key is any attribute or combination of attributes that can determine 
+(uniquely identify) a record. There may be several candidate keys in a table, of which
+one is usually chosen to a primary key. That they are candidates to be a primary key is 
+the reason for their name. 
+
+Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
+ATTRIBUTES. The other keys in that table are called NON-PRIME ATTRIBUTES or NON-KEY
+ATTRIBUTES.
 
 
 4.2.2 THE NORMAL FORMS
@@ -1130,8 +1145,8 @@ These are the criteria of First Normal Form:
       related data. You should define a primary key in each table to uniquely identify 
       records. 
       
-    * An attribute is a vertical column in a table. All values in a column must be of the 
-      same domain (data type). 
+    * An attribute is a vertical column in a table. All columns in a table must have 
+      unique names. All values in a column must be of the same domain (data type). 
       
     * In a relation, a field is the intersection of a row and a column. It is the most 
       fundamental unit of storage in a database. You can store a data fragment in it.
@@ -1431,9 +1446,120 @@ cannot be corrupted by human error.
 
 4.2.2.4 BOYCE-CODD NORMAL FORM (BCNF or 3.5NF)
 
+BCNF has two requirements:
 
+    * The relation must be in Third Normal Form. As the Forms are cumulative, this means
+      that 1NF, 2NF and 3NF must be applied to your table before you can apply BCNF. 
+      
+    * BCNF is an extension of Third Normal Form and was created to strengthen it. This is
+      due to certain rare anomalies related to 3NF that were not addressed by it. BCNF 
+      closes these loopholes. The techopedia article on BCNF explains the circumstances 
+      that led to the development of this extension Form[12]: "3NF states that all data 
+      in a table must depend only on that table’s primary key, and not on any other field
+      in the table. At first glance it would seem that BCNF and 3NF are the same thing. 
+      However, in some rare cases it does happen that a 3NF table is not BCNF-compliant. 
+      This may happen in tables with two or more overlapping composite candidate keys." 
+    
+      Oppel provides more detail about what BCNF is designed to prevent on page 206[1]: 
+      "It addresses anomalies that occur when a non-key attribute is a determinant of an 
+      attribute that is part of the primary key (that is, when an attribute that is part 
+      of the primary key is functionally dependent on a non-key attribute)."
+  
+      Oppel explains BCNF's prime criterion on page 206[1]: "No determinants exist that 
+      are not either the primary key or a candidate key for the table. That is, a non-key 
+      attribute may not uniquely identify (determine) any other attribute, including one 
+      that participates in the primary key."  
+      
+      In the Second Normal Form, we have addressed cases where non-prime attributes 
+      depend upon prime attributes, either in whole (functional dependency) or in part
+      (partial dependency). In the Third Normal Form, we have addressed situations that
+      arise when non-prime attributes depended upon other non-prime attributes. The one
+      possibility that the first three Normal Forms have not addressed is what happens if
+      a non-prime attribute determines a prime attribute? BCNF addresses this situation. 
+      
+      BCNF demands that, for any any dependency where A derives B (A -> B), A must be an 
+      candidate key. Rephrased: BCNF states that if B is a prime attribute, then A cannot 
+      be a non-prime attribute. 
+      
+      In other words, BCNF insists that every determinant in a table be a candidate key. 
+      A candidate key is the most minimum set of attributes in a table that can be used 
+      to uniquely identify a record. In an article[13], Agnieszka Kozubek puts it this 
+      way: "Informally the Boyce-Codd normal form is expressed as “Each attribute must 
+      represent a fact about the key, the whole key, and nothing but the key.”" 
 
     
+If ever there was a concept in need of an example, it is this one. BCNF is a bit more 
+impenetrable than the first three Normal Forms, but it is still understandable. The 
+example below is taken from MariaDb's Docs[14]. It depicts a 'Student Enrollment' table. 
+You should make the following assumptions about the attributes in it:
+
+
+    * Each instructor takes only one course
+    * Each course can have one or more instructors
+    * Each student only has one instructor per course
+    * Each student can take one or more courses 
+
+
+    +-----------------+----------------------+----------------+
+    |     Student     |        Course        |   Instructor   |
+    +-----------------+----------------------+----------------+
+    | Julian Mives    | Geology 101          | Chris Chao     |
+    | Pradeep Connect | Computer Science 203 | John Ike       |
+    | Ahmed Kathra    | Philosophy 427       | Richard Mbappe |
+    | Golan Goldberg  | Philosophy 427       | Richard Mbappe |
+    +-----------------+----------------------+----------------+
+
+
+For now, this table uses a composite primary key composed of two attributes: 'Student'
+and 'Course'. The table complies with 1NF. It complies with 2NF because the 'Student' and 
+'Course' attributes both determine the 'Instructor' column. Therefore, the 'Instructor' 
+column is fully dependent on both attributes of the composite key. The table also easily
+complies with 3NF's demand that no non-key attribute be dependent on any other non-key
+attribute: there's only one non-key field, 'Instructor'! So what's the problem? 
+
+Look at the third and fourth rows. There are two students taking Philosophy 427, which 
+results in the instructor's name (Richard Mbappe) being stored twice. This is a data 
+redundancy problem that the current design of our table fails to eliminate. This happened 
+because 'Instructor' determines 'Course', which stated generically is: a non-prime 
+attribute determines a prime attribute. In other words, 'Instructor' determines 'Course', 
+but 'Instructor' is not a super key. Thus, this table fails to enforce BCNF. 
+
+The solution is to move the 'Course' attribute to a separate table, along with its key.
+This leaves only two attributes in the original table, as you can see below: 
+ 
+
+    +-----------------+----------------+
+    |     Student     |   Instructor   |
+    +-----------------+----------------+
+    | Julian Mives    | Chris Chao     |
+    | Pradeep Connect | John Ike       |
+    | Ahmed Kathra    | Richard Mbappe |
+    | Golan Goldberg  | Richard Mbappe |
+    +-----------------+----------------+
+
+
+This new table is called the 'Student-Instructor' table. After removing the 'Course' 
+attribute, you cannot effectively search for records with a single-attribute key. So you 
+need to combine both 'Student' and 'Instructor' into a composite key for the table. This 
+way, you will be able to uniquely identify records in this table.
+
+The other table is the 'Instructor-Course' table. As the 'Instructor' attribute 
+determined 'Course' in the original table, I am making it the primary key in this table.
+
+
+    +----------------+----------------------+
+    |   Instructor   |        Course        |
+    +----------------+----------------------+
+    | Chris Chao     | Geology 101          |
+    | John Ike       | Computer Science 203 |
+    | Richard Mbappe | Philosophy 427       |
+    +----------------+----------------------+
+
+
+As you can see, this eliminates the Instructor's name being stored redundantly. 
+Decomposing the table into two separate tables has once again solved a normalization
+problem.
+ 
 
 ****************************************************************************************************
 ****************************************************************************************************
@@ -1452,3 +1578,6 @@ SOURCES
 09: https://www.studytonight.com/dbms/database-normalization.php
 10: https://www.techopedia.com/definition/19504/functional-dependency
 11: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
+12: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
+13: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
+14: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
