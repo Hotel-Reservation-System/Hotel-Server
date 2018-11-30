@@ -973,7 +973,7 @@ to poor design. There are three kinds of database anomalies:
       is not.
       
       E.g.: Suppose you have a Student table where its possible to have a student's 
-      information sstored in more than one record. If one of these records is updated, 
+      information stored in more than one record. If one of these records is updated, 
       say the address is changed, you now have two records for one student, with 
       conflicting addresses. This is a clear sign of data redundancy design error in your 
       table.
@@ -1019,6 +1019,16 @@ Here's an alternate definition[9]:
     * Eliminating redundant data, AND
     * Ensuring data dependencies make sense i.e data is logically stored.
     
+
+What are some of the advantages of normalizing your database?[10]:
+
+
+    * Eliminate data redundancies (and therefore use less space)
+    * Make it easier to make changes to data, and avoid anomalies when doing so
+    * Make referential integrity constraints easier to enforce
+    * Produce an easily comprehensible structure that closely resembles the situation the 
+      data represents, and allows for growth
+       
     
 When you design your database, you will have to do something called 'Entity-Relationship 
 Modelling'. This is the process of planning out tables in your database and their
@@ -1055,19 +1065,68 @@ This should make it easier to maintain, edit and modify your database.
 
 4.2.1 PRE-REQUISITE CONCEPTS
 
-4.2.1.1 FUNCTIONAL DEPENDENCY
+4.2.1.1 DATA & DATA DEPENDENCIES IN DATABASES
 
-To normalize tables, you have to understand the concept of 'Functional Dependency'. 
-A functional dependency is a relationship between two attributes; it acts as a constraint 
-between two attributes. Usually, this is referring to the relationship between a Primary 
-Key (PK) attribute and a second non-key attribute within a table. 
+The you store data in a database, you usually store it in a relation, which is another 
+way of referring to a table. Take a look at the example table below, called 'Students':
+
+
+    +-----------+-----------+----------+----------------+--------------------------+
+    | StudentId | FirstName | LastName |  PhoneNumber   |          Email           |
+    +-----------+-----------+----------+----------------+--------------------------+
+    |    293843 | Harold    | Kumar    | (298) 239-3894 | haroldkumar@yahoo.com    |
+    |    293494 | Jenny     | Spice    | (298) 830-9238 | j_luvbabyspice@yahoo.com |
+    |    293939 | Jacob     | Yycomb   | (298) 832-2398 | jacob.yycomb@gmail.com   |
+    |    394853 | Victoria  | Gillium  | (298) 382-3982 | vgill@gmx.com            |
+    +-----------+-----------+----------+----------------+--------------------------+
+
+
+The table above is designed to capture information about students. This is done with 
+attributes, also called columns, which are the names of various properties that an entity 
+might have. Columns are listed horizontally at the top of a table. The 'Students' table 
+has 5 attributes: 'StudentId', 'FirstName', 'LastName', 'PhoneNumber', and 'Email'. Each
+attribute captures certain piece of information about a student. All information 
+pertaining to an attribute have to be stored in its column. For instance, you cannot 
+store StudentId information in the 'PhoneNumber'; this a constraint that is enforced by 
+the database. 
+
+A Row or a Record, refers to a horizontal block that contains information for one student.
+The first record in this table, that of Harold Kumar, contains information required by 
+the five attributes. Similarly, this table is filled with records, each one corresponding 
+to one student. Or at least, that should be the case, if there are no duplicates in this 
+table. 
+
+Within this table, attributes have certain relationships to each other. The process of 
+database normalization requires you to understand and formalize these data relationships. 
+Once you understand the nature of the relationships between attributes, you can re-design 
+your tables by moving extraneous information to new tables. Then, you can structure your 
+tables in such a way that the database can enforce data types, referential and integrity
+constraints. By doing this, you can leverage the database to prevent data redundancies
+and database anomalies. 
+
+The first step to doing that is to understand the nature of dependencies in your data.
+
+
+FUNCTIONAL DEPENDENCY
+
+To normalize tables, you have to understand the concept of 'Dependency' and its many
+variants. In the most general terms[11], "a dependency is a constraint that applies to or 
+defines the relationship between attributes." This is the same thing as a 'Functional 
+Dependency'. Usually, but not always, this is referring to the relationship between a 
+Primary Key (PK) attribute and a second non-key attribute within a table. 
+
+This is the definition of a functional dependency: 
 
 For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
 on Attribute A, if at any moment in time there is exactly one instance of B for any given 
-instance of A. Phrased another way: If Attribute A functionally determines Attribute B, 
-the value of an instance of A uniquely determines a value for B. Therefore, A is a 
-determinant of B and B is a dependent of A. (A determinant is an attribute that determines
-the value of another attribute.) This relationship is visually represented like this:
+instance of A. This is a rather formal explanation, but it is again phrased another way: 
+If Attribute A functionally determines Attribute B, then the value of an instance of A 
+uniquely determines a value for B. 
+
+Let's move on to a less formal description: If A determines B, then a value of A can 
+uniquely identify a value of B. A determinant is an attribute that determines the value 
+of another attribute. Therefore, A is a determinant of B and B is a dependent of A.  This 
+relationship is visually represented like this:
 
     
     A -> B 
@@ -1076,15 +1135,19 @@ the value of another attribute.) This relationship is visually represented like 
 It is read like this: "A (functionally) determines B" OR "A derives B."
 The Inverse: "B depends on A."
 
-Let's take a concrete example[10]: In a table, suppose there are two columns with a 
-functionally dependent relationship: 'Social Security Number' and 'Employee Name'. The 
-'Employee Name' attribute is functionally dependent on the 'SSN' attribute because an SSN 
+Let's take a concrete example[12]: In a table, suppose there are two columns with a 
+functionally dependent relationship: 'Social Security Number' and 'EmployeeName'. The 
+'EmployeeName' attribute is functionally dependent on the 'SSN' attribute because an SSN 
 uniquely identifies an employee. Note that the reverse does not hold true; names do not 
-uniquely identify a SSN. If there were other non-key attributes in the table, for example
-'Employee Address' and 'Birth Date', the 'SSN' attribute could functionally determine 
-them too.
+uniquely identify a SSN. This makes sense because a Social Security Number is issued to 
+every person in the country to uniquely identify them, even when there are multiple 
+people with the same name. If there were other non-key attributes in the table, for 
+instance 'EmployeeAddress' and 'BirthDate', the 'SSN' attribute could functionally 
+determine them too.
 
-Why is this important? In a StackOverflow answer, NealB explains[11]:
+Why is this important? 
+
+In a StackOverflow answer, NealB explains[13]:
 
 
     Sets of functional dependencies may be used to synthesize relations (tables). The 
@@ -1097,6 +1160,29 @@ Why is this important? In a StackOverflow answer, NealB explains[11]:
 Normalization applies what are called 'Normal Forms' to tables. The second and third 
 normal forms as well as the Boyce-Codd Normal Form (which is considered to be 3.5 Normal
 Form) require understanding of functional dependencies. 
+
+There are several types of dependencies, which are discussed below:
+
+TRIVIAL FUNCTIONAL DEPENDENCIES
+
+A trivial functional dependency is an obvious dependency. For instance, consider a 
+primary key composed of two attributes, 'Social Security Number' and 'EmployeeName'. Such 
+a key is called a composite key. By searching for both attributes, the composite key can 
+uniquely identify the name of an employee in the 'EmployeeName' column. The relationship 
+is expressed like this:
+
+
+    {SSN, EmployeeName} -> EmployeeName
+    
+ 
+The composite key can uniquely identify a 'EmployeeName' because this attribute is a part
+of the composite key. If it seems obvious, it is because it is. A trivial dependency 
+occurs when the dependant attribute is a part of the determinant attribute. Generically,
+it is expressed as follows:
+
+
+    {A, B} -> B 
+
 
 
 4.2.1.2 PRIME AND NON-PRIME ATTRIBUTES
@@ -1454,7 +1540,7 @@ BCNF has two requirements:
     * BCNF is an extension of Third Normal Form and was created to strengthen it. This is
       due to certain rare anomalies related to 3NF that were not addressed by it. BCNF 
       closes these loopholes. The techopedia article on BCNF explains the circumstances 
-      that led to the development of this extension Form[12]: "3NF states that all data 
+      that led to the development of this extension Form[14]: "3NF states that all data 
       in a table must depend only on that table’s primary key, and not on any other field
       in the table. At first glance it would seem that BCNF and 3NF are the same thing. 
       However, in some rare cases it does happen that a 3NF table is not BCNF-compliant. 
@@ -1463,7 +1549,8 @@ BCNF has two requirements:
       Oppel provides more detail about what BCNF is designed to prevent on page 206[1]: 
       "It addresses anomalies that occur when a non-key attribute is a determinant of an 
       attribute that is part of the primary key (that is, when an attribute that is part 
-      of the primary key is functionally dependent on a non-key attribute)."
+      of the primary key is functionally dependent on a non-key attribute)." These are 
+      anomalies that occur in tables with multiple candidate keys. 
   
       Oppel explains BCNF's prime criterion on page 206[1]: "No determinants exist that 
       are not either the primary key or a candidate key for the table. That is, a non-key 
@@ -1477,20 +1564,20 @@ BCNF has two requirements:
       possibility that the first three Normal Forms have not addressed is what happens if
       a non-prime attribute determines a prime attribute? BCNF addresses this situation. 
       
-      BCNF demands that, for any any dependency where A derives B (A -> B), A must be an 
+      BCNF demands that, for any dependency where A derives B (A -> B), A must be a 
       candidate key. Rephrased: BCNF states that if B is a prime attribute, then A cannot 
       be a non-prime attribute. 
       
       In other words, BCNF insists that every determinant in a table be a candidate key. 
       A candidate key is the most minimum set of attributes in a table that can be used 
-      to uniquely identify a record. In an article[13], Agnieszka Kozubek puts it this 
+      to uniquely identify a record. In an article[15], Agnieszka Kozubek puts it this 
       way: "Informally the Boyce-Codd normal form is expressed as “Each attribute must 
       represent a fact about the key, the whole key, and nothing but the key.”" 
 
     
 If ever there was a concept in need of an example, it is this one. BCNF is a bit more 
 impenetrable than the first three Normal Forms, but it is still understandable. The 
-example below is taken from MariaDb's Docs[14]. It depicts a 'Student Enrollment' table. 
+example below is taken from MariaDb's Docs[16]. It depicts a 'Student Enrollment' table. 
 You should make the following assumptions about the attributes in it:
 
 
@@ -1576,8 +1663,10 @@ SOURCES
 07: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
 08: https://en.wikipedia.org/wiki/Database_normalization
 09: https://www.studytonight.com/dbms/database-normalization.php
-10: https://www.techopedia.com/definition/19504/functional-dependency
-11: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
-12: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
-13: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
-14: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
+10: https://mariadb.com/kb/en/library/database-normalization-overview/
+11: https://www.lifewire.com/database-dependencies-1019727
+12: https://www.techopedia.com/definition/19504/functional-dependency
+13: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
+14: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
+15: https://www.vertabelo.com/blog/technical-articles/boyce-codd-normal-form-bcnf
+16: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
