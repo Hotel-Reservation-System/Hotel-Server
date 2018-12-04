@@ -1,6 +1,6 @@
-4. DATABASE NORMALIZATION
 
-4.1 THE CONSEQUENCES OF POOR DATABASE DESIGN 
+
+1. THE CONSEQUENCES OF POOR DATABASE DESIGN 
 
 To keep it short, our natural instincts for creating tables and storing data in a 
 database typically lead to terrible database designs. Poorly designed databases are prone 
@@ -126,9 +126,9 @@ This should make it easier to maintain, edit and modify your database.
 
 4.2.1 PRE-REQUISITE CONCEPTS
 
-4.2.1.1 DATA & DATA DEPENDENCIES IN DATABASES
+4.2.1.1 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
 
-The you store data in a database, you usually store it in a relation, which is another 
+When you store data in a database, you usually store it in a relation, which is another 
 way of referring to a table. Take a look at the example table below, called 'Students':
 
 
@@ -151,21 +151,34 @@ pertaining to an attribute have to be stored in its column. For instance, you ca
 store StudentId information in the 'PhoneNumber'; this a constraint that is enforced by 
 the database. 
 
-A Row or a Record, refers to a horizontal block that contains information for one student.
-The first record in this table, that of Harold Kumar, contains information required by 
-the five attributes. Similarly, this table is filled with records, each one corresponding 
-to one student. Or at least, that should be the case, if there are no duplicates in this 
-table. 
+In RDBMSes, a Row or a Record, refers to a horizontal block of named elements that 
+contain information on a single entity. In this table, each record contains information 
+on a student. The first record in this table, that of Harold Kumar, contains information 
+required by the five attributes at the top. Similarly, this table is filled with other 
+student records. Or at least, that should be the case, if there are no duplicates in it. 
+Each record has the same structure; it contains information required by the columns. 
+ASIDE: Sometimes, records are referred to as tuples. A tuple is a formal term that is 
+distinct concept but it is related to a record (or a row).
 
-Within this table, attributes have certain relationships to each other. The process of 
-database normalization requires you to understand and formalize these data relationships. 
+Within a table, the data in one attribute may have certain relationships to data in other
+attributes. The process of database normalization requires you to understand and formalize 
+these data relationships. The study of this subject is called DEPENDENCY THEORY. Its 
+Wikipedia article explains what it is about[]: "Dependency theory is a sub-field of 
+database theory which studies implication and optimization problems related to logical 
+constraints, commonly called dependencies, on databases. The best known class of such 
+dependencies are functional dependencies, which form the foundation of keys on database 
+relations. Another important class of dependencies are the multivalued dependencies."
+
 Once you understand the nature of the relationships between attributes, you can re-design 
-your tables by moving extraneous information to new tables. Then, you can structure your 
-tables in such a way that the database can enforce data types, referential and integrity
-constraints. By doing this, you can leverage the database to prevent data redundancies
-and database anomalies. 
+your tables by moving extraneous information into new tables. Then, you can structure 
+your tables in such a way that the database can enforce data types, referential and 
+integrity constraints. By doing this, you can leverage the database to prevent data 
+redundancies and database anomalies. 
 
 The first step to doing that is to understand the nature of dependencies in your data.
+When it comes to normalization, there are several major kinds of dependencies: 
+Functional, Multi-Valued and Join. This article will only consider Functional 
+Dependencies and its sub-types.
 
 
 FUNCTIONAL DEPENDENCY
@@ -174,7 +187,7 @@ To normalize tables, you have to understand the concept of 'Dependency' and its 
 variants. In the most general terms[11], "a dependency is a constraint that applies to or 
 defines the relationship between attributes." This is the same thing as a 'Functional 
 Dependency'. Usually, but not always, this is referring to the relationship between a 
-Primary Key (PK) attribute and a second non-key attribute within a table. 
+Primary Key (PK) attribute set and a second set of non-key attribute(s) within a table. 
 
 This is the definition of a functional dependency: 
 
@@ -222,28 +235,56 @@ Normalization applies what are called 'Normal Forms' to tables. The second and t
 normal forms as well as the Boyce-Codd Normal Form (which is considered to be 3.5 Normal
 Form) require understanding of functional dependencies. 
 
-There are several types of dependencies, which are discussed below:
+There are several sub-types of functional dependencies, which are discussed below:
 
-TRIVIAL FUNCTIONAL DEPENDENCIES
 
-A trivial functional dependency is an obvious dependency. For instance, consider a 
-primary key composed of two attributes, 'Social Security Number' and 'EmployeeName'. Such 
-a key is called a composite key. By searching for both attributes, the composite key can 
-uniquely identify the name of an employee in the 'EmployeeName' column. The relationship 
-is expressed like this:
+TRIVIAL FUNCTIONAL DEPENDENCY
+
+A trivial functional dependency is an obvious dependency. It occurs when the determined 
+set is a subset of its determining set. For instance, consider a primary key composed of 
+two attributes, 'Social Security Number' and 'EmployeeName'. Such a key is called a 
+composite key. By searching for records that match the values of both attributes, the 
+composite key can uniquely identify the name of an employee in the 'EmployeeName' column. 
+The nature of the relationship is expressed like this:
 
 
     {SSN, EmployeeName} -> EmployeeName
     
  
-The composite key can uniquely identify a 'EmployeeName' because this attribute is a part
-of the composite key. If it seems obvious, it is because it is. A trivial dependency 
+The composite key can uniquely identify an 'EmployeeName' because this attribute is a 
+part of the composite key. If it seems obvious, it is because it is. A trivial dependency 
 occurs when the dependant attribute is a part of the determinant attribute. Generically,
 it is expressed as follows:
 
 
     {A, B} -> B 
+    
 
+FULLY FUNCTIONAL DEPENDENCY
+
+A full dependency occurs when the dependant set is functionally dependant on the entirety 
+of the determinant set. To rephrase: Full dependency describes a situation where dependent 
+attribute is dependant on ALL the component attributes of the determinant attribute(s). 
+The operative word here is "All". 
+
+Take this example: Consider an 'Employee' relation with three attributes, 'EmployeeId',
+'EmployeeName' and 'Location'. 'EmployeeId' is the primary key and the other two columns 
+are non-key attributes. In this example, the second and third attributes are fully
+dependent on the 'EmployeeId' attribute. The relationship looks like this:
+
+
+    { EmployeeId } -> { EmployeeName, Location }
+    
+
+Because 'EmployeeId' uniquely identifies employees, it functionally determines a value 
+for 'EmployeeName' and 'Location'. 'EmployeeName' and 'Location' each are fully dependant 
+on the entirety of the determinant set, which in this case is a single attribute primary 
+key. 
+
+This is a simple case because the determinant set has only one key, but more complex 
+cases arise when the determinant set is composed of many keys. When that happens, every 
+dependent attribute has to be determined by every attribute in the composite key in order
+to be called fully dependant. 
 
 
 4.2.1.2 PRIME AND NON-PRIME ATTRIBUTES
@@ -718,6 +759,7 @@ SOURCES
 08: https://en.wikipedia.org/wiki/Database_normalization
 09: https://www.studytonight.com/dbms/database-normalization.php
 10: https://mariadb.com/kb/en/library/database-normalization-overview/
+https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
 11: https://www.lifewire.com/database-dependencies-1019727
 12: https://www.techopedia.com/definition/19504/functional-dependency
 13: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
