@@ -81,16 +81,14 @@ If the command prompt changes to 'postgres=#', then you have successfully logged
 PostgreSQL. This means that your path variables are properly configured. 
                                                                                   
 If this login attempt fails, navigate to the PostgreSQL installation directory and find 
-the 'bin' and 'lib' directories. In Windows Explorer, go to System Properties > 
-Advanced System Settings. In the 'Advanced' tab of the 'System Properties' window, click 
-on the 'Environment Variables' button. Go to the 'System Variables' section and scroll, 
-searching for 'PATH'. Click on 'Edit...' and add the addresses of the 'bin' and 'lib' 
-folders here. 
-                                                                                  
-Make sure you don't insert any spaces; just simply add an ';' and paste the first link. 
-Repeat this process for the second link. Click 'OK' and do the same for the rest of the 
-open windows. Now the environment variables should be configured. Try connecting to it
-again.
+the 'bin' directory. In Windows, it should be located in C:\...\PostgreSQL\pgXX\bin\. 
+Copy the address. 
+
+Then, start pgAdmin4, and in the black taskbar at the top of the screen, go to 
+File > Preferences. In the 'Preferences' pop-up window, look for 'Paths' on the left side 
+of the screen. Click on the 'Binary Paths' options in the 'Paths' tree and shift your 
+attention to the right-side of the screen. Look for a label called 'PostgreSQL Binary 
+Path'. Paste the address you copied into this field and then hit 'OK'. 
 
 Lastly, if you have a local firewall or specific networking requirements, see to it that
 PostgreSQL is properly configured and routed.
