@@ -14,7 +14,8 @@ this communication?
     2.    Introduction to Database Concepts and Terms
     2.1   What is a Database?
     2.2   Relational Database Management Systems (RDBMS)
-    2.3   Other Database Concepts and Terms to Learn Before Proceeding to Section 3
+    2.3   Types of Integrity Constraints
+    2.4   Other Database Concepts and Terms to Learn Before Proceeding to Section 3
     
     3.    Application-To-Database Communication 
     3.1   Entity Framework Core: An Object-Relational Mapper (ORM)
@@ -170,8 +171,8 @@ Database Management System. Here is an explanation of RDBMSes[2]:
       Over the years, many RDBMS have been expanded with non-relational concepts such as 
       user-defined data types, not atomic attributes, inheritance and hierarchies, which 
       is why they are sometimes referred to as object-relational DBMS.
-      
-      
+     
+     
 Here is a list of well known RDBMSes:
 
 
@@ -196,15 +197,96 @@ low footprint, high-quality database, go with SQLite.
 PostgreSQL is a open source, fully featured RDBMS. It's more powerful than MySQL/MariDB,
 and it has better data integrity. It will serve well as the database for web applications
 and for heavier duty software.   
+
+     
+2.3 TYPES OF INTEGRITY CONSTRAINTS 
+
+Relational databases must satisfy the so-called 'Four Integrities'. The first three 
+constraints are part of the relational model; the last one is user-defined constraints.
+Creating, applying and enforcing these rules on data makes it STRUCTURED DATA. Executing 
+SQL (Structured Query Language) queries works best on this kind of data. 
  
- 
-2.3 OTHER DATABASE CONCEPTS AND TERMS TO LEARN BEFORE PROCEEDING TO SECTION 3
+The information in the following section, unless otherwise noted, quotes an old article 
+by Michelle A. Poolet[3]:
+
+
+    * ENTITY INTEGRITY: is concerned with primary keys. It demands that no two rows can 
+      be identical duplicates. Two or more rows can share some information, but they 
+      cannot have the same values for all attributes. This principle is central to the 
+      design and implementation of databases. 
+      
+      So in each record, at least one column must have a unique value. In short, this 
+      principle demands that every table must have a primary key. Every primary key must
+      be unique and cannot be a nul value. 
+            
+      Poolet also notes: "The primary key enforces entity integrity. The rules of entity 
+      integrity state that no primary key can be null and that no change can render the 
+      primary key null. These rules guarantee that every row of a table is accessible, 
+      whether you're retrieving data or modifying it. You can retrieve each row separately 
+      by specifying the value of a primary key."
+      
+      
+    * DOMAIN INTEGRITY: "Domain integrity ensures that all the data items in a column 
+      fall within a defined set of valid values." This means that an attribute must have 
+      a data type and perhaps other limitations, such as formatting or range restrictions.
+      
+      For instance, when designing a table, you can choose a data type for a column like 
+      int, date varchar, nvarchar etc. You can also choose to make the attribute 
+      nullable. This is particularly important when selecting a primary key, as they must
+      not be null. For date values, you can choose to enforce a particular date format. 
+      You can limit the range for an attribute, for example, by requiring all StudentID 
+      numbers to be between 100000 and 999999.
+      
+      By carefully adding restrictions to attributes, you can change a mere table (of the
+      kind you'd find in an excel sheet) into a true relation. 
+      
+      
+    * REFERENTIAL INTEGRITY: comes into play for table-to-table relations. Typically, one
+      table is considered to be the principal and the other to be the dependant. If you 
+      want to create a relationship between tables, you must create a Primary Key in the
+      principal table and a Foreign key in the dependant table. The foreign key column(s)
+      in the dependant table will hold values that are foreign to the table, which is to
+      say, primary key values from the principal table. This is how inter-table 
+      relationships are created and maintained. 
+      
+      The term 'referential' describes the role of the foreign key in maintaining inter-
+      table relationships. The most common way that referential integrity is violated 
+      happens when a record in a principal table is deleted or updated in such a way that 
+      a foreign key that refers to it is left orphaned. 
+      
+      Referential integrity simply states that, in an inter-table relationship as 
+      described above, all foreign key values in the dependent table must refer to a 
+      valid, existing primary key in the principal table. In other words, referential 
+      integrity is the guarantee that a foreign key's target primary key will be found. 
+      
+      As referential integrity is the bedrock of inter-table relationships, a lack of it 
+      can lead to silent data loss or data corruption. Thankfully, when a record is being 
+      deleted or modified, databases can enforce referential integrity, usually by 
+      warning the user of inter-table dependencies and asking if the delete should be 
+      aborted or continued. The user can choose to continue with the delete but note that 
+      the database will see to it that all foreign key records that refer to this record 
+      will also be deleted to maintain referential integrity. 
+      
+      
+    * USER-DEFINED INTEGRITY: refers to the integrity constraints that are not part of 
+      the other three constraints.
+       
+      Poolet explains this type of constraint: "Business integrity, also called user 
+      integrity, ensures that the database enforces user-defined business rules, 
+      regulations, policies, and procedures. You usually enforce business integrity by 
+      using stored procedures and triggers. A stored procedure is a query that resides on 
+      the database server and processes rows and returns results. Triggers can enforce 
+      business integrity rules behind the scenes, because they fire without the user even 
+      realizing that they've been activated."
+      
+
+2.4 OTHER DATABASE CONCEPTS AND TERMS TO LEARN BEFORE PROCEEDING TO SECTION 3
 
 There is much more to learn about databases before proceeding to Section 3. A full 
 explanation of all these concepts is outside the scope of this document. For this reason, 
 this section will merely list these concepts. You have to study them and familiarize 
 yourself with them before proceeding to following sections. The following lists are mostly 
-taken from Caleb Curry's website.[3]
+taken from Caleb Curry's website.[4]
 
 
 1. SQL
@@ -221,7 +303,6 @@ You should know the basics of SQL, because this is the language of databases.
     * Relational Database Management System
     * Null
     * Anomalies
-    * Referential Integrity 
 
 
 3. DATABASE COMPONENTS
@@ -263,7 +344,6 @@ These are the concepts related to 'Conceptual Database Design':
         * One-to-Many Relationships
         * Many-to-Many Relationship
     * Recursive Relationships 
-    * Business Rules
     
     
 5. LOGICAL & PHYSICAL DESIGN CONCEPTS
@@ -503,7 +583,7 @@ A Database Provider is a "a software library consisting of classes that provide 
 access services such as connecting to a data source, executing commands at a data source 
 and fetching data from a data source with support to execute commands within 
 transactions. It resides as a lightweight layer between data source and code, providing 
-data access services with increased performance."[4] 
+data access services with increased performance."[5] 
 
 A DATABASE PROVIDER is a small library that helps EF Core to speak to databases from a 
 certain vendor. For instance, there are Database Providers for SQL Server, SQLite, 
@@ -553,7 +633,7 @@ have to write the schema for it. To write the schema, the programmer will have t
 consult the Data Model.
 
 Let's move on to studying these two things. The Data Model is distinct from a Database 
-Schema; see this StackOverflow Answer from richik jaiswal to learn the difference[5]:
+Schema; see this StackOverflow Answer from richik jaiswal to learn the difference[6]:
 
 
      A schema is a blueprint of the database which specifies what fields will be present 
@@ -791,7 +871,7 @@ The final set of transformations in a long chain of such changes is described in
 Up() method of the last migration. The current state of a database's schema is the 
 result of calling the Up() methods of all previous Migrations. 
 
-Here is a answer from StackOverflow that expands on migrations[6]:
+Here is a answer from StackOverflow that expands on migrations[7]:
 
     DB Migrations make changes to your database to reflect the changes made to the Entity 
     Framework Model. These changes are added to the database with the Up method.
@@ -871,7 +951,7 @@ Framework Core docs for more commands.
        E.g. 1: dotnet ef migrations add InitialMigration
        E.g. 2: dotnet ef migrations add AddUserUserPreferenceUserInformationRoleUserRoleTables
     
-       According to Microsoft Docs' article on Migrations[7], the following things happen
+       According to Microsoft Docs' article on Migrations[8], the following things happen
        when you execute this command: 
        
            Three files are added to your project under the Migrations directory:
@@ -942,8 +1022,9 @@ SOURCES
 
 01: Databases - A Beginner's Guide (Andy Oppel, 2009)
 02: https://db-engines.com/en/article/RDBMS
-03: https://www.calebcurry.com/beginner-database-terms/
-04: https://www.techopedia.com/definition/25227/net-data-provider
-05: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
-06: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
-07: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
+03: https://www.itprotoday.com/microsoft-sql-server/sql-design-four-integrities
+04: https://www.calebcurry.com/beginner-database-terms/
+05: https://www.techopedia.com/definition/25227/net-data-provider
+06: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
+07: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
+08: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
