@@ -199,15 +199,47 @@ and it has better data integrity. It will serve well as the database for web app
 and for heavier duty software.   
 
      
-2.3 TYPES OF INTEGRITY CONSTRAINTS 
+2.3 DATA INTEGRITY & INTEGRITY CONSTRAINTS
 
-Relational databases must satisfy the so-called 'Four Integrities'. The first three 
-constraints are part of the relational model; the last one is user-defined constraints.
-Creating, applying and enforcing these rules on data makes it STRUCTURED DATA. Executing 
-SQL (Structured Query Language) queries works best on this kind of data. 
+The Wikipedia article on Data Integrity defines it as follows[3]:
+
+
+    Data integrity is the maintenance of, and the assurance of the accuracy and 
+    consistency of, data over its entire life-cycle, and is a critical aspect to the 
+    design, implementation and usage of any system which stores, processes, or retrieves 
+    data. The term is broad in scope and may have widely different meanings depending on 
+    the specific context – even under the same general umbrella of computing... Data 
+    integrity is the opposite of data corruption. The overall intent of any data 
+    integrity technique is the same: ensure data is recorded exactly as intended (such as 
+    a database correctly rejecting mutually exclusive possibilities,) and upon later 
+    retrieval, ensure the data is the same as it was when it was originally recorded. In 
+    short, data integrity aims to prevent unintentional changes to information.
+    
+
+To enforce data integrity, relational databases must implement the so-called 'Four 
+Integrities'. The first three integrity constraints are part of the relational model; the 
+last one is user-defined. The Techopedia article on Data Integrity explains the purpose 
+and the benefits[4]: 
+
+
+    The concept of data integrity ensures that all data in a database can be traced and 
+    connected to other data. This ensures that everything is recoverable and searchable. 
+    Having a single, well-defined and well-controlled data integrity system increases 
+    stability, performance, re-usability and maintainability.
+    
+
+The four types of integrity constraints are listed and explained below. Creating, 
+applying and enforcing these rules on a database will help it to achieve DATA INTEGRITY. 
+It also goes a long way to imposing structure on information stored in a database, making 
+it STRUCTURED DATA. Structured Data is the kind of information that can be stored in a 
+database table. It has clearly defined attributes to which data types can be assigned.
+Unstructured Data includes videos, images, music, web pages, email and document files of 
+all types: PDFs, Word documents, PowerPoint etc. SQL (Structured Query Language) queries 
+work only on structured data; so we have all the more incentive make sure it is properly 
+organized and integrated in your database.
  
 The information in the following section, unless otherwise noted, quotes an old article 
-by Michelle A. Poolet[3]:
+by Michelle A. Poolet[5]:
 
 
     * ENTITY INTEGRITY: is concerned with primary keys. It demands that no two rows can 
@@ -286,7 +318,7 @@ There is much more to learn about databases before proceeding to Section 3. A fu
 explanation of all these concepts is outside the scope of this document. For this reason, 
 this section will merely list these concepts. You have to study them and familiarize 
 yourself with them before proceeding to following sections. The following lists are mostly 
-taken from Caleb Curry's website.[4]
+taken from Caleb Curry's website.[6]
 
 
 1. SQL
@@ -583,7 +615,7 @@ A Database Provider is a "a software library consisting of classes that provide 
 access services such as connecting to a data source, executing commands at a data source 
 and fetching data from a data source with support to execute commands within 
 transactions. It resides as a lightweight layer between data source and code, providing 
-data access services with increased performance."[5] 
+data access services with increased performance."[7] 
 
 A DATABASE PROVIDER is a small library that helps EF Core to speak to databases from a 
 certain vendor. For instance, there are Database Providers for SQL Server, SQLite, 
@@ -633,7 +665,7 @@ have to write the schema for it. To write the schema, the programmer will have t
 consult the Data Model.
 
 Let's move on to studying these two things. The Data Model is distinct from a Database 
-Schema; see this StackOverflow Answer from richik jaiswal to learn the difference[6]:
+Schema; see this StackOverflow Answer from richik jaiswal to learn the difference[8]:
 
 
      A schema is a blueprint of the database which specifies what fields will be present 
@@ -871,7 +903,7 @@ The final set of transformations in a long chain of such changes is described in
 Up() method of the last migration. The current state of a database's schema is the 
 result of calling the Up() methods of all previous Migrations. 
 
-Here is a answer from StackOverflow that expands on migrations[7]:
+Here is a answer from StackOverflow that expands on migrations[9]:
 
     DB Migrations make changes to your database to reflect the changes made to the Entity 
     Framework Model. These changes are added to the database with the Up method.
@@ -951,7 +983,7 @@ Framework Core docs for more commands.
        E.g. 1: dotnet ef migrations add InitialMigration
        E.g. 2: dotnet ef migrations add AddUserUserPreferenceUserInformationRoleUserRoleTables
     
-       According to Microsoft Docs' article on Migrations[8], the following things happen
+       According to Microsoft Docs' article on Migrations[10], the following things happen
        when you execute this command: 
        
            Three files are added to your project under the Migrations directory:
@@ -1022,9 +1054,11 @@ SOURCES
 
 01: Databases - A Beginner's Guide (Andy Oppel, 2009)
 02: https://db-engines.com/en/article/RDBMS
-03: https://www.itprotoday.com/microsoft-sql-server/sql-design-four-integrities
-04: https://www.calebcurry.com/beginner-database-terms/
-05: https://www.techopedia.com/definition/25227/net-data-provider
-06: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
-07: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
-08: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
+03: https://en.wikipedia.org/wiki/Data_integrity
+04: https://www.techopedia.com/definition/811/data-integrity-databases
+05: https://www.itprotoday.com/microsoft-sql-server/sql-design-four-integrities
+06: https://www.calebcurry.com/beginner-database-terms/
+07: https://www.techopedia.com/definition/25227/net-data-provider
+08: https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms
+09: https://stackoverflow.com/questions/36650268/the-difference-between-the-up-and-down-methods-in-the-migration-file
+10: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/
