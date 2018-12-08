@@ -126,7 +126,19 @@ This should make it easier to maintain, edit and modify your database.
 
 4.2.1 PRE-REQUISITE CONCEPTS
 
-4.2.1.1 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
+4.2.1.1 PRIME AND NON-PRIME ATTRIBUTES
+
+A candidate key is any attribute or combination of attributes that can determine 
+(uniquely identify) a record. Keys that can do this are candidates to become the primary 
+key of a table. This is where the name 'Candidate Key' comes from. In a table, there may 
+be several candidate keys, from which you have to select one as primary key.
+
+Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
+ATTRIBUTES. The other attributes from that table are called NON-PRIME ATTRIBUTES or 
+NON-KEY ATTRIBUTES.
+
+
+4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
 
 When you store data in a database, you usually store it in a relation, which is another 
 way of referring to a table. Take a look at the example table below, called 'Students':
@@ -178,7 +190,9 @@ redundancies and database anomalies.
 The first step to doing that is to understand the nature of dependencies in your data.
 When it comes to normalization, there are several major kinds of dependencies: 
 Functional, Multi-Valued and Join. This article will only consider Functional 
-Dependencies and its sub-types.
+Dependencies and its sub-types, because they are necessary to understand the Normal Forms
+covered in this article: the first three Normal Forms and the Boyce-Codd Normal Form.
+Multi-Valued and Join dependencies cover later Normal Forms. 
 
 
 FUNCTIONAL DEPENDENCY
@@ -186,40 +200,48 @@ FUNCTIONAL DEPENDENCY
 To normalize tables, you have to understand the concept of 'Dependency' and its many
 variants. In the most general terms[11], "a dependency is a constraint that applies to or 
 defines the relationship between attributes." This is the same thing as a 'Functional 
-Dependency'. Usually, but not always, this is referring to the relationship between a 
-Primary Key (PK) attribute set and a second set of non-key attribute(s) within a table. 
+Dependency'. A Functional Dependency is a relationship between two sets of attributes. 
+Usually, but not always, this is referring to the relationship between a Primary Key (PK) 
+attribute set and a second set of non-prime attribute(s) within a table. 
 
 This is the definition of a functional dependency: 
 
 For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
 on Attribute A, if at any moment in time there is exactly one instance of B for any given 
-instance of A. This is a rather formal explanation, but it is again phrased another way: 
-If Attribute A functionally determines Attribute B, then the value of an instance of A 
-uniquely determines a value for B. 
+instance of A. This is a rather formal explanation, but here it is again phrased another 
+way: If Attribute A functionally determines Attribute B, then the value of an instance of 
+A uniquely determines a value for B. 
 
-Let's move on to a less formal description: If A determines B, then a value of A can 
-uniquely identify a value of B. A determinant is an attribute that determines the value 
-of another attribute. Therefore, A is a determinant of B and B is a dependent of A.  This 
-relationship is visually represented like this:
+Let's move on to a less formal description: A determinant is an attribute that determines 
+the value of another attribute. If A determines B, then a value of A can uniquely 
+identify a value of B. Therefore, A is said to be a determinant of B and B is said to be 
+a dependent of A. This relationship is visually represented like this:
 
     
     A -> B 
 
 
-It is read like this: "A (functionally) determines B" OR "A derives B."
-The Inverse: "B depends on A."
+The left hand side of this Functional Dependency diagram contains the determinant set and
+the right hand side is the determined set. It is read like this from left to right: "A 
+(functionally) determines B" OR "A derives B". The Inverse: "B depends on A."
 
 Let's take a concrete example[12]: In a table, suppose there are two columns with a 
-functionally dependent relationship: 'Social Security Number' and 'EmployeeName'. The 
-'EmployeeName' attribute is functionally dependent on the 'SSN' attribute because an SSN 
-uniquely identifies an employee. Note that the reverse does not hold true; names do not 
-uniquely identify a SSN. This makes sense because a Social Security Number is issued to 
-every person in the country to uniquely identify them, even when there are multiple 
+functionally dependent relationship: 'Social Security Number' and 'EmployeeName'.  Let's 
+look at the FD diagram:
+
+
+     Social Security Number -> EmployeeName, EmployeeAddress, BirthDate 
+ 
+
+The 'EmployeeName' attribute is functionally dependent on the 'SSN' attribute because an 
+SSN uniquely identifies an employee. Note that the reverse does not hold true; names do 
+not uniquely identify a SSN. This makes sense because a Social Security Number is issued 
+to every person in the country to uniquely identify them, even when there are multiple 
 people with the same name. If there were other non-key attributes in the table, for 
 instance 'EmployeeAddress' and 'BirthDate', the 'SSN' attribute could functionally 
 determine them too.
 
-Why is this important? 
+Why is the concept of functional dependence important? 
 
 In a StackOverflow answer, NealB explains[13]:
 
@@ -230,10 +252,12 @@ In a StackOverflow answer, NealB explains[13]:
     Fourth and fifth normal forms involve Multi-Valued dependencies (another kettle of 
     fish).
  
- 
+
 Normalization applies what are called 'Normal Forms' to tables. The second and third 
 normal forms as well as the Boyce-Codd Normal Form (which is considered to be 3.5 Normal
-Form) require understanding of functional dependencies. 
+Form) require an understanding of functional dependencies. You will have to find and 
+write down the dependencies in every table to determine how close they are to complying
+with the Normal Forms.
 
 There are several sub-types of functional dependencies, which are discussed below:
 
@@ -241,39 +265,83 @@ There are several sub-types of functional dependencies, which are discussed belo
 TRIVIAL FUNCTIONAL DEPENDENCY
 
 A trivial functional dependency is an obvious dependency. It occurs when the determined 
-set is a subset of its determining set. For instance, consider a primary key composed of 
-two attributes, 'Social Security Number' and 'EmployeeName'. Such a key is called a 
-composite key. By searching for records that match the values of both attributes, the 
-composite key can uniquely identify the name of an employee in the 'EmployeeName' column. 
-The nature of the relationship is expressed like this:
+set is a subset of its determining set. Formally, it is called the 'Axiom of Reflexivity'.
+
+For instance, consider a primary key composed of two attributes, 'Social Security Number' 
+and 'EmployeeName'. Such a key is called a composite key. By searching for records that 
+match the values of both attributes, the composite key can uniquely identify the name of 
+an employee in the 'EmployeeName' column. The nature of the relationship is expressed 
+like this:
 
 
     {SSN, EmployeeName} -> EmployeeName
     
  
-The composite key can uniquely identify an 'EmployeeName' because this attribute is a 
-part of the composite key. If it seems obvious, it is because it is. A trivial dependency 
-occurs when the dependant attribute is a part of the determinant attribute. Generically,
-it is expressed as follows:
+This is where Trivial Dependency occurs: The composite key can uniquely identify an 
+'EmployeeName' because this attribute is a part of the composite key. If this seems 
+obvious, it is because it is. A trivial dependency occurs because 'EmployeeName' is part
+of both the determining and determined sets. 
+  
+  Generically, it is expressed as follows:
 
 
     {A, B} -> B 
     
 
-FULLY FUNCTIONAL DEPENDENCY
+PARTIAL FUNCTIONAL DEPENDENCY
 
-A full dependency occurs when the dependant set is functionally dependant on the entirety 
-of the determinant set. To rephrase: Full dependency describes a situation where dependent 
-attribute is dependant on ALL the component attributes of the determinant attribute(s). 
-The operative word here is "All". 
+Partial dependency occurs when the determinant set is only partially dependant on the
+determining set. Partial dependency is formally called the 'Axiom of Augmentation'.
 
-Take this example: Consider an 'Employee' relation with three attributes, 'EmployeeId',
-'EmployeeName' and 'Location'. 'EmployeeId' is the primary key and the other two columns 
-are non-key attributes. In this example, the second and third attributes are fully
-dependent on the 'EmployeeId' attribute. The relationship looks like this:
+Consider this example table: Store(StoreId, Product, Price). First, identify the prime 
+and non-prime attributes in this table. To do that, you have to figure out the candidate
+key(s). Neither 'StoreId' nor 'Product' can uniquely locate a record, so we have to 
+create a composite key by combining these two attributes together. There is only one
+attribute left, 'Price', and it is a non-prime attribute. 
+
+Thus, this is the FD diagram for this table:
 
 
-    { EmployeeId } -> { EmployeeName, Location }
+    StoreId, Product -> Price
+
+
+'StoreId' and 'Product' combined form the determining set, which determines the value for
+'Price', the determined set. However, if you pay attention, you will note that 'Price' is
+only partially dependant on the determinant set. Why? Because 'StoreId' does not play a 
+part in determining the 'Price', only 'Product' does. That makes 'StoreId' an extraneous
+to the determinant set. Despite the inclusion of 'StoreId' in the determining set, the
+true nature of the dependency is this table looks like this:
+
+
+    Product -> Price
+
+
+FULL FUNCTIONAL DEPENDENCY 
+
+Before discussing the Full Functional Dependency, I want to talk about the concept of a
+'Minimum Viable Determinant Set'. When you create a determinant set, you can add 
+extraneous attributes to it, as the partial dependency example demonstrated. This does
+absolutely nothing useful, but it can serve as a source of confusion. Therefore, when you
+are creating candidate keys, its a good idea to reduce the set of attributes to the bare
+minimum required to uniquely identify records. If you remove any attributes from this set,
+you will lose the ability to uniquely identify records, which is to say, you will break 
+functional dependency. I call this the 'Minimum Viable Determinant Set' (MVDS).
+
+A 'Full Functional Dependency' occurs when the conditions for functional dependency are 
+met and the determinant set is a MVDS. In this situation, the dependant set is 
+functionally dependant on the entirety of the determinant set, not merely on a subset of 
+it. To rephrase: Full dependency describes a situation where dependent attribute(s) is 
+dependant on ALL the component attributes of the determinant attribute(s). The operative 
+word here is "All".
+
+Consider an 'Employee' relation with three attributes, 'EmployeeId', 'EmployeeName' and 
+'Location'. It can be represented like this: Employee(EmployeeId, EmployeeName, Location). 
+'EmployeeId' is the primary key and the other two columns are non-key attributes. In this 
+example, the second and third attributes are fully dependent on the 'EmployeeId' 
+attribute. The relationship looks like this:
+
+
+    EmployeeId  ->  EmployeeName, Location 
     
 
 Because 'EmployeeId' uniquely identifies employees, it functionally determines a value 
@@ -281,22 +349,17 @@ for 'EmployeeName' and 'Location'. 'EmployeeName' and 'Location' each are fully 
 on the entirety of the determinant set, which in this case is a single attribute primary 
 key. 
 
-This is a simple case because the determinant set has only one key, but more complex 
-cases arise when the determinant set is composed of many keys. When that happens, every 
-dependent attribute has to be determined by every attribute in the composite key in order
-to be called fully dependant. 
+This is a simple case because the determinant set has only one attribute, but more 
+complex cases arise when the determinant set is composed of many keys. When that happens, 
+you have to ensure that every dependent attribute depends on every attribute in the 
+composite key in order to be in Full Functional Dependence. The Second Normal Form 
+requires Full Functional Dependence in tables. 
 
 
-4.2.1.2 PRIME AND NON-PRIME ATTRIBUTES
+TRANSITIVE DEPENDENCY
 
-A candidate key is any attribute or combination of attributes that can determine 
-(uniquely identify) a record. There may be several candidate keys in a table, of which
-one is usually chosen to a primary key. That they are candidates to be a primary key is 
-the reason for their name. 
 
-Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
-ATTRIBUTES. The other keys in that table are called NON-PRIME ATTRIBUTES or NON-KEY
-ATTRIBUTES.
+
 
 
 4.2.2 THE NORMAL FORMS
@@ -331,10 +394,11 @@ These are the criteria of First Normal Form:
 
     * To eliminate anomalies and data redundancy, create a separate table for each set of
       related data. You should define a primary key in each table to uniquely identify 
-      records. 
+      records. This is done to enforce 'Entity Integrity' in the database. 
       
     * An attribute is a vertical column in a table. All columns in a table must have 
-      unique names. All values in a column must be of the same domain (data type). 
+      unique names. All values in a column must be of the same domain (data type). This 
+      will ensure 'Domain Integrity' in the database. 
       
     * In a relation, a field is the intersection of a row and a column. It is the most 
       fundamental unit of storage in a database. You can store a data fragment in it.
@@ -349,7 +413,7 @@ These are the criteria of First Normal Form:
       fields as a single value. 
       
       Applying 1NF lets the database track, store and display data in a tabular format. 
-      Breaking 1NF will mean that the database is no longer tracking the extra values in
+      Violating 1NF will mean that the database is no longer tracking the extra values in
       multi-value fields. This will prevent the database from applying data integrity 
       constraints to them. This will lead to an increase in the amount of low-quality 
       or conflicting data in your database.
