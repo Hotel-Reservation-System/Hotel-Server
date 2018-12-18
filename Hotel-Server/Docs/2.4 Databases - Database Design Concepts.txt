@@ -197,7 +197,7 @@ have to be connected. Within tables, you should have carefully considered and as
 data types and restrictions to every attribute. 
 
 
-3.3 INTRODUCTION TO NORMALIZATION
+3.3 INTRODUCTION TO NORMALIZATION: WHY DO YOU NEED IT? 
 
 Here is an introductory description of Normalization from Wikipedia's article[1]:
 
@@ -238,31 +238,42 @@ What are some of the advantages of normalizing your database?[3]:
     * Produce an easily comprehensible structure that closely resembles the situation the 
       data represents, and allows for growth
        
+       
+Before I talk about Normalization, let's back up a little bit. In the previous section, 
+you should already have arrived at a preliminary design for your database. However, you 
+are still not fully taking advantage of an RDBMS's capabilities to manage inter-attribute 
+relationships. What that mean mean? 
+
+An attribute's values may have one of several relationships to another attribute. If you
+can formalize this relationship and get the RDBMS to track it, you have successfully 
+offloaded a very complex, tedious and error-prone task on to your RBMS. In a very large
+database, there is no hope of manually managing all of the inter-attribute relationships. 
+There are so many ways to make mistakes that lead to data anomalies, redundancies, 
+inconsistencies and even data loss, that no human could possibly succeed. Thus, this is a 
+task that is ideal for offloading to an RDBMS program. 
+    
+Normalization is the process of applying formal rules to tables and most especially, 
+their columns in order to empower the RDBMS to enforce inter-attribute integrity 
+constraints. Another benefit to the normalizing your database is that it produces what is 
+called STRUCTURED DATA. Structured data has well-defined attributes as well as a clearly 
+defined form. For instance, in a table, every record must have values for mandatory
+columns. This means that you can expect records for that table to have a known structure. 
+
+
+3.4 NORMALIZATION: THE PROCESS OF DATABASE DESIGN
+   
+In order to successfully apply Normalization on a database, you have to understand these
+concepts:
+
+    1. Dependency Theory, especially as it applies to Functional Dependencies
+    2. The Normal Forms, which are a series of 
 
 
 
 No, when you design the tables in a database, and each of their attributes, you have to
 take a systematic approach to identifying certain qualities of a piece of data and the 
-nature of its relationship to other pieces of data. 
-    
-Normalization is the process of applying formal rules to tables and their columns in 
-order to empower the database to enforce integrity constraints on the data stored in a
-database. A piece of data in a table has certain relationships to other pieces of data
-both within and without the table. If you can formalize these relationships, you can get
-the database to enforce these relationships. This is a much better idea than trying to
-get error-prone humans to manually manage these relationships, especially since a 
-database can contain millions of records! 
-
-Another benefit to the normalizing your database is that it produces what is called
-STRUCTURED DATA. Structured data has clearly delimited attributes and features and as 
-well as a clearly defined form. For instance, in a table, every record must have values 
-for mandatory columns. This means that you can expect records for that table to have a
-known structure. 
-
-
-
-
-3.2 NORMALIZATION: THE PROCESS OF DATABASE DESIGN
+nature of its relationship to other pieces of data.    
+   
    
 So how do you normalize your database? What does the process look like? This depends on
 whether you have an existing unnormalized/partially normalized database, or if you are 
@@ -273,13 +284,6 @@ Synthesis, but the same principles apply to the normalization of existing databa
    Before you get to normalization...
    
 
-
-Once you have produced a tentative database design, you should have some idea of what 
-tables you will have in your database, their names, their attributes and their 
-relationships to other tables. To guarantee entity integrity, you need to identify 
-primary keys for your tables, with the understanding that they are provisional until the
-database design further stabilizes. To enforce referential integrity, you need to also
-identify foreign keys to connect tables together, also on a provisional basis. 
 
 Following the ER Modelling process, you will then apply the process of 'Database 
 Normalization'. Normalization is applied at the "micro level"; you will focus on one 
@@ -315,10 +319,8 @@ NON-KEY ATTRIBUTES.
 
 4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
 
-
-
-Within a table, the data in one attribute may have certain relationships to data in other
-attributes. The process of database normalization requires you to understand and formalize 
+Within a table, the data in one attribute(s) may have certain relationships to data in 
+other attribute(s). The process of database normalization requires you to understand and formalize 
 these data relationships. The study of this subject is called DEPENDENCY THEORY. Its 
 Wikipedia article explains what it is about[]: "Dependency theory is a sub-field of 
 database theory which studies implication and optimization problems related to logical 
@@ -333,6 +335,8 @@ integrity constraints. By doing this, you can leverage the database to prevent d
 redundancies and database anomalies. 
 
 The first step to doing that is to understand the nature of dependencies in your data.
+
+
 When it comes to normalization, there are several major kinds of dependencies: 
 Functional, Multi-Valued and Join. This article will only consider Functional 
 Dependencies and its sub-types, because they are necessary to understand the Normal Forms
