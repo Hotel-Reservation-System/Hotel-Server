@@ -1,12 +1,31 @@
+1. INTRODUCTION TO DATABASE DESIGN CONCEPTS
+
+In this article, I'll talk about how to design a database and the tables in it. Do not be 
+fooled by similarities between a spreadsheet and a database table: What you see is only a 
+visual representation of data. For instance, beneath the hood, a database identifies 
+relationships between pieces of data and enforces constraints between them prevent data
+anomalies from making their way in. A spreadsheet program can do some of these things, 
+but it is not really designed for this purpose. 
+
+This is just one of the many things that a good database can do. However, you have to 
+work with the database to design tables that are resistant to data-related problems. This
+article will cover the following topics:
 
 
-1. THE CONSEQUENCES OF POOR DATABASE DESIGN 
+    2.  The Consequences of Poor Database Design
+    
+    3.  Database Design: The Process
+    3.1 Revision: The Parts of a Table  
+    3.2 Entity-Relationship Modelling
+      
 
-To keep it short, our natural instincts for creating tables and storing data in a 
-database typically lead to terrible database designs. Poorly designed databases are prone 
-to data redundancies or database anomalies. Redundant data is self-explanatory, so what 
-are database anomalies? An anomaly is an aberrant behaviour in a database that occurs due 
-to poor design. There are three kinds of database anomalies:
+
+2. THE CONSEQUENCES OF POOR DATABASE DESIGN 
+
+Poorly designed databases are prone to data redundancies or database anomalies. Redundant 
+data is self-explanatory, but what are database anomalies? An anomaly is an aberrant 
+behaviour in a database that occurs due to poor design. There are three kinds of database 
+anomalies:
 
 
     * INSERTION ANOMALY: is a situation that occurs when you cannot insert a new record 
@@ -28,16 +47,23 @@ to poor design. There are three kinds of database anomalies:
       
       
     * UPDATE ANOMALY: arises when the same information can be expressed on multiple rows 
-      of a table. This makes it possible for the same information to exist in multiple
-      records. If a table design permits this error, then over time, it will almost 
-      certainly lead to data inconsistencies when one record is updated but the other one 
+      of a table. This leads to a situation where the same information can exist in 
+      multiple records. 
+      
+      Update anomalies can also refer to a situation where you have a chain of two or 
+      more columns with inter-dependencies. In such a situation, updating a column may 
+      require you to manually update other columns that depend on its values. If you 
+      update the main column but fail to do that for the dependant column, you may get 
+      data inconsistencies. 
+      
+      If a table design permits this anomaly, then over time, it will almost certainly 
+      lead to data inconsistencies when one record or field is updated but the other one 
       is not.
       
       E.g.: Suppose you have a Student table where its possible to have a student's 
       information stored in more than one record. If one of these records is updated, 
       say the address is changed, you now have two records for one student, with 
-      conflicting addresses. This is a clear sign of data redundancy design error in your 
-      table.
+      conflicting addresses. This is a clear sign of design error in your table.
       
       Your tables should have only a single source of truth for an attribute. Attributes 
       should be captured once and stored once in one field only. If needed, you can make 
@@ -45,103 +71,41 @@ to poor design. There are three kinds of database anomalies:
       original source.
 
 
-The best way to avoid anomalies is to normalize your database. This is a reference to a 
-practice called 'Database Normalization'. 
+How does one end up with such anomalies in a database? Well, those of us with experience 
+using Microsoft Excel or other tools like it might be inclined at organizing a database 
+in the "spreadsheet design" style. However, an RDBMS is not a spreadsheet program, despite
+superficial similarities. Therefore, following this approach will only result in a 
+database with the data quality of Excel spreadsheets found in any standard business 
+setting. Most of these spreadsheets are rife with data anomalies, duplication and data 
+inconsistency problems. Spreadsheets are not very good are solving the fundamental 
+problems that databases are trying to solve. 
+
+The other big problem with taking a "spreadsheet" approach to database design is that 
+this results in tables that fail to take advantage of the database's ability to impose 
+data integrity constraints. This can lead to a database design that does not respect the 
+'Four Integrities': Entity, Domain, Referential and User-Defined. Even worse than that, 
+an unnormalized database does not enforce inter-column and inter-table relationships. If 
+you fail to leverage the full powers of an RDBMS, you might as well use a spreadsheet 
+program to track your data instead of an database!
+
+No, if you want to use a database effectively, you have to leave the spreadsheet 
+mentality behind and learn some new skills. Because a database that is poorly designed 
+will not guard against the data-related problems I have discussed. Such databases will be 
+filled with low-quality, inconsistent data. Trying to update it will lead to errors and 
+maintenance will be ongoing chore. 
+
+The best way to prevent anomalies is to design your database correctly via 'Entity-
+Relationship Modelling'. After doing that, you have to apply the process of 'Database 
+Normalization' to improve its formal internal structure. The rest of the article is 
+concerned with these two process and others related to them. 
 
 
-4.2 NORMALIZATION
+3. DATABASE DESIGN: THE PROCESS
 
-Here is an introductory description of Normalization from Wikipedia's article[8]:
+3.1 REVISION: THE PARTS OF A TABLE
 
-
-    Database normalization is the process of restructuring a relational database in 
-    accordance with a series of so-called normal forms in order to reduce data redundancy 
-    and improve data integrity. It was first proposed by Edgar F. Codd as an integral 
-    part of his relational model.
-    
-    Normalization entails organizing the columns (attributes) and tables (relations) of a 
-    database to ensure that their dependencies are properly enforced by database 
-    integrity constraints. It is accomplished by applying some formal rules either by a 
-    process of synthesis (creating a new database design) or decomposition (improving an 
-    existing database design).
-
-
-Here's an alternate definition[9]:
-
-
-    Database Normalization is a technique of organizing the data in the database. 
-    Normalization is a systematic approach of decomposing tables to eliminate data 
-    redundancy (repetition) and undesirable characteristics like Insertion, Update and 
-    Deletion Anomalies. It is a multi-step process that puts data into tabular form, 
-    [and] removing duplicated data from the relation tables.
-    
-    Normalization is used for mainly two purposes,
-    
-    * Eliminating redundant data, AND
-    * Ensuring data dependencies make sense i.e data is logically stored.
-    
-
-What are some of the advantages of normalizing your database?[10]:
-
-
-    * Eliminate data redundancies (and therefore use less space)
-    * Make it easier to make changes to data, and avoid anomalies when doing so
-    * Make referential integrity constraints easier to enforce
-    * Produce an easily comprehensible structure that closely resembles the situation the 
-      data represents, and allows for growth
-       
-    
-When you design your database, you will have to do something called 'Entity-Relationship 
-Modelling'. This is the process of planning out tables in your database and their
-relationships to other tables. ER Modelling is dominated by "big picture" consideration 
-of your program's data needs. Based on your conclusions, you should iteratively identify 
-the relevant entities (tables) in your database, their attributes (columns) and their 
-relationships. 
-
-Once you produced a tentative database design, you should have some idea of what tables 
-you will have in your database, their names, their attributes and their relationships to 
-other tables. Designing inter-table relationships means that you should have decided on 
-primary keys for most of your tables.
-
-Following the ER Modelling process, you will then apply the process of 'Database 
-Normalization'. Normalization is applied at the "micro level"; you will focus on one 
-entity (table) and consider its attributes and other characteristics. The general idea
-behind normalization is that a table is about a specific topic and that only columns
-related to the topic must be included in the table. Our natural instincts at table design 
-typically lead to tables that contain duplicate data. The other big problem is that poor
-table design results in tables that fail to take advantage of the database's ability to
-check and impose data integrity constraints. This can lead to wrongly typed data, 
-multi-field values and other types of data integrity problems.
-
-You should normalize every database you design. You should do normalization as part of
-the initial design and whenever you revisit and tweak your database's schema. The process
-of normalizing your database often results in the creation of new tables.
-
-Normalization will make your database easier and more reliable to work with. 
-Normalization will reduce unwanted duplicate data in the database, thereby decreasing its
-size and increasing integrity and robustness of the data stored therein. This will make 
-it harder to create invalid states in the database or enter poor quality data into it. 
-This should make it easier to maintain, edit and modify your database.  
-
-
-4.2.1 PRE-REQUISITE CONCEPTS
-
-4.2.1.1 PRIME AND NON-PRIME ATTRIBUTES
-
-A candidate key is any attribute or combination of attributes that can determine 
-(uniquely identify) a record. Keys that can do this are candidates to become the primary 
-key of a table. This is where the name 'Candidate Key' comes from. In a table, there may 
-be several candidate keys, from which you have to select one as primary key.
-
-Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
-ATTRIBUTES. The other attributes from that table are called NON-PRIME ATTRIBUTES or 
-NON-KEY ATTRIBUTES.
-
-
-4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
-
-I'll start this section with a short refresher on tables and their components. When you 
-store data in a database, you usually store it in a relation, which is another way of 
+I'll start this section with a short refresher on the component parts of a tables. When 
+you store data in a database, you usually store it in a relation, which is another way of 
 referring to a table. Take a look at the example table below, called 'Students':
 
 
@@ -168,10 +132,190 @@ In RDBMSes, a Row or a Record, refers to a horizontal block of named elements th
 contain information on a single entity. In this table, each record contains information 
 on a student. The first record in this table, that of Harold Kumar, contains information 
 required by the five attributes at the top. Similarly, this table is filled with other 
-student records. Or at least, that should be the case, if there are no duplicates in it. 
-Each record has the same structure; it contains information required by the columns. 
+unique student records. Or at least, that should be the case, if there are no duplicate
+records in it. Each record has the same structure; it contains information required by 
+the columns. 
+ 
 ASIDE: Sometimes, records are referred to as tuples. A tuple is a formal term that is 
 distinct concept but it is related to a record (or a row).
+
+The intersection of a column and a row is a Field. This is where an individual piece of 
+data is to be stored. In the example table, you should see meaningful pieces of data in 
+all of the fields.  
+
+
+3.2 ENTITY-RELATIONSHIP MODELLING
+
+When you sit down to design a new database, the first thing you will have to do is 
+something called 'Entity-Relationship Modelling'. ER Modelling is dominated by a "big 
+picture" consideration of your program's data needs. Bearing in mind these requirements, 
+ER-Modelling is the process of determining the entities/relations (tables) in your 
+database, their attributes (columns) and and their relationships to other entities 
+(One-to-One, One-to-Many, Many-to-Many) relationships.
+
+At this time, you should also be considering how to protect data integrity by implementing
+the 'Four Integrities'. Modern RDBMSes are designed to help you easily implement these 
+safeguards. Practically speaking, what does that mean? You can enforce these constraints
+as follows: 
+
+
+    1. Entity Integrity Constraints: are enforced by using primary keys to ensure that no 
+       two rows in your table have identical values for all columns. At the very least, 
+       a table must have at least one attribute with unique values. This role is usually 
+       played by primary key columns, which must contain unique values for every record. 
+       With the help of a primary key, you can uniquely identify any record in the table.
+       
+       When you design a table, you must give it a primary key (or a composite key).   
+       
+       
+    2. Domain Integrity Constraints: are enforced by defining a set of constraints for an
+       attribute. When you design the attributes in a table, you have the responsibility 
+       of setting their constraints. For instance, you can set data type for a column and 
+       other limitations if you so choose, such as formatting or range restrictions on 
+       the values. Another thing you can do is you can direct an attribute to accept NULL 
+       values. 
+       
+       
+    3. Referential Integrity Constraints: When you want to create inter-table 
+       relationships, you need to have primary keys in the principal table and foreign 
+       keys in the dependent table. If you declare and register these keys with the RDBMS
+       when you create tables, you can have it enforce referential integrity constraints. 
+       This constraint will check to see whether every foreign key value in the dependent 
+       table has a corresponding primary key in the principal table. 
+       
+    4. User-Defined Constraints: This constraint is optional. However, if you wish to 
+       have legal requirements or business process rules codified into constraints, you
+       can also do it via CHECK constraints and TRIGGERS. An RDBMS will enforce these
+       constraints along with the other three, further improving data quality.
+
+
+At the completion of the ER-Modelling process for your database, you should have 
+identified tables and their columns. You should also identified the nature of 
+relationships between two tables. And to enforce integrity constraints, you should have 
+declared a primary or composite key in every table and a foreign key whenever two tables 
+have to be connected. Within tables, you should have carefully considered and assigned 
+data types and restrictions to every attribute. 
+
+
+3.3 INTRODUCTION TO NORMALIZATION
+
+Here is an introductory description of Normalization from Wikipedia's article[1]:
+
+
+    Database normalization is the process of restructuring a relational database in 
+    accordance with a series of so-called normal forms in order to reduce data redundancy 
+    and improve data integrity. It was first proposed by Edgar F. Codd as an integral 
+    part of his relational model.
+    
+    Normalization entails organizing the columns (attributes) and tables (relations) of a 
+    database to ensure that their dependencies are properly enforced by database 
+    integrity constraints. It is accomplished by applying some formal rules either by a 
+    process of synthesis (creating a new database design) or decomposition (improving an 
+    existing database design).
+
+
+Here's an alternate definition[2]:
+
+
+    Database Normalization is a technique of organizing the data in the database. 
+    Normalization is a systematic approach of decomposing tables to eliminate data 
+    redundancy (repetition) and undesirable characteristics like Insertion, Update and 
+    Deletion Anomalies. It is a multi-step process that puts data into tabular form, 
+    [and] removing duplicated data from the relation tables.
+    
+    Normalization is used for mainly two purposes,
+    
+    * Eliminating redundant data, AND
+    * Ensuring data dependencies make sense i.e data is logically stored.
+    
+
+What are some of the advantages of normalizing your database?[3]:
+
+
+    * Eliminate data redundancies (and therefore use less space)
+    * Make it easier to make changes to data, and avoid anomalies when doing so
+    * Make referential integrity constraints easier to enforce
+    * Produce an easily comprehensible structure that closely resembles the situation the 
+      data represents, and allows for growth
+       
+
+
+
+No, when you design the tables in a database, and each of their attributes, you have to
+take a systematic approach to identifying certain qualities of a piece of data and the 
+nature of its relationship to other pieces of data. 
+    
+Normalization is the process of applying formal rules to tables and their columns in 
+order to empower the database to enforce integrity constraints on the data stored in a
+database. A piece of data in a table has certain relationships to other pieces of data
+both within and without the table. If you can formalize these relationships, you can get
+the database to enforce these relationships. This is a much better idea than trying to
+get error-prone humans to manually manage these relationships, especially since a 
+database can contain millions of records! 
+
+Another benefit to the normalizing your database is that it produces what is called
+STRUCTURED DATA. Structured data has clearly delimited attributes and features and as 
+well as a clearly defined form. For instance, in a table, every record must have values 
+for mandatory columns. This means that you can expect records for that table to have a
+known structure. 
+
+
+
+
+3.2 NORMALIZATION: THE PROCESS OF DATABASE DESIGN
+   
+So how do you normalize your database? What does the process look like? This depends on
+whether you have an existing unnormalized/partially normalized database, or if you are 
+starting to design a fresh, new database. Applying Normalization to the former is called
+Decomposition while doing it to the latter is called Synthesis. This section focuses on 
+Synthesis, but the same principles apply to the normalization of existing databases.   
+   
+   Before you get to normalization...
+   
+
+
+Once you have produced a tentative database design, you should have some idea of what 
+tables you will have in your database, their names, their attributes and their 
+relationships to other tables. To guarantee entity integrity, you need to identify 
+primary keys for your tables, with the understanding that they are provisional until the
+database design further stabilizes. To enforce referential integrity, you need to also
+identify foreign keys to connect tables together, also on a provisional basis. 
+
+Following the ER Modelling process, you will then apply the process of 'Database 
+Normalization'. Normalization is applied at the "micro level"; you will focus on one 
+entity (table) and consider its attributes and other characteristics. The general idea
+behind normalization is that a table is about a specific topic and that only columns
+related to it must be included in the table. 
+
+
+To avoid You should normalize every database you design. You should do normalization as part of
+the initial design and whenever you revisit and tweak your database's schema. The process
+of normalizing your database often results in the creation of new tables.
+
+Normalization will make your database easier and more reliable to work with. 
+Normalization will reduce unwanted duplicate data in the database, thereby decreasing its
+size and increasing integrity and robustness of the data stored therein. This will make 
+it harder to create invalid states in the database or enter poor quality data into it. 
+This should make it easier to maintain, edit and modify your database.  
+
+
+4.2.1 PRE-REQUISITE CONCEPTS
+
+4.2.1.1 PRIME AND NON-PRIME ATTRIBUTES
+
+A candidate key is any attribute or combination of attributes that can determine 
+(uniquely identify) a record. Keys that can do this are candidates to become the primary 
+key of a table. This is where the name 'Candidate Key' comes from. In a table, there may 
+be several candidate keys, from which you have to select one as primary key.
+
+Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
+ATTRIBUTES. The other attributes from that table are called NON-PRIME ATTRIBUTES or 
+NON-KEY ATTRIBUTES.
+
+
+4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
+
+
 
 Within a table, the data in one attribute may have certain relationships to data in other
 attributes. The process of database normalization requires you to understand and formalize 
@@ -890,9 +1034,9 @@ problem.
 
 SOURCES
 
-08: https://en.wikipedia.org/wiki/Database_normalization
-09: https://www.studytonight.com/dbms/database-normalization.php
-10: https://mariadb.com/kb/en/library/database-normalization-overview/
+01: https://en.wikipedia.org/wiki/Database_normalization
+02: https://www.studytonight.com/dbms/database-normalization.php
+03: https://mariadb.com/kb/en/library/database-normalization-overview/
 https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
 11: https://www.lifewire.com/database-dependencies-1019727
 12: https://www.techopedia.com/definition/19504/functional-dependency
