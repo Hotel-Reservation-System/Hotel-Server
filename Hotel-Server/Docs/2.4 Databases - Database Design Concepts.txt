@@ -203,6 +203,7 @@ Here is an introductory description of Normalization from Wikipedia's article[1]
 
 
     Database normalization is the process of restructuring a relational database in 
+    Database normalization is the process of restructuring a relational database in 
     accordance with a series of so-called normal forms in order to reduce data redundancy 
     and improve data integrity. It was first proposed by Edgar F. Codd as an integral 
     part of his relational model.
@@ -267,8 +268,9 @@ Normalization is applied at the "micro level"; you will focus on one entity (tab
 consider its attributes and other characteristics. The general idea behind Normalization 
 is that a table is about a specific topic and that only columns which are related to it 
 must be included in it. It is the process of applying formal rules to tables and most 
-especially, their columns. The end goal is to identify and remove extraneous columns and 
-to create a correct set of inter-connections between them.
+especially, their columns. The end goal is to identify to create a correct set of 
+inter-connections between columns while also removing columns that are extraneous to that
+table.
 
 In order to do this, you have to identify the nature of inter-attribute dependencies in a 
 table. First, are any of the columns in the present table not directly related to its 
@@ -294,47 +296,43 @@ difference between a spreadsheet program and a database. A spreadsheet is just a
 collection of data into rows and columns with little help from the program in imposing 
 order and enforcing constraints, especially between columns.
 
+Normalization will make your database easier and more reliable to work with. It will 
+reduce unwanted duplicate data in the database, thereby decreasing your database's size. 
+It will render many classes of anomalies impossible, increasing the integrity, validity
+and robustness of the data stored therein. This will make it harder to create invalid 
+states in the database or enter poor quality data into it. This should make it easier 
+to modify and maintain your database.
 
-3.4 NORMALIZATION: THE PROCESS OF DATABASE DESIGN
-   
-In order to successfully apply Normalization on a database, you have to understand these
-concepts:
-
-    1. Dependency Theory, especially as it relates to Functional Dependencies
-    2. The Normal Forms, which are a series of 
+For all these reasons, you should normalize every database you design. You should do 
+normalization as part of the initial design and whenever you revisit and tweak your 
+database's schema. Note that the process of normalizing your database often results in 
+the creation of new tables. (This happens when you realize that some attributes just do 
+not belong in a table; therefore, you move them to a new table.) 
 
 
-
-No, when you design the tables in a database, and each of their attributes, you have to
-take a systematic approach to identifying certain qualities of a piece of data and the 
-nature of its relationship to other pieces of data.    
-   
+3.4 NORMALIZATION: THE PROCESS
    
 So how do you normalize your database? What does the process look like? This depends on
 whether you have an existing unnormalized/partially normalized database, or if you are 
 starting to design a fresh, new database. Applying Normalization to the former is called
-Decomposition while doing it to the latter is called Synthesis. This section focuses on 
-Synthesis, but the same principles apply to the normalization of existing databases.   
+Decomposition while doing it to the latter is called Synthesis. The same principles apply 
+to both situations.
    
-   Before you get to normalization...
-   
+Before you can start normalization, you should have completed the 'ER-Modelling' phase. 
+You should have a provisional database design. 
+
+In order to successfully apply Normalization on a database, you have to understand these
+concepts:
 
 
+    1. DEPENDENCY THEORY, especially as it relates to Functional Dependencies
+    2. THE NORMAL FORMS, which are a series of requirements imposed on inter-attribute
+       relationship.
 
 
-
-To avoid You should normalize every database you design. You should do normalization as part of
-the initial design and whenever you revisit and tweak your database's schema. The process
-of normalizing your database often results in the creation of new tables.
-
-Normalization will make your database easier and more reliable to work with. 
-Normalization will reduce unwanted duplicate data in the database, thereby decreasing its
-size and increasing integrity and robustness of the data stored therein. This will make 
-it harder to create invalid states in the database or enter poor quality data into it. 
-This should make it easier to maintain, edit and modify your database.  
+4. DEPENDENCY THEORY
 
 
-4.2.1 PRE-REQUISITE CONCEPTS
 
 4.2.1.1 PRIME AND NON-PRIME ATTRIBUTES
 
