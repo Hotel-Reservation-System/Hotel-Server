@@ -242,22 +242,57 @@ What are some of the advantages of normalizing your database?[3]:
 Before I talk about Normalization, let's back up a little bit. In the previous section, 
 you should already have arrived at a preliminary design for your database. However, you 
 are still not fully taking advantage of an RDBMS's capabilities to manage inter-attribute 
-relationships. What that mean mean? 
+relationships. What that does mean mean? 
 
-An attribute's values may have one of several relationships to another attribute. If you
-can formalize this relationship and get the RDBMS to track it, you have successfully 
-offloaded a very complex, tedious and error-prone task on to your RBMS. In a very large
-database, there is no hope of manually managing all of the inter-attribute relationships. 
+An attribute's values may have one of several relationships to another attribute. For 
+instance, if you have a 'Social Security Number' column in an properly designed 
+'Employees' table, it will map on to one and only one value in 'EmployeeName', 
+'DateOfBirth' and perhaps other columns. This is a very useful property, because you can
+use it to uniquely identify and pull up employee records. There are a number of useful
+properties and relationships like this one that can occur between data elements in a 
+table. 
+
+If you can identify every inter-attribute relationship in every table in your database, 
+you can formalize these relationships and get the RDBMS to track them. If you can manage 
+this, you have successfully offloaded a very complex, tedious and error-prone task to 
+your database engine. In a very large database, which may contain tens of millions of 
+records, there is no hope of manually managing all of the inter-attribute relationships. 
 There are so many ways to make mistakes that lead to data anomalies, redundancies, 
-inconsistencies and even data loss, that no human could possibly succeed. Thus, this is a 
-task that is ideal for offloading to an RDBMS program. 
-    
-Normalization is the process of applying formal rules to tables and most especially, 
-their columns in order to empower the RDBMS to enforce inter-attribute integrity 
-constraints. Another benefit to the normalizing your database is that it produces what is 
-called STRUCTURED DATA. Structured data has well-defined attributes as well as a clearly 
-defined form. For instance, in a table, every record must have values for mandatory
-columns. This means that you can expect records for that table to have a known structure. 
+inconsistencies and even data loss, that no human could possibly succeed. Thus, this is
+a task best left to an RDBMS program. That is the goal of Database Normalization: to 
+impose a logical structure on your database so that the RDBMS engine can be put in charge 
+of managing it. 
+
+Normalization is applied at the "micro level"; you will focus on one entity (table) and 
+consider its attributes and other characteristics. The general idea behind Normalization 
+is that a table is about a specific topic and that only columns which are related to it 
+must be included in it. It is the process of applying formal rules to tables and most 
+especially, their columns. The end goal is to identify and remove extraneous columns and 
+to create a correct set of inter-connections between them.
+
+In order to do this, you have to identify the nature of inter-attribute dependencies in a 
+table. First, are any of the columns in the present table not directly related to its 
+main topic? Secondly, you have examine the relationship of each of the attributes to the
+primary key and to each other, applying so-called 'Normal Forms' to bring the attributes 
+into a correct relationship with each other. 
+
+By doing this, you are moving from merely a spreadsheet style collection of information, 
+to Structured Data. Structured data has well-defined attributes which give it a clearly 
+defined form. For instance, in a table, every record must have values for mandatory 
+columns. Every attribute must have the correct relationship to other attributes, in 
+accordance with the Normal Forms. By doing these things, you are imposing structure on 
+on what is just a collection of data. By determining the nature of relationships between 
+data elements and ensuring that they meet certain formally defined standards, you no 
+longer have to enforce inter-attribute relationship constraints by hand. As I mentioned
+before, you can offload the responsibility of tracking these relationships on to the 
+RDBMS engine. 
+
+This should lead to a much more robust database design, one in which you are doing as 
+little work as possible, and yet giving the RDBMS engine all the tools it needs to do 
+everything it can to mitigate data-related issues which plague databases. This is the 
+difference between a spreadsheet program and a database. A spreadsheet is just a 
+collection of data into rows and columns with little help from the program in imposing 
+order and enforcing constraints, especially between columns.
 
 
 3.4 NORMALIZATION: THE PROCESS OF DATABASE DESIGN
@@ -265,7 +300,7 @@ columns. This means that you can expect records for that table to have a known s
 In order to successfully apply Normalization on a database, you have to understand these
 concepts:
 
-    1. Dependency Theory, especially as it applies to Functional Dependencies
+    1. Dependency Theory, especially as it relates to Functional Dependencies
     2. The Normal Forms, which are a series of 
 
 
@@ -285,11 +320,7 @@ Synthesis, but the same principles apply to the normalization of existing databa
    
 
 
-Following the ER Modelling process, you will then apply the process of 'Database 
-Normalization'. Normalization is applied at the "micro level"; you will focus on one 
-entity (table) and consider its attributes and other characteristics. The general idea
-behind normalization is that a table is about a specific topic and that only columns
-related to it must be included in the table. 
+
 
 
 To avoid You should normalize every database you design. You should do normalization as part of
