@@ -248,54 +248,50 @@ relationships. What that does mean mean?
 An attribute's values may have one of several relationships to another attribute. For 
 instance, if you have a 'Social Security Number' column in an properly designed 
 'Employees' table, it will map on to one and only one value in 'EmployeeName', 
-'DateOfBirth' and perhaps other columns. This is a very useful property, because you can
-use it to uniquely identify and pull up employee records. There are a number of useful
-properties and relationships like this one that can occur between data elements in a 
-table. 
+'DateOfBirth' and perhaps other columns. This is a logical constraint that exists between
+two attributes, and the general term for such inter-attribute relationships is 
+'Dependency'. In this case, the existence of this dependency is a very useful property: 
+You can use the 'SSN' column to search the table and uniquely identify employee records. 
+There are a number of useful dependencies like this one that can occur between columns 
+in a table. 
 
-If you can identify every inter-attribute relationship in every table in your database, 
-you can formalize these relationships and get the RDBMS to track them. If you can manage 
-this, you have successfully offloaded a very complex, tedious and error-prone task to 
-your database engine. In a very large database, which may contain tens of millions of 
-records, there is no hope of manually managing all of the inter-attribute relationships. 
-There are so many ways to make mistakes that lead to data anomalies, redundancies, 
-inconsistencies and even data loss, that no human could possibly succeed. Thus, this is
-a task best left to an RDBMS program. That is the goal of Database Normalization: to 
-impose a logical structure on your database so that the RDBMS engine can be put in charge 
-of managing it. 
+The trouble is that a medium-to-large size database can have thousands of tables, each 
+with dozens of attributes. It could contain tens of millions of records. If you did not 
+normalize this database during design, you are stuck with a poor-quality database that 
+is prone to serious data integrity, consistency and other issues. You should expect to 
+constantly run into data anomalies, which have now become your responsibility to 
+mitigate. You will have to manually ensure, on a ongoing basis, that none of the data 
+entered into the database is of low quality. You will have to make sure that every time 
+you change a value in a table, that you change all the values that depend on it. You will 
+have to skirt every pitfall and avoid every anomaly - all by hand. 
 
-Normalization is applied at the "micro level"; you will focus on one entity (table) and 
-consider its attributes and other characteristics. The general idea behind Normalization 
-is that a table is about a specific topic and that only columns which are related to it 
-must be included in it. It is the process of applying formal rules to tables and most 
-especially, their columns. The end goal is to identify to create a correct set of 
-inter-connections between columns while also removing columns that are extraneous to that
-table.
+Let me tell you at the outset that there is no hope of manually preventing anomalies in a 
+database of this size. There are so many ways to make mistakes that lead to data 
+redundancies, inconsistencies and even data loss, that no human could possibly succeed at 
+this task in a database of this size. In fact, manually keeping data-related problems out 
+of a much smaller database is just as doomed a task. In short, if you cannot think of a 
+soul-crashing responsibility that is doomed to failure, trying to manually maintain data 
+quality in an unnormalized database is a good example.  
 
-In order to do this, you have to identify the nature of inter-attribute dependencies in a 
-table. First, are any of the columns in the present table not directly related to its 
-main topic? Secondly, you have examine the relationship of each of the attributes to the
-primary key and to each other, applying so-called 'Normal Forms' to bring the attributes 
-into a correct relationship with each other. 
+The wiser course of action is to design such problems out of existence. In the 'ER-
+Modelling' phase, you used the RBDMS engine's built-in capabilities to enforce the 
+'Four Integrities' throughout the database on a continual basis. In Normalization, you 
+are trying to do something similar, though you should note that the RDBMS cannot help you 
+enforce the management of dependencies as much as it could the various integrities. This, 
+then, is the general goal of Database Normalization: to use formal methods to study your 
+database, re-design tables and attributes until your database has a structure that 
+resists anomalous data issues.
 
 By doing this, you are moving from merely a spreadsheet style collection of information, 
 to Structured Data. Structured data has well-defined attributes which give it a clearly 
 defined form. For instance, in a table, every record must have values for mandatory 
 columns. Every attribute must have the correct relationship to other attributes, in 
-accordance with the Normal Forms. By doing these things, you are imposing structure on 
-on what is just a collection of data. By determining the nature of relationships between 
-data elements and ensuring that they meet certain formally defined standards, you no 
-longer have to enforce inter-attribute relationship constraints by hand. As I mentioned
-before, you can offload the responsibility of tracking these relationships on to the 
-RDBMS engine. 
+accordance with the formal rules. By doing these things, you are imposing structure on 
+on what is just a collection of data.   
 
-This should lead to a much more robust database design, one in which you are doing as 
-little work as possible, and yet giving the RDBMS engine all the tools it needs to do 
-everything it can to mitigate data-related issues which plague databases. This is the 
-difference between a spreadsheet program and a database. A spreadsheet is just a 
-collection of data into rows and columns with little help from the program in imposing 
-order and enforcing constraints, especially between columns.
-
+Normalization should lead to a much more robust database design, one in which you are 
+doing as little work to maintain data quality as possible. A solid database design should 
+pro-actively prevent the majority of data-related issues which plague databases. 
 Normalization will make your database easier and more reliable to work with. It will 
 reduce unwanted duplicate data in the database, thereby decreasing your database's size. 
 It will render many classes of anomalies impossible, increasing the integrity, validity
@@ -305,12 +301,40 @@ to modify and maintain your database.
 
 For all these reasons, you should normalize every database you design. You should do 
 normalization as part of the initial design and whenever you revisit and tweak your 
-database's schema. Note that the process of normalizing your database often results in 
-the creation of new tables. (This happens when you realize that some attributes just do 
-not belong in a table; therefore, you move them to a new table.) 
+database's schema. 
 
 
 3.4 NORMALIZATION: THE PROCESS
+
+Normalization is applied at the "micro level"; you will focus on one entity (table) and 
+study its attributes and other characteristics, looking for logical constraints. The 
+general idea behind Normalization is that a table is about a specific topic and that 
+only columns which are related to this topic must be included within it. It is the 
+process of applying formal rules to tables and most especially, their columns. 
+
+During the Normalization process, it is your task to analyze every table. You have to 
+identify every inter-attribute dependency that contributes to promoting data integrity 
+and validity in your database, while getting rid of dependencies that detract from this 
+goal. If you can manage this, you have successfully designed a database to be very 
+resistant to many classes of data integrity issues. 
+
+
+
+ 
+ Note that the process of normalizing your database often results in 
+ the creation of new tables. 
+
+
+The end 
+goal is to identify to create a correct set of inter-connections between columns while 
+also removing columns that are extraneous to that
+table.
+
+In order to do this, you have to identify the nature of inter-attribute dependencies in a 
+table. First, are any of the columns in the present table not directly related to its 
+main topic? Secondly, you have examine the relationship of each of the attributes to the
+primary key and to each other, applying so-called 'Normal Forms' to bring the attributes 
+into a correct relationship with each other. 
    
 So how do you normalize your database? What does the process look like? This depends on
 whether you have an existing unnormalized/partially normalized database, or if you are 
@@ -327,10 +351,30 @@ concepts:
 
     1. DEPENDENCY THEORY, especially as it relates to Functional Dependencies
     2. THE NORMAL FORMS, which are a series of requirements imposed on inter-attribute
-       relationship.
+       relationships.
 
 
 4. DEPENDENCY THEORY
+
+As I just explained, within a table, the data in one attribute(s) may have certain 
+relationships to data from other attribute(s). The process of database normalization 
+requires you to understand and formalize these data relationships. Therefore, the first
+step must be to understand the nature of the attribute relationships.
+
+Dependency theory is the field that deals with such relationships. The Wikipedia article
+provides a somewhat opaque definition[4]:
+
+
+    Dependency theory is a subfield of database theory which studies implication and 
+    optimization problems related to logical constraints, commonly called dependencies, 
+    on databases. The best known class of such dependencies are functional dependencies, 
+    which form the foundation of keys on database relations. Another important class of 
+    dependencies are the multivalued dependencies.
+    
+    
+So there exist logical constraints between two attributes or more, which are called 
+DEPENDENCIES. This article will focus on the most common type of dependency, which as the
+passage above notes, is called FUNCTIONAL DEPENDENCY. 
 
 
 
@@ -348,9 +392,7 @@ NON-KEY ATTRIBUTES.
 
 4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
 
-Within a table, the data in one attribute(s) may have certain relationships to data in 
-other attribute(s). The process of database normalization requires you to understand and formalize 
-these data relationships. The study of this subject is called DEPENDENCY THEORY. Its 
+The study of this subject is called DEPENDENCY THEORY. Its 
 Wikipedia article explains what it is about[]: "Dependency theory is a sub-field of 
 database theory which studies implication and optimization problems related to logical 
 constraints, commonly called dependencies, on databases. The best known class of such 
@@ -1070,7 +1112,8 @@ SOURCES
 01: https://en.wikipedia.org/wiki/Database_normalization
 02: https://www.studytonight.com/dbms/database-normalization.php
 03: https://mariadb.com/kb/en/library/database-normalization-overview/
-https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
+04: https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
+
 11: https://www.lifewire.com/database-dependencies-1019727
 12: https://www.techopedia.com/definition/19504/functional-dependency
 13: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
