@@ -143,6 +143,18 @@ The intersection of a column and a row is a Field. This is where an individual p
 data is to be stored. In the example table, you should see meaningful pieces of data in 
 all of the fields.  
 
+Finally, there is a way to represent a relation and its attributes. There is the generic
+format:
+
+
+    TableName(Attribute1, Attribute2, Attribute3, Attribute4...)
+    
+
+Therefore, the table above can expressed as: 
+
+
+    Students(StudentID, FirstName, LastName, PhoneNumber, Email)  
+
 
 3.2 ENTITY-RELATIONSHIP MODELLING
 
@@ -405,47 +417,80 @@ NON-KEY ATTRIBUTES.
 4.3 FUNCTIONAL DEPENDENCY
 
 In the most general terms[05], "a dependency is a constraint that applies to or defines 
-the relationship between attributes." This is the same thing as a 'Functional Dependency'. 
-A Functional Dependency is a relationship between two sets of attributes. Usually, but 
-not always, this is referring to the relationship between a Primary Key (PK) attribute 
-set and a second set of non-prime attribute(s) within a table. 
+the relationship between attributes." As I said before, there are several kinds of 
+dependencies, but this section and the rest of the article will concern itself only with
+'Functional Dependency' and its variations. A Functional Dependency is a type of 
+relationship that exists between two sets of attributes. Usually, but not always, this 
+relationship occurs between a Primary Key (PK) attribute set and a second set of 
+non-prime attribute(s) within a table. 
 
-This is the formal definition of a functional dependency: 
+Let's start with an simple and informal definition:
 
-For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
-on Attribute A, if at any moment in time there is exactly one instance of B for any given 
-instance of A. This is a rather formal explanation, but here it is again phrased another 
-way: If Attribute A functionally determines Attribute B, then the value of an instance of 
-A uniquely determines a value for B. 
+Assume that there are two columns in a table. If you can use the value from one column to 
+uniquely identify the a value in the second column, then a functional dependency exists 
+between these two columns. 
 
-Let's move on to a less formal description: A determinant is an attribute that determines 
-the value of another attribute. If A determines B, then a value of A can uniquely 
-identify a value of B. Therefore, A is said to be a determinant of B and B is said to be 
-a dependent of A. This relationship is visually represented like this:
+I'll re-iterate the example of Employee table. Consider this relation: 
 
+
+    Employees(Social Security Number, FirstName, LastName)
     
+
+So let's be very clear about the relationship between 'Social Security Number' and
+'FirstName'. A functional dependency exists between these two attributes. The 'Social 
+Security Number' attribute in this table has the special ability to uniquely identify 
+values in the other two columns. This should make some sense; in any country, there are 
+often multiple people with exactly the same name. Social Security Numbers are designed to 
+be unique - one SSN identifies exactly one person. Any attribute which can uniquely 
+identify the value of another attribute is called a DETERMINANT.
+
+In this relationship, then, the 'Social Security Number' column is said to be the 
+Determinant attribute, while the 'FirstName' column is said to be DEPENDANT attribute. 
+'FirstName' can also be called the DETERMINED attribute. The same relationship exists 
+between 'Social Security Number' and 'LastName', with the former once again being the 
+Determinant while the latter is Dependant. The SSN column is said to determine the other 
+two columns, and in return, the other two are said to be dependant on SSN. 
+
+This relationship is expressed like this: 
+
+
+    Social Security Number -> FirstName
+    Social Security Number -> LastName
+
+
+This is what it looks like generically: 
+
+
     A -> B 
 
 
 The left hand side of this Functional Dependency diagram contains the determinant set and
 the right hand side is the determined set. It is read like this from left to right: "A 
-(functionally) determines B" OR "A derives B". The Inverse: "B depends on A."
+(functionally) determines B" OR "A derives B". The Inverse: "B depends on A." Functional 
+dependencies occur when there is only one value in the determined set for a given value 
+of the determinant set. 
 
-Let's take a concrete example[12]: In a table, suppose there are two columns with a 
-functionally dependent relationship: 'Social Security Number' and 'EmployeeName'.  Let's 
-look at the FD diagram:
+Do note, that in real tables, keys can be comprised of multiple columns, which is where 
+you might become confused. So, you can have a set of columns that form the 
+determinant/primary key/candidate key.
 
+Columns or collections of columns that can serve as determinants in that table are 
+excellent candidates to become Primary key. Thus, determinant columns are either 
+candidate keys or the primary key. As I noted before, columns that are part  
+of the part of a candidate key or a primary key are called prime attributes and the 
+columns that are not part of such keys are called non-prime attributes. 
 
-     Social Security Number -> EmployeeName, EmployeeAddress, BirthDate 
- 
+Let's look at the formal definition of a functional dependency: 
 
-The 'EmployeeName' attribute is functionally dependent on the 'SSN' attribute because an 
-SSN uniquely identifies an employee. Note that the reverse does not hold true; names do 
-not uniquely identify a SSN. This makes sense because a Social Security Number is issued 
-to every person in the country to uniquely identify them, even when there are multiple 
-people with the same name. If there were other non-key attributes in the table, for 
-instance 'EmployeeAddress' and 'BirthDate', the 'SSN' attribute could functionally 
-determine them too.
+For two arbitrary sets of attributes, A and B, set B is said to be functionally dependent 
+on set A, if at any moment in time there is exactly one instance of B for any given 
+instance of A. This is a rather formal explanation, but here it is again phrased another 
+way: If Attribute set A functionally determines Attribute set B, then the value of an 
+instance of A uniquely determines a value for B. 
+
+And a less formal, generic description:  If A determines B, then a value of A can 
+uniquely identify a value of B. Therefore, A is said to be a determinant of B and B is 
+said to be a dependent of A. 
 
 Why is the concept of functional dependence important? 
 
@@ -457,18 +502,24 @@ In a StackOverflow answer, NealB explains[13]:
     stated in terms of how a given set of relations represent functional dependencies. 
     Fourth and fifth normal forms involve Multi-Valued dependencies (another kettle of 
     fish).
- 
+
 
 Normalization applies what are called 'Normal Forms' to tables. The second and third 
-normal forms as well as the Boyce-Codd Normal Form (which is considered to be Normal Form
-3.5) require an understanding of functional dependencies. You will have to find and 
-write down the dependencies in every table to determine how close they are to complying
-with the Normal Forms.
+normal forms as well as the Boyce-Codd Normal Form (which is considered to be an extension
+of Third Normal Form) require an understanding of functional dependencies. 
 
-There are several sub-types of functional dependencies, which are discussed below:
+During Normalization, one of the first things you will have to do when studying a table 
+is to identify the prime and non-prime attributes. Then you will study the nature of the 
+dependencies that exist between them. There are certain kinds of functional dependencies
+that are undesirable in a table, indicating the those columns must be removed to an other
+table. 
+
+For this reason, you will need to know what sub-type of functional dependency exists 
+between two sets of columns. There are several sub-types of functional dependencies, which 
+are discussed below:
 
 
-TRIVIAL FUNCTIONAL DEPENDENCY
+4.3.1 TRIVIAL FUNCTIONAL DEPENDENCY
 
 A trivial functional dependency is an obvious dependency. It occurs when the determined 
 set is a subset of its determining set. Formally, it is called the 'Axiom of Reflexivity'.
