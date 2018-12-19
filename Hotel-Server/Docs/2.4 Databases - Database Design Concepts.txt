@@ -357,12 +357,15 @@ one step closer to soundly designed table. Apply them to every table in the data
 you will have a robust database design.
 
 
-4. DEPENDENCY THEORY
+4. DEPENDENCIES
+
+4.1 DEPENDENCY THEORY
 
 As I just explained, within a table, the data in one attribute(s) may have certain 
-relationships to data from other attribute(s). The process of database normalization 
-requires you to understand and formalize these data relationships. Therefore, the first
-step must be to understand the nature of the attribute relationships.
+relationships to data from other attribute(s), which are called dependencies. The 
+process of database normalization requires you to understand dependencies and root out 
+the "bad" ones by removing associated columns from the table. To do this, you must 
+understand the nature of the attribute relationships.
 
 Dependency theory is the field that deals with such relationships. The Wikipedia article
 provides a somewhat opaque definition[4]:
@@ -376,58 +379,38 @@ provides a somewhat opaque definition[4]:
     
     
 So there exist logical constraints between two attributes or more, which are called 
-DEPENDENCIES. This article will focus on the most common type of dependency, which as the
-passage above notes, is called FUNCTIONAL DEPENDENCY. 
+DEPENDENCIES. There are several major kinds of dependencies: Functional, Multi-Valued and 
+Join. This article will only consider the most common type of dependency, which is 
+Functional Dependency and its sub-types. That is because this concept is important to the 
+types of Normal Forms which are covered later in this article: The first three Normal 
+Forms and the Boyce-Codd Normal Form. Multi-Valued and Join dependencies apply to later 
+Normal Forms. 
 
 
+4.2. PRIME AND NON-PRIME ATTRIBUTES
 
-4.2.1.1 PRIME AND NON-PRIME ATTRIBUTES
+Before getting into 'Functional Dependency', I need to bring up the topic of Prime and
+Non-prime attributes. 
 
-A candidate key is any attribute or combination of attributes that can determine 
-(uniquely identify) a record. Keys that can do this are candidates to become the primary 
-key of a table. This is where the name 'Candidate Key' comes from. In a table, there may 
-be several candidate keys, from which you have to select one as primary key.
+A candidate key is any attribute or combination of attributes that can uniquely identify 
+a record. Keys that can do this are candidates to become the primary key of a table. This 
+is where the name 'Candidate Key' comes from. In a table, there may be several candidate 
+keys, from which you have to select one as primary key.
 
-Attributes (columns) that are part of a candidate key are called PRIME ATTRIBUTES or KEY
-ATTRIBUTES. The other attributes from that table are called NON-PRIME ATTRIBUTES or 
+Attributes (columns) that are part of any candidate key are called PRIME ATTRIBUTES or 
+KEY ATTRIBUTES. The other attributes from that table are called NON-PRIME ATTRIBUTES or 
 NON-KEY ATTRIBUTES.
 
 
-4.2.1.2 DATA RELATIONSHIPS IN DATABASES: INTER-ATTRIBUTE DEPENDENCIES
+4.3 FUNCTIONAL DEPENDENCY
 
-The study of this subject is called DEPENDENCY THEORY. Its 
-Wikipedia article explains what it is about[]: "Dependency theory is a sub-field of 
-database theory which studies implication and optimization problems related to logical 
-constraints, commonly called dependencies, on databases. The best known class of such 
-dependencies are functional dependencies, which form the foundation of keys on database 
-relations. Another important class of dependencies are the multivalued dependencies."
+In the most general terms[05], "a dependency is a constraint that applies to or defines 
+the relationship between attributes." This is the same thing as a 'Functional Dependency'. 
+A Functional Dependency is a relationship between two sets of attributes. Usually, but 
+not always, this is referring to the relationship between a Primary Key (PK) attribute 
+set and a second set of non-prime attribute(s) within a table. 
 
-Once you understand the nature of the relationships between attributes, you can re-design 
-your tables by moving extraneous information into new tables. Then, you can structure 
-your tables in such a way that the database can enforce data types, referential and 
-integrity constraints. By doing this, you can leverage the database to prevent data 
-redundancies and database anomalies. 
-
-The first step to doing that is to understand the nature of dependencies in your data.
-
-
-When it comes to normalization, there are several major kinds of dependencies: 
-Functional, Multi-Valued and Join. This article will only consider Functional 
-Dependencies and its sub-types, because they are necessary to understand the Normal Forms
-covered in this article: the first three Normal Forms and the Boyce-Codd Normal Form.
-Multi-Valued and Join dependencies cover later Normal Forms. 
-
-
-FUNCTIONAL DEPENDENCY
-
-To normalize tables, you have to understand the concept of 'Dependency' and its many
-variants. In the most general terms[11], "a dependency is a constraint that applies to or 
-defines the relationship between attributes." This is the same thing as a 'Functional 
-Dependency'. A Functional Dependency is a relationship between two sets of attributes. 
-Usually, but not always, this is referring to the relationship between a Primary Key (PK) 
-attribute set and a second set of non-prime attribute(s) within a table. 
-
-This is the definition of a functional dependency: 
+This is the formal definition of a functional dependency: 
 
 For two arbitrary attributes, A and B, Attribute B is said to be functionally dependent 
 on Attribute A, if at any moment in time there is exactly one instance of B for any given 
@@ -1116,8 +1099,7 @@ SOURCES
 02: https://www.studytonight.com/dbms/database-normalization.php
 03: https://mariadb.com/kb/en/library/database-normalization-overview/
 04: https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
-
-11: https://www.lifewire.com/database-dependencies-1019727
+05: https://www.lifewire.com/database-dependencies-1019727
 12: https://www.techopedia.com/definition/19504/functional-dependency
 13: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
 14: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
