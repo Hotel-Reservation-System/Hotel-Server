@@ -287,17 +287,17 @@ to Structured Data. Structured data has well-defined attributes which give it a 
 defined form. For instance, in a table, every record must have values for mandatory 
 columns. Every attribute must have the correct relationship to other attributes, in 
 accordance with the formal rules. By doing these things, you are imposing structure on 
-on what is just a collection of data.   
+on what is just a heap of data.   
 
 Normalization should lead to a much more robust database design, one in which you are 
 doing as little work to maintain data quality as possible. A solid database design should 
-pro-actively prevent the majority of data-related issues which plague databases. 
+pro-actively prevent the majority of data-quality issues which plague databases. 
 Normalization will make your database easier and more reliable to work with. It will 
 reduce unwanted duplicate data in the database, thereby decreasing your database's size. 
 It will render many classes of anomalies impossible, increasing the integrity, validity
 and robustness of the data stored therein. This will make it harder to create invalid 
 states in the database or enter poor quality data into it. This should make it easier 
-to modify and maintain your database.
+to query, modify and maintain your database.
 
 For all these reasons, you should normalize every database you design. You should do 
 normalization as part of the initial design and whenever you revisit and tweak your 
@@ -306,36 +306,6 @@ database's schema.
 
 3.4 NORMALIZATION: THE PROCESS
 
-Normalization is applied at the "micro level"; you will focus on one entity (table) and 
-study its attributes and other characteristics, looking for logical constraints. The 
-general idea behind Normalization is that a table is about a specific topic and that 
-only columns which are related to this topic must be included within it. It is the 
-process of applying formal rules to tables and most especially, their columns. 
-
-During the Normalization process, it is your task to analyze every table. You have to 
-identify every inter-attribute dependency that contributes to promoting data integrity 
-and validity in your database, while getting rid of dependencies that detract from this 
-goal. If you can manage this, you have successfully designed a database to be very 
-resistant to many classes of data integrity issues. 
-
-
-
- 
- Note that the process of normalizing your database often results in 
- the creation of new tables. 
-
-
-The end 
-goal is to identify to create a correct set of inter-connections between columns while 
-also removing columns that are extraneous to that
-table.
-
-In order to do this, you have to identify the nature of inter-attribute dependencies in a 
-table. First, are any of the columns in the present table not directly related to its 
-main topic? Secondly, you have examine the relationship of each of the attributes to the
-primary key and to each other, applying so-called 'Normal Forms' to bring the attributes 
-into a correct relationship with each other. 
-   
 So how do you normalize your database? What does the process look like? This depends on
 whether you have an existing unnormalized/partially normalized database, or if you are 
 starting to design a fresh, new database. Applying Normalization to the former is called
@@ -343,15 +313,48 @@ Decomposition while doing it to the latter is called Synthesis. The same princip
 to both situations.
    
 Before you can start normalization, you should have completed the 'ER-Modelling' phase. 
-You should have a provisional database design. 
+You should have a provisional database design in hand. 
+
+Normalization is applied at the "micro level". The general idea behind Normalization is 
+that a table is about a specific topic and that only those columns which are related to 
+this topic must be included within it. Therefore, during the Normalization process, you 
+will focus on one entity (table) and study its attributes, looking to find attributes 
+that just do not belong in a table. You will be asking this question: Are any of the 
+columns in the present table not directly related to its main topic?
+
+In order to do this, you need to understand the nature of dependencies that may occur 
+between columns. To determine if a column belongs in a table, you will study its 
+relationships to other attributes. Both "good" and "bad" kinds of dependencies can 
+exist between attributes. "Good" dependencies are a sign that the two sets of attributes 
+in question belong to the table and are in good standing with respect to each other. 
+"Bad" dependencies indicate that columns don't have an acceptable relationship to other
+attributes, suggesting that one or more of these columns are extraneous to the table.
+When you find extraneous attributes, you should move them out into a new table. That's
+right: the solution to a normalization issues is usually the creation of a new table. 
+
+The goal is to identify and keep the set of columns that have "good" dependencies, which
+contribute to promoting data integrity and validity in your database, while getting rid 
+of negative dependencies that detract from this goal. The result should be that every 
+table only contains the attributes it needs. Each attribute will only positive 
+dependencies on other attributes, as all the columns with negative ones should have been 
+moved to other tables or deleted completely. Remember that by doing this, you will get a 
+database design that is very resistant to many classes of data integrity issues. 
 
 In order to successfully apply Normalization on a database, you have to understand these
-concepts:
+concepts and their many sub-concepts:
 
 
     1. DEPENDENCY THEORY, especially as it relates to Functional Dependencies
     2. THE NORMAL FORMS, which are a series of requirements imposed on inter-attribute
        relationships.
+       
+
+The first topic explains attribute dependencies. You need to understand the nature of 
+dependencies and recognize them so that you can work out whether they are "good" or "bad". 
+The 'Normal Forms' are a set of formal rules that will help you remove columns with "bad"
+dependencies. There are half of dozen of them, and implementing each one will bring you
+one step closer to soundly designed table. Apply them to every table in the database and 
+you will have a robust database design.
 
 
 4. DEPENDENCY THEORY
