@@ -420,7 +420,7 @@ NON-KEY ATTRIBUTES.
 
 4.3 FUNCTIONAL DEPENDENCY
 
-In the most general terms[05], "a dependency is a constraint that applies to or defines 
+In the most general terms[5], "a dependency is a constraint that applies to or defines 
 the relationship between attributes." As I said before, there are several kinds of 
 dependencies, but this section and the rest of the article will concern itself only with
 'Functional Dependency' and its variations. A Functional Dependency is a type of 
@@ -498,7 +498,7 @@ said to be a dependent of A.
 
 Why is the concept of functional dependence important? 
 
-In a StackOverflow answer, NealB explains[13]:
+In a StackOverflow answer, NealB explains[6]:
 
 
     Sets of functional dependencies may be used to synthesize relations (tables). The 
@@ -596,9 +596,9 @@ redundancies. Remember, partial dependency is not to be embraced, but eliminated
 
 Therefore, when you are creating candidate keys, it is necessary to reduce the set of 
 attributes to the bare minimum required to uniquely identify records. If you remove any 
-attributes from this minimum set, you will lose the ability to uniquely identify records, 
-which is to say, you will break functional dependency. I call this the 'Minimum Viable 
-Determinant Set' (MVDS).
+more attributes from this minimum set, you will lose the ability to uniquely identify 
+records, which is to say, you will break functional dependency. I call this the 'Minimum 
+Viable Determinant Set' (MVDS).
 
 'Full Functional Dependency' occurs when the conditions for functional dependency are met 
 AND the determinant set is an MVDS. In this situation, the dependant set is functionally 
@@ -768,8 +768,8 @@ These are the criteria of First Normal Form:
       into a new table. 
           
     
-This principle is hard to understand in the abstract, so consider the table below. It is
-an 'Employee' table, which contains a list of employees, their Ids, names, emails etc. 
+This principle is hard to understand in the abstract, so consider the table below[7]. It 
+is an 'Employee' table, which contains a list of employees, their Ids, names, emails etc. 
 Each employee may be issued corporate devices like laptops and phones, whose serials need 
 to be tracked. This will be done in the last column, which is called 'DeviceSerial'.
 
@@ -887,97 +887,115 @@ These are the requirements for Second Normal Form:
     * Second Normal Form is concerned with the relationship between Key columns and 
       Non-key columns. More specifically, 2NF is only a problem for tables that use a 
       composite primary key. A composite key is a primary key that is composed of values 
-      from two or more columns. If you use a composite key, you must pay close attention 
-      to its relationship to other non-key columns in that table. If a table has a single-
-      attribute primary key, which is usually the case the majority of the time, then you 
-      do not have to worry: the table is automatically compliant with 2NF. 
+      from two or more columns. It appears that composite keys are used when there are no 
+      candidate keys in a table, i.e., no single attribute that can determine the values 
+      of the other non-prime attributes. If you use a composite key, you must pay close
+      attention to its relationship to other non-key columns in that table. If a table 
+      has a single-attribute primary key, which is the case most of the time, then you do 
+      not have to worry: the table is automatically compliant with 2NF. 
     
-      If your table does use a composite key, 2NF demands that all non-key attributes 
-      must be functionally dependent on the entirety of the composite key. As a composite 
-      key is composed of two or more keys, it is possible for a non-key attribute to be 
-      dependent on only some of the component keys of the composite key. 2NF will not 
-      accept partial functional dependence; it demands that all non-key attributes must 
-      be fully dependent on all constituent attributes of the composite primary key. 
+      But what happens when you have a composite key? As a composite key is composed of 
+      two or more attributes, it is possible for some of the non-prime attributes in a 
+      table to be dependent on only some of the component attributes of the composite 
+      key. This happens when the composite key is not a Minimum Viable Determinant Set. 
+      The composite key has extraneous columns in it, which causes Partial Functional 
+      Dependence between the composite key and (some of) the non-prime elements in
+      the table. This is a violation of 2NF. 
+      
+      If your table does use a composite key, 2NF demands that all non-prime attributes
+      must be dependant on the entire key. Stated another way, non-key attributes must be 
+      fully functionally dependent on all constituent attributes of the composite key. 
+      
+      Therefore, to effect 2NF, you will have to ensure that all non-prime attributes in 
+      a table are in a state of Full Functional Dependence on the composite key. To do
+      this, remove all extraneous columns from the composite key and make it an MVDS. 
+      
+      Then, check the relationship between a non-prime column and the all the columns in 
+      the composite key to see if is fully dependant on all of them. Repeat this process 
+      for all the non-prime attributes. 
     
     
 Once again, this is hard to understand without a actual example, so consider the example
-table below. This is a 'Shipments Received' table. The 'Shipment#' and 'Part#' columns 
-together form a composite key for the table. This has been done because the 'Shipment#' 
-column alone cannot uniquely identify a part; a Cooling Gasket can be part of multiple 
-shipments. However, when 'Shipment#' is combined with 'Part#', you can use that to 
-uniquely identify the other non-key columns. Or at least, that's what should happen if
-2NF were in effect. However, while this table complies with 1NF, it fails to comply with 
-Second Normal Form.
+table below[7]:
+
+    
+        +--------+-----------+------------------+------+----------+-----------+
+        | Course |   Date    |   CourseTitle    | Room | Capacity | Available |
+        +--------+-----------+------------------+------+----------+-----------+
+        | SQL101 | 3/1/2013  | SQL Fundamentals | 4A   |       12 |         4 |
+        | DB202  | 3/1/2013  | Database Design  | 7B   |       14 |         7 |
+        | SQL101 | 4/14/2013 | SQL Fundamentals | 7B   |       14 |        10 |
+        | SQL101 | 5/28/2013 | SQL Fundamentals | 12A  |        8 |         8 |
+        | CS200  | 4/15/2012 | C Programming    | 4A   |       12 |        11 |
+        +--------+-----------+------------------+------+----------+-----------+
 
 
-    +-----------+--------+---------------+-----------------+------------+-------------+
-    | Shipment# | Part#  | DateOfArrival |    PartName     | Quantity   | Price (CAD) |
-    +-----------+--------+---------------+-----------------+------------+-------------+
-    |       532 | 183490 | 2018/08/23    | Cooling Gasket  |         43 |         125 |
-    |       329 | 109834 | 2018/03/11    | Sprocket Wrench |        118 |          35 |
-    |       623 | 958943 | 2018/09/02    | Fizzy Whizzler  |         12 |        1500 |
-    |       497 | 183490 | 2018/06/17    | Cooling Gasket  |         11 |         125 |
-    |       648 | 958943 | 2018/11/13    | Fizzy Whizzler  |         25 |        1500 |
-    +-----------+--------+---------------+-----------------+------------+-------------+
+This is an 'Events' table for a school. It uses a composite primary key that was created 
+by combining the 'Course' and 'Date' columns. This was done because the 'Course' column 
+alone cannot uniquely identify a course due to the fact that the another class for this 
+course can run on another date. However, if you combine the first two columns, this 
+combination of values can help you locate a specific course. Thus, this combination of 
+attributes can act as a primary key. 
+
+As Second Normal Form requires us to pay close attention to non-prime keys if you have a 
+composite key, lets take a closer look. Is there a problem with this table? Yes. The 
+'Room', 'Capacity' and 'Available' columns depend on both parts of the composite key, but 
+this is not true of the 'CourseTitle' column. You can determine the 'CourseTitle' from 
+just the first part of the composite key. Thus, this is a case of Partial Dependence, 
+which clearly violates 2NF.  
+
+Why is this a problem? Well, a Partial Dependency indicates potential for data redundancy
+and inconsistency. Whenever you have 'SQL101' for the first column, that course will 
+always refer to 'SQL Fundamentals'. Why have two columns saying the same thing? What 
+happens if someone updated one of these columns but not the other? What if you had a 
+record claim 'SQL101' as the Course ID and 'Advanced SQL' for the 'CourseTitle'? Having 
+a Partial Dependency created a redundant column in this table, which opens the door to 
+data inconsistencies. Multiply the number of the tables in your database by number of 
+records in each table to get a feeling for how many flawed records you get if you decline
+to implement 2NF. You do not want to be in charge of finding and correcting all these 
+records by hand. As you can see, this is not just an academic point, it indicates a 
+structural weakness in the design of your table. The best thing you can do is design this 
+table in such a way that these problems cannot manifest.  
+
+How do you do that? By applying 2NF: All non-key columns must depend on the entirety of 
+the composite key. Again, the solution to a normalization process is the creation of a
+new table. You should remove the offending column to a new, distinct 'Courses' table:
 
 
-Why? Because two columns, 'PartName' and 'Price', are not functionally dependent on the
-composite key. In fact, these columns fail to have a dependency on either 'Part#' or 
-'Shipment#', so they are not even partially dependent on the composite key. You'll notice 
-that multiple entries exist for 'Cooling Gasket' and 'Fizzy Whizzler' and their 
-associated prices. Neither 'PartName' nor 'Price' can be uniquely determined by either of 
-the component keys of the composite key, or the composite key as a whole. Thus, this 
-table fails to be 2NF-compliant. If the offending non-key columns were dependent on 
-either 'Part#' or 'Shipment#', they would be partially dependent on the composite key.
-Partial dependence also fails 2NF: all non-key columns must depend on the entirety of the
-composite key.  
+            +----------+------------------+-----+
+            | CourseId |      Title       | ... |
+            +----------+------------------+-----+
+            | SQL101   | SQL Fundamentals | ... |
+            | DB202    | Database Design  | ... |
+            | CS200    | C Programming    | ... |
+            +----------+------------------+-----+
 
-Why is any of this important? This is important because at least a few columns, 'Part#', 
-'PartName' and 'Price' respectively, are linked to each other, but that link is not being
-managed by the database. What if someone updates a part number in this table, but fails 
-to change its associated part name or its price? Now you face the question: Did you get a 
-shipment of 'Sprocket Wrenches' or part number 34910 on a given date? Which is the 
-incorrect value? Chaos will rule in the database, as part numbers and names change and 
-start conflicting with each other. You do not want error-prone humans in charge of making 
-sure values do not conflict in a database. A database could have millions of records! The 
-point of implementing 2NF is to offload that responsibility on to the database itself. 
-
-How can you fix this problem and bring this table into compliance with 2NF? Once again, 
-the solution is to create a new table. You have to create a new 'Parts' table and move 
-the 'PartName' and 'Prices' columns into it:
+ 
+'CourseId' is the primary key for this table. This way, each course title is associated 
+with a unique course ID. You can connect this table to 'Events' table with a One-to-Many
+relationship, with 'Courses' being the 'One' side and 'Events' being the 'Many' side. In
+the 'Events' table, 'CourseId' will act as a foreign key. This is what the 'Events' table 
+will now look like: 
 
 
-    +--------+-----------------+-------+
-    | Part#  |    PartName     | Price |
-    +--------+-----------------+-------+
-    | 183490 | Cooling Gasket  |   125 |
-    | 109834 | Sprocket Wrench |    35 |
-    | 958943 | Fizzy Whizzler  |  1500 |
-    +--------+-----------------+-------+
+        +--------+-----------+------+----------+-----------+
+        | Course |   Date    | Room | Capacity | Available |
+        +--------+-----------+------+----------+-----------+
+        | SQL101 | 3/1/2013  | 4A   |       12 |         4 |
+        | DB202  | 3/1/2013  | 14   |        7 |           |
+        | SQL101 | 4/14/2013 | 7B   |       14 |        10 |
+        | SQL101 | 5/28/2013 | 12A  |        8 |         8 |
+        | CS200  | 4/15/2012 | 4A   |       12 |        11 |
+        +--------+-----------+------+----------+-----------+
     
     
-The 'Part#' attribute will act as a primary key for this field. In the 'Shipments 
-Received' table, you can remove these fields and make the table smaller, like this: 
-
-
-    +-----------+--------+---------------+----------+
-    | Shipment# | Part#  | DateOfArrival | Quantity |
-    +-----------+--------+---------------+----------+
-    |       532 | 183490 | 2018/08/23    |       43 |
-    |       329 | 109834 | 2018/03/11    |      118 |
-    |       623 | 958943 | 2018/09/02    |       12 |
-    |       497 | 183490 | 2018/06/17    |       11 |
-    |       648 | 958943 | 2018/11/13    |       25 |
-    +-----------+--------+---------------+----------+
-
-
-Then you have to connect these two tables with a One-to-Many relationship. 'Shipments 
-Received' would be 'Many' side and the 'Parts' table would be the 'One' side. This brings
-the table into compliance with 1NF and as well as the requirements peculiar to 2NF, 
-making it fully compliant with Second Normal Form.
+With the removal of 'CourseTitle', the last three columns are now fully functionally 
+dependant on both the first and the second columns. This brings the table into compliance 
+with 1NF and as well as the requirements peculiar to 2NF, making it fully compliant with 
+Second Normal Form. 
+       
     
-    
-4.2.2.3 THIRD NORMAL FORM (3NF)
+5.4 THIRD NORMAL FORM (3NF)
 
 These are the requirements of Third Normal Form:
 
@@ -986,22 +1004,25 @@ These are the requirements of Third Normal Form:
       with both First and Second Normal Form. Full compliance with 1NF and 2NF is a 
       mandatory pre-requisite for full compliance with 3NF.
       
-    * 3NF is concerned with the relationship between Non-key attributes. Third Normal 
-      Form tries to implement a general principle: "All attributes should depend on the 
-      key, whole key and nothing but the key."[Branko Dimitrijevic :https://stackoverflow.com/questions/9950367/what-is-wrong-with-a-transitive-dependency] 
+    * 3NF is concerned with the relationship between Non-key attributes. Branko 
+      Dimitrijevic explains that Third Normal Form tries to enforce this general 
+      principle[8]: "All attributes should depend on the key, whole key and nothing but 
+      the key." Transitive Dependencies are a kind of "bad" dependency that flouts this
+      principle. Oppel defines this term on page 203[1]: "An attribute that depends on 
+      another attribute that is not the primary key of the relation is said to be 
+      transitively dependent." As a Transitive Dependency involves a non-prime attribute 
+      determining another non-prime attribute, such dependencies violate Dimitrijevic's 
+      principle. For this reason, 3NF calls for the elimination of all Transitive 
+      Dependencies in your tables. 
       
-      Transitive Dependencies violate this principle; which is why 3NF calls for the 
-      elimination of all 'Transitive Dependencies' in your tables. Oppel defines this 
-      term on page 203[1]: "An attribute that depends on another attribute that is not 
-      the primary key of the relation is said to be transitively dependent." 
+      This means that functional dependencies between non-prime attributes are prohibited. 
+      3NF accepts functional dependencies only between the primary key and a non-prime 
+      attribute. This is the order of things according to Third Normal Form: Every table 
+      ought to have a primary key which on all the other attributes are functionally 
+      dependant. There should be no dependencies between non-prime columns. The presence 
+      of a such a dependency means that the dependant non-prime column does not belong in 
+      that table.  
       
-      Put another way, 3NF demands that no non-key attribute (columns that are NOT part 
-      of the primary key) must be functionally dependant on any other non-key field in 
-      the table. Restated again: One or more non-key column(s) should not be the 
-      determinant (i.e. able to uniquely identify) of values in another non-key column in 
-      the same table. Expressed yet another way: 3NF requires that all non-key attributes
-      must be dependent on only the primary key. 
-
 
 Let's go to an example. See the 'OrderItem' table below. It tracks customer orders, 
 product ordered, quantity and other such values. This table complies with 1NF and 2NF,
@@ -1049,13 +1070,13 @@ BCNF has two requirements:
       that 1NF, 2NF and 3NF must be applied to your table before you can apply BCNF. 
       
     * BCNF is an extension of Third Normal Form and was created to strengthen it. This is
-      due to certain rare anomalies related to 3NF that were not addressed by it. BCNF 
-      closes these loopholes. The techopedia article on BCNF explains the circumstances 
-      that led to the development of this extension Form[14]: "3NF states that all data 
-      in a table must depend only on that table’s primary key, and not on any other field
-      in the table. At first glance it would seem that BCNF and 3NF are the same thing. 
-      However, in some rare cases it does happen that a 3NF table is not BCNF-compliant. 
-      This may happen in tables with two or more overlapping composite candidate keys." 
+      due to certain rare anomalies that 3NF does not prevent. BCNF closes these 
+      loopholes. The techopedia article on BCNF explains the circumstances that led to the 
+      development of this extension Form[8]: "3NF states that all data in a table must 
+      depend only on that table’s primary key, and not on any other field in the table. 
+      At first glance it would seem that BCNF and 3NF are the same thing. However, in 
+      some rare cases it does happen that a 3NF table is not BCNF-compliant. This may 
+      happen in tables with two or more overlapping composite candidate keys." 
     
       Oppel provides more detail about what BCNF is designed to prevent on page 206[1]: 
       "It addresses anomalies that occur when a non-key attribute is a determinant of an 
@@ -1170,8 +1191,11 @@ SOURCES
 03: https://mariadb.com/kb/en/library/database-normalization-overview/
 04: https://en.wikipedia.org/wiki/Dependency_theory_(database_theory)
 05: https://www.lifewire.com/database-dependencies-1019727
-12: https://www.techopedia.com/definition/19504/functional-dependency
-13: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
-14: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
+06: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
+07: Programming Foundations: Databases (Lynda.com, Simon Allardice, 2015)
+08: https://stackoverflow.com/questions/9950367/what-is-wrong-with-a-transitive-dependency
+
+
+08: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
 15: https://www.vertabelo.com/blog/technical-articles/boyce-codd-normal-form-bcnf
 16: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
