@@ -173,19 +173,23 @@ as follows:
 
     1. Entity Integrity Constraints: are enforced by using primary keys to ensure that no 
        two rows in your table have identical values for all columns. At the very least, 
-       a table must have at least one attribute with unique values. This role is usually 
-       played by primary key columns, which must contain unique values for every record. 
-       With the help of a primary key, you can uniquely identify any record in the table.
+       a table must have at least one (set of) attributes with unique values. This role 
+       is usually played by primary key columns, which must contain unique values for 
+       every record. With the help of a primary key, you should be able to uniquely 
+       identify any record in the table.
        
-       When you design a table, you must give it a primary key (or a composite key).   
+       When you design a table, you must give it a primary key (or a composite key). 
        
        
     2. Domain Integrity Constraints: are enforced by defining a set of constraints for an
-       attribute. When you design the attributes in a table, you have the responsibility 
-       of setting their constraints. For instance, you can set data type for a column and 
-       other limitations if you so choose, such as formatting or range restrictions on 
-       the values. Another thing you can do is you can direct an attribute to accept NULL 
-       values. 
+       attribute. When adding columns to a table, remember to give them unique names.   
+       You have the responsibility of setting constraints on the data stored within a 
+       column. One constraint that you must impose is the column's data type. This is 
+       critical to Domain Integrity.  
+       
+       You can also set other limitations if you so choose, such as formatting or range 
+       restrictions on the values. Another thing you can do is you can direct an 
+       attribute to accept NULL values. 
        
        
     3. Referential Integrity Constraints: When you want to create inter-table 
@@ -688,50 +692,55 @@ issues. As I have said before, if you have a human in charge of cross-checking r
 prevent anomalies, you know how this situation is going to end: the person will fail and 
 the database will fill up with rubbish. This, in turn, will lead to update anomalies.
 
-Therefore, transitive dependencies are "bad" - they violate Third Normal Form. A good 
-database design needs to eliminate indirect dependencies on non-prime columns. In this 
-table, you can eliminate this problem by creating a new 'Winners' table and moving the 
-'Winner's DOB' attribute into it. You can use the add a 'Names' column and populate it 
-with the names of the winners. 
+Therefore, transitive dependencies are "bad" - they violate Third Normal Form. In a well-
+designed table, you have non-prime attributes directly depending on prime attributes. 
+Three-part dependencies seem lead to anomalies. For this reason, a good database design 
+needs to eliminate indirect dependencies on non-prime columns. In this table, you can 
+eliminate this problem by creating a new 'Winners' table and moving the 'Winner's DOB' 
+attribute into it. You can use the add a 'Names' column and populate it with the names 
+of the winners. 
 
 
-4.2.2 THE NORMAL FORMS
+5. THE NORMAL FORMS
 
-The Normal Forms were developed by Edgar Codd, the father of relational databases. 
-Normalization theory defines 6 major Normal Forms and a number of minor forms. The first
-three Normal Forms are treated like an essential block. If you bring your database into
-compliance with the first three forms, you will be protected against well over 90% of 
-redundancy and data integrity issues in most databases.   
+The concept of Normal Forms was developed by Edgar Codd, the father of relational 
+databases. Normalization theory defines 6 major Normal Forms and a number of minor forms. 
+The first three Normal Forms are treated like an essential block. If you bring your 
+database into compliance with the first three forms plus the Boyce-Codd Normal Form, you 
+will have prevented well over 90% of data anomalies in most databases.   
 
 Therefore, you should apply the first three forms to all databases. Following that, you 
 should consider the Boyce-Codd Normal Form (BCNF or 3.5NF), which is considered to be a 
 minor extension to the Third Normal Form. The fourth and fifth forms come into play only 
-very rarely. The sixth form seems to be treated like a theoretical oddity.  
+when you have multi-value dependencies, which is rather rare. The sixth form seems to be 
+treated like a theoretical oddity.  
+
+The Forms are mainly properties of a relation. Therefore, you have to scrutinize every 
+table in your database and apply the forms to each one in order to give your database a
+good design.
 
 
-4.2.2.0 UNNORMALIZED FORM (UNF or 0NF)
+5.1 UNNORMALIZED FORM (UNF or 0NF)
 
-This is the state of a table or database before you have applied the Normal Forms. An 
-unnormalized database will suffer from data redundancy and data integrity issues due to
+This is the state of a database before you have Normalized it. An unnormalized database 
+will suffer from data redundancy, inconsistency, integrity and validity issues due to 
 their violation of the Normal Forms. 
 
-The Forms are mainly properties of a relation. In database terminology, a relation is 
-equivalent to a table. Therefore, you have to scrutinize every table in your database to
-ensure that each of the forms is applied. 
+As you start the Normalization process, remember these guidelines: 
+
+
+    * A table is about one topic. Create a table for each set of related data. Do not 
+      forget to give it a meaningful name. 
+      
+    * Moving on, Normalization is about removing columns that do not belong in a table. 
+      When you analyze a table and find unnecessary dependencies and columns, remove the 
+      troublesome columns to a new table or re-evaluate their existence.
 
     
-4.2.2.1 FIRST NORMAL FORM (1NF)
+5.2 FIRST NORMAL FORM (1NF)
    
 These are the criteria of First Normal Form:
 
-
-    * To eliminate anomalies and data redundancy, create a separate table for each set of
-      related data. You should define a primary key in each table to uniquely identify 
-      records. This is done to enforce 'Entity Integrity' in the database. 
-      
-    * An attribute is a vertical column in a table. All columns in a table must have 
-      unique names. All values in a column must be of the same domain (data type). This 
-      will ensure 'Domain Integrity' in the database. 
       
     * In a relation, a field is the intersection of a row and a column. It is the most 
       fundamental unit of storage in a database. You can store a data fragment in it.
@@ -749,7 +758,7 @@ These are the criteria of First Normal Form:
       Violating 1NF will mean that the database is no longer tracking the extra values in
       multi-value fields. This will prevent the database from applying domain integrity 
       constraints to them. This will lead to an increase in the amount of low-quality 
-      or conflicting data in your database.
+      or inconsistent data in your database.
     
     * Eliminate repeating groups from tables. Repeating groups are columns with the same
       name, but different numbers at the end. They are a special case of multi-value 
@@ -815,16 +824,16 @@ device per column. See the table below:
 +------------+-----------+----------+-----------------------+---------------+---------------+---------------+
 
 
-Unfortunately, this is also something you should NEVER do, because this too violates 
-First Normal Form. Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2,
-DeviceSerial3 etc., is called a REPEATING GROUP. The existence of repeating groups also
-violates First Normal Form. The classic sign of a repeating group is identical column
-names with different numbers tacked on the end of it to make unique names. 
+Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2, DeviceSerial3 etc., 
+is called a REPEATING GROUP. The existence of repeating groups also violates First Normal 
+Form. Therefore, this is also something you should NEVER do. The classic sign of a 
+repeating group is identical column names with different numbers tacked on the end of it 
+to make unique names. 
 
-Repeating groups are a sign of inflexible design. What happens when employees from the 
-quality control department need to be given 10 different devices each? Repeating groups 
-do not scale well. Giving an employee a new device should not necessitate changes to a 
-database's schema. 
+Repeating groups are a sign of inflexible design; they do not scale well. What happens 
+when employees from the quality control department need to be given 10 different devices 
+each? Giving an employee a new device should not necessitate changes to a database's 
+schema. 
 
 No, the correct response to such a problem is to create a new table that tracks devices,
 with 'EmployeeId' as foreign key. You can move the 'DeviceSerial' column to this new 
@@ -859,15 +868,15 @@ This is what the 'Devices' table might look like:
     
 You can use 'EmployeeId' to query the 'Devices' table and find a list of all devices that
 a given employee had been loaned. With this design modification, there are no repeating 
-groups in tables or repeating values in any field.
+groups in tables or multipe values in any field.
 
-Note that the trouble with the original table was that table's design was too lenient:
-You are to only put a set of related data in a table, but the original design allowed 
-extraneous data in. Often, as was the case in this example, the typical solution to a 
-normalization problem is the creation of a new table.
+Note that the trouble with the original table was that table's design was too broad: 
+extraneous columns were stuck in there. The 'Employees' table should not contain data 
+from the 'Devices' table. Often, as was the case in this example, the typical solution to 
+a normalization problem is the creation of a new table.
   
     
-4.2.2.2 SECOND NORMAL FORM (2NF)
+5.3 SECOND NORMAL FORM (2NF)
 
 These are the requirements for Second Normal Form: 
       
