@@ -982,7 +982,7 @@ will now look like:
         | Course |   Date    | Room | Capacity | Available |
         +--------+-----------+------+----------+-----------+
         | SQL101 | 3/1/2013  | 4A   |       12 |         4 |
-        | DB202  | 3/1/2013  | 14   |        7 |           |
+        | DB202  | 3/1/2013  | 7B   |        7 |         7 |
         | SQL101 | 4/14/2013 | 7B   |       14 |        10 |
         | SQL101 | 5/28/2013 | 12A  |        8 |         8 |
         | CS200  | 4/15/2012 | 4A   |       12 |        11 |
@@ -1020,37 +1020,86 @@ These are the requirements of Third Normal Form:
       attribute. This is the order of things according to Third Normal Form: Every table 
       ought to have a primary key which on all the other attributes are functionally 
       dependant. There should be no dependencies between non-prime columns. The presence 
-      of a such a dependency means that the dependant non-prime column does not belong in 
-      that table.  
+      of a transitive dependency means that the dependant non-prime column does not 
+      belong in that table.  
       
 
-Let's go to an example. See the 'OrderItem' table below. It tracks customer orders, 
-product ordered, quantity and other such values. This table complies with 1NF and 2NF,
-but 3NF. Why? See if you can spot the issue: 
+Let's go back to the example from Second Normal Form. Here is the 'Events' table[7]:
 
 
-    +--------+---------+-----------+----------+------------+-------+
-    |   Id   | OrderId | ProductId | Quantity | Unit Price | Total |
-    +--------+---------+-----------+----------+------------+-------+
-    | 257939 |  398489 | BC32-5    |        7 |         12 |    84 |
-    | 257940 |  398490 | NB82-9    |       15 |         57 |   855 |
-    | 257941 |  398491 | OH29-1    |      150 |          5 |   750 |
-    | 257942 |  398491 | VP10-8    |       15 |         25 |   375 |
-    +--------+---------+-----------+----------+------------+-------+
+            +--------+-----------+------+----------+-----------+
+            | Course |   Date    | Room | Capacity | Available |
+            +--------+-----------+------+----------+-----------+
+            | SQL101 | 3/1/2013  | 4A   |       12 |         4 |
+            | DB202  | 3/1/2013  | 7B   |        7 |         7 |
+            | SQL101 | 4/14/2013 | 7B   |       14 |        10 |
+            | SQL101 | 5/28/2013 | 12A  |        8 |         8 |
+            | CS200  | 4/15/2012 | 4A   |       12 |        11 |
+            +--------+-----------+------+----------+-----------+
 
+
+This table complies with 1NF and 2NF, but not 3NF. Why? See if you can spot the issue.
+The problem is the relationship between 'Room' and 'Capacity'. 'Room' determines the 
+value of 'Capacity', but it is not a prime attribute. This is a violation of 3NF because
+a non-prime column is determining another non-prime attribute. You can see one of the 
+problems immediately: the 'Room' column has duplicates. These columns just do not belong
+in this table, so let's create a new 'Room' table:
+
+
+                +------+----------+
+                | Room | Capacity |
+                +------+----------+
+                | 4A   |       12 |
+                | 7B   |       14 |
+                | 12A  |        8 |
+                +------+----------+                 
+                
+
+You can connect it to the 'Events' table and with a One-to-Many relationship and so on. 
+This is the new 'Events' table: 
+
+
+            +--------+-----------+-----------+
+            | Course |   Date    | Available |
+            +--------+-----------+-----------+
+            | SQL101 | 3/1/2013  |         4 |
+            | DB202  | 3/1/2013  |         7 |
+            | SQL101 | 4/14/2013 |        10 |
+            | SQL101 | 5/28/2013 |         8 |
+            | CS200  | 4/15/2012 |        11 |
+            +--------+-----------+-----------+
+
+
+Note how it shed so many of its attributes as the Normal Forms were applied to it. Let's 
+move on to an example that will highlight a common design mistake that leads to 
+Transitive Dependencies. Look at the 'OrderItem' table below, which calculates parts of
+an invoice[7]: 
+
+
+        +-------+---------+-----------+----------+-----------+--------+
+        |  ID   | OrderID | ProductID | Quantity | UnitPrice | Total  |
+        +-------+---------+-----------+----------+-----------+--------+
+        | 10011 |     454 | A43       |        4 |     10.00 |  40.00 |
+        | 10012 |     455 | B56       |        2 |      5.00 |  10.00 |
+        | 10013 |     456 | A22       |        1 |      9.99 |   9.99 |
+        | 10014 |     456 | A43       |       55 |     10.00 | 550.00 |
+        | 10015 |     457 | C77       |       10 |     75.00 | 750.00 |
+        +-------+---------+-----------+----------+-----------+--------+
+         
 
 The problem lies with the last three columns. The 'Total' column depends on the 
-'Quantity' and 'Unit Price' columns: its values are a product of the latter two columns.
-A non-key field is dependant on two non-key fields, violating 3NF. It is a very common 
-mistake to put easily derivable information in a new column, but you should NOT do this.
+'Quantity' and 'UnitPrice' columns because its values are a product of the other two 
+columns. A non-key field is dependant on two non-key fields, once again violating 3NF. It 
+is a very common mistake to put easily derivable information in a new column, but you 
+should NOT do this.
 
 If the values of one non-key can be ascertained from another field(s), it may lead to 
 hard-to-resolve conflicts. If an order is updated and its quantity or unit price changed, 
 the 'Total' column does not automatically get updated. If you fail to update the total, 
-and notice the discrepancy at a later time, you face a serious problem: which of the 
-values is wrong? Is it the 'Quantity' value, 'Unit Price' or the 'Total'? This is the 
-reason why 3NF exists; to prevent your database from devolving into a chaotic mess of 
-conflicting values.
+and notice the discrepancy at a later time, you face a serious data inconsistency problem: 
+Which of the values is wrong? Is it the 'Quantity' value, 'UnitPrice' or the 'Total'? 
+This is the reason that 3NF exists - to prevent your database from devolving into a 
+chaotic mess of conflicting values.
 
 You can resolve this problem by removing the transitively dependent column from the 
 table. But if the information in the 'Total' column is valuable to you, can you keep it
