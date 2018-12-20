@@ -1111,7 +1111,7 @@ depends on. In this way, you can both comply with 3NF and retain a computed colu
 cannot be corrupted by human error. 
 
 
-4.2.2.4 BOYCE-CODD NORMAL FORM (BCNF or 3.5NF)
+5.5 BOYCE-CODD NORMAL FORM (BCNF or 3.5NF)
 
 BCNF has two requirements:
 
@@ -1121,7 +1121,7 @@ BCNF has two requirements:
     * BCNF is an extension of Third Normal Form and was created to strengthen it. This is
       due to certain rare anomalies that 3NF does not prevent. BCNF closes these 
       loopholes. The techopedia article on BCNF explains the circumstances that led to the 
-      development of this extension Form[8]: "3NF states that all data in a table must 
+      development of this extension Form[9]: "3NF states that all data in a table must 
       depend only on that table’s primary key, and not on any other field in the table. 
       At first glance it would seem that BCNF and 3NF are the same thing. However, in 
       some rare cases it does happen that a 3NF table is not BCNF-compliant. This may 
@@ -1139,11 +1139,11 @@ BCNF has two requirements:
       that participates in the primary key."  
       
       In the Second Normal Form, we have addressed cases where non-prime attributes 
-      depend upon prime attributes, either in whole (functional dependency) or in part
-      (partial dependency). In the Third Normal Form, we have addressed situations that
-      arise when non-prime attributes depended upon other non-prime attributes. The one
-      possibility that the first three Normal Forms have not addressed is what happens if
-      a non-prime attribute determines a prime attribute? BCNF addresses this situation. 
+      depend upon prime attributes. In the Third Normal Form, we have addressed situations 
+      that arise when non-prime attributes depended upon other non-prime attributes. The 
+      one possibility that the first three Normal Forms have not addressed is what happens 
+      if a non-prime attribute determines a prime attribute? BCNF addresses this 
+      situation. 
       
       BCNF demands that, for any dependency where A derives B (A -> B), A must be a 
       candidate key. Rephrased: BCNF states that if B is a prime attribute, then A cannot 
@@ -1151,14 +1151,14 @@ BCNF has two requirements:
       
       In other words, BCNF insists that every determinant in a table be a candidate key. 
       A candidate key is the most minimum set of attributes in a table that can be used 
-      to uniquely identify a record. In an article[15], Agnieszka Kozubek puts it this 
+      to uniquely identify a record. In an article[10], Agnieszka Kozubek puts it this 
       way: "Informally the Boyce-Codd normal form is expressed as “Each attribute must 
       represent a fact about the key, the whole key, and nothing but the key.”" 
 
     
 If ever there was a concept in need of an example, it is this one. BCNF is a bit more 
 impenetrable than the first three Normal Forms, but it is still understandable. The 
-example below is taken from MariaDb's Docs[16]. It depicts a 'Student Enrollment' table. 
+example below is taken from MariaDb's Docs[11]. It depicts a 'Student Enrollment' table. 
 You should make the following assumptions about the attributes in it:
 
 
@@ -1225,7 +1225,7 @@ determined 'Course' in the original table, I am making it the primary key in thi
 
 
 As you can see, this eliminates the Instructor's name being stored redundantly. 
-Decomposing the table into two separate tables has once again solved a normalization
+Decomposing a table into two separate tables has once again solved a normalization
 problem.
  
 
@@ -1243,8 +1243,6 @@ SOURCES
 06: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
 07: Programming Foundations: Databases (Lynda.com, Simon Allardice, 2015)
 08: https://stackoverflow.com/questions/9950367/what-is-wrong-with-a-transitive-dependency
-
-
-08: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
-15: https://www.vertabelo.com/blog/technical-articles/boyce-codd-normal-form-bcnf
-16: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
+09: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
+10: https://www.vertabelo.com/blog/technical-articles/boyce-codd-normal-form-bcnf
+11: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
