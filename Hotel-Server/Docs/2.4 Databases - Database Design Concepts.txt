@@ -15,7 +15,7 @@ article will cover the following topics:
     2.    The Consequences of Poor Database Design
     
     3.    Database Design: The Process
-    3.1   Revision: The Parts of a Table  
+    3.1   Revision: The Parts of a Table
     3.2   Entity-Relationship Modelling
     3.3   Introduction to Database Normalization: Why Do You Need It?
     3.4   Database Normalization: The Process
@@ -35,6 +35,13 @@ article will cover the following topics:
     5.3   Second Normal Form
     5.4   Third Normal Form
     5.5   Boyce-Codd Normal Form
+    
+    
+Section 2 will explore the consequences of poorly designed databases. Section 3 will go 
+through the various stages of designing a database, like Entity-Relationship Modelling 
+and Database Normalization. Section 4 and 5 will explain Dependencies and the Normal Forms 
+respectively, which are two theory-heavy sets of concepts that are central to Database
+Normalization.
 
 
 2. THE CONSEQUENCES OF POOR DATABASE DESIGN 
