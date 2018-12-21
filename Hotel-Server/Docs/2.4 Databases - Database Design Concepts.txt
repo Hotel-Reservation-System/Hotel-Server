@@ -35,6 +35,7 @@ article will cover the following topics:
     5.3   Second Normal Form
     5.4   Third Normal Form
     5.5   Boyce-Codd Normal Form
+    5.6   Denormalization
     
     
 Section 2 will explore the consequences of poorly designed databases. Section 3 will go 
@@ -1252,6 +1253,56 @@ As you can see, this eliminates the Instructor's name being stored redundantly.
 Decomposing a table into two separate tables has once again solved a normalization
 problem.
  
+ 
+5.6 DENORMALIZATION
+
+Bringing your database into compliance with the first three Normal Forms is the typical
+expectation in production environments. At this point, something needs to be made clear:
+Normalization is a means to an end and that end is creating a database that is resistant
+to data anomalies. However, sometimes applying the Normal Forms is either more trouble
+than its worth or causes unwanted degradation of some other database metric. This is 
+especially true with regards to database performance; Normalization often results in the 
+creation of more tables, which usually diminishes a database's performance. You now face 
+a trade-off: increase the database's data quality (by enforcing the Normal Forms) or 
+optimize the database for performance, scalability or some other metric (by reversing 
+Normalization in certain places). 
+
+The act of re-designing a database's tables, trading away some data integrity, increasing 
+data redundancy and potentially the incidence of anomalies, in return for something else 
+is called DENORMALIZATION. Note that Denormalization does mean not doing Normalization; 
+it is done after successfully normalizing your database, when the circumstances require 
+you to make such a tradeoff.   
+
+For example here is an example table[7]: 
+
+
+    Employee(EmployeeId, FirstName, LastName, Email, Email2, Phone, Phone2 )
+    
+    
+Technically, the presence of Repeating Groups means that this table violates 1NF. However,
+if you know that you need just one additional column for Email and Phone each, it may 
+make sense to break 1NF to add these columns. This makes things more convenient and may
+increase performance, at minimum cost in data integrity. Reversing one of the Normal 
+Form's protocols or deliberately choosing to override them for a good reason is called a
+Denormalization Decision. In this example, this decision only makes sense because you 
+have to add one column each. If you need to store many email addresses and phone numbers,
+denormalizing this table would not be a good idea. 
+
+There are also situations that are deceptive; some tables seem ripe for Normalization or
+Denormalization, but really, are not. Simon Allardice warns that tables that contain 
+address information are an example of this[7]. For example, you may think that you can 
+determine the 'City' and 'State'/'Province' columns of a address from just the 'ZipCode'
+or 'PostalCode' column. In fact, it looks like a Transitive Dependency. However, there 
+are some problems with this line of thought. While you can usually determine the city or 
+province from a postal code, this is not always so. Reality is not that straightforward:
+there could be multiple towns in one postal code or postal codes that overlap two 
+provinces.
+
+The point of this example is to remind you that you need to really understand your data
+before you make a decision to Normalize or Denormalize. Corner cases and nuances abound
+in real world data, and you have to account for this when designing your tables. It's 
+important to be informed when making structural changes to your database.     
+
 
 ****************************************************************************************************
 ****************************************************************************************************
