@@ -45,6 +45,10 @@ respectively, which are two theory-heavy sets of concepts that are central to Da
 Normalization.
 
 
+****************************************************************************************************
+****************************************************************************************************
+
+
 2. THE CONSEQUENCES OF POOR DATABASE DESIGN 
 
 Poorly designed databases are prone to data redundancies or database anomalies. Redundant 
@@ -123,6 +127,10 @@ The best way to prevent anomalies is to design your database correctly via 'Enti
 Relationship Modelling'. After doing that, you have to apply the process of 'Database 
 Normalization' to improve its formal internal structure. The rest of the article is 
 concerned with these two process and others related to them. 
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 3. DATABASE DESIGN: THE PROCESS
@@ -396,6 +404,10 @@ The 'Normal Forms' are a set of formal rules that will help you remove columns w
 dependencies. There are half of dozen of them, and implementing each one will bring you
 one step closer to soundly designed table. Apply them to every table in the database and 
 you will have a robust database design.
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 4. DEPENDENCIES
@@ -724,6 +736,10 @@ needs to eliminate indirect dependencies on non-prime columns. In this table, yo
 eliminate this problem by creating a new 'Winners' table and moving the 'Winner's DOB' 
 attribute into it. You can use the add a 'Names' column and populate it with the names 
 of the winners. 
+
+
+****************************************************************************************************
+****************************************************************************************************
 
 
 5. THE NORMAL FORMS
