@@ -12,12 +12,29 @@ work with the database to design tables that are resistant to data-related probl
 article will cover the following topics:
 
 
-    2.  The Consequences of Poor Database Design
+    2.    The Consequences of Poor Database Design
     
-    3.  Database Design: The Process
-    3.1 Revision: The Parts of a Table  
-    3.2 Entity-Relationship Modelling
+    3.    Database Design: The Process
+    3.1   Revision: The Parts of a Table  
+    3.2   Entity-Relationship Modelling
+    3.3   Introduction to Database Normalization: Why Do You Need It?
+    3.4   Database Normalization: The Process
       
+    4.    Dependencies
+    4.1   Dependency Theory
+    4.2   Prime and Non-Prime Attributes 
+    4.3   Functional Dependency
+    4.3.1 Trivial Functional Dependency
+    4.3.2 Partial Functional Dependency
+    4.3.3 Full Functional Dependency
+    4.3.4 Transitive Dependency
+    
+    5.    The Normal Forms
+    5.1   Unnormalized Form
+    5.2   First Normal Form
+    5.3   Second Normal Form
+    5.4   Third Normal Form
+    5.5   Boyce-Codd Normal Form
 
 
 2. THE CONSEQUENCES OF POOR DATABASE DESIGN 
@@ -213,7 +230,7 @@ have to be connected. Within tables, you should have carefully considered and as
 data types and restrictions to every attribute. 
 
 
-3.3 INTRODUCTION TO NORMALIZATION: WHY DO YOU NEED IT? 
+3.3 INTRODUCTION TO DATABASE NORMALIZATION: WHY DO YOU NEED IT? 
 
 Here is an introductory description of Normalization from Wikipedia's article[1]:
 
@@ -320,7 +337,7 @@ normalization as part of the initial design and whenever you revisit and tweak y
 database's schema. 
 
 
-3.4 NORMALIZATION: THE PROCESS
+3.4 DATABASE NORMALIZATION: THE PROCESS
 
 So how do you normalize your database? What does the process look like? This depends on
 whether you have an existing unnormalized/partially normalized database, or if you are 
