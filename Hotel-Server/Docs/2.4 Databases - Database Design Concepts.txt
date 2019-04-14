@@ -1,15 +1,22 @@
 1. INTRODUCTION TO DATABASE DESIGN CONCEPTS
 
-In this article, I'll talk about how to design a database and the tables in it. Do not be 
-fooled by similarities between a spreadsheet and a database table: What you see is only a 
-visual representation of data. For instance, beneath the hood, a database identifies 
-relationships between pieces of data and enforces constraints between them prevent data
-anomalies from making their way in. A spreadsheet program can do some of these things, 
-but it is not really designed for this purpose. 
+In this article, I'll talk about how to design a database and the tables in it. To start,
+I want to make this point: Do not be fooled by similarities between a spreadsheet and a 
+database table. Both spreadsheet programs and databases have visual similarities in the 
+way they present data to the user. However, the similarities are only skin deep. 
+Spreadsheet programs are not really interested in managing relationships between data. 
+However, beneath the hood, a database identifies relationships between pieces of data 
+and enforces constraints between them to prevent data redundancies and anomalies from 
+making their way in. A spreadsheet program can do some of these things, but it is not 
+really designed for this purpose. 
 
-This is just one of the many things that a good database can do. However, you have to 
-work with the database to design tables that are resistant to data-related problems. This
-article will cover the following topics:
+However, a database cannot automatically handle the process of identifying and managing 
+data relationships by itself. You (the programmer, database administrator) have to work 
+with the database to design tables that are resistant to data-related problems. That is
+the purpose of this article: to introduce database design concepts, principles, and 
+practices that will help you to architect a superior quality database.
+
+This article will cover the following topics:
 
 
     2.    The Consequences of Poor Database Design
@@ -40,8 +47,8 @@ article will cover the following topics:
     
 Section 2 will explore the consequences of poorly designed databases. Section 3 will go 
 through the various stages of designing a database, like Entity-Relationship Modelling 
-and Database Normalization. Section 4 and 5 will explain Dependencies and the Normal Forms 
-respectively, which are two theory-heavy sets of concepts that are central to Database
+and Database Normalization. Section 4 and 5 will explain Dependencies and the Normal 
+Forms respectively, which are two theory-heavy sections that are central to Database 
 Normalization.
 
 
@@ -52,7 +59,7 @@ Normalization.
 2. THE CONSEQUENCES OF POOR DATABASE DESIGN 
 
 Poorly designed databases are prone to data redundancies or database anomalies. Redundant 
-data is self-explanatory, but what are database anomalies? An anomaly is an aberrant 
+data is self-explanatory, but what are database anomalies? An anomaly is aberrant 
 behaviour in a database that occurs due to poor design. There are three kinds of database 
 anomalies:
 
@@ -61,7 +68,9 @@ anomalies:
       into a table because the table requires a piece of data that is unavailable to you. 
       
       E.g.: A database that cannot add a customer information to its Customers table 
-      until the customer actually makes a purchase.
+      until the customer actually makes a purchase. In this case, due to poor design 
+      decisions, purchase information is required before you can add a customer to the
+      table.
       
       
     * DELETION ANOMALY: is the opposite of the Insert anomaly. This is a situation where
@@ -86,13 +95,14 @@ anomalies:
       data inconsistencies. 
       
       If a table design permits this anomaly, then over time, it will almost certainly 
-      lead to data inconsistencies when one record or field is updated but the other one 
-      is not.
+      lead to data inconsistencies as one variant of a record or field is updated but 
+      the other ones are not.
       
       E.g.: Suppose you have a Student table where its possible to have a student's 
       information stored in more than one record. If one of these records is updated, 
       say the address is changed, you now have two records for one student, with 
-      conflicting addresses. This is a clear sign of design error in your table.
+      conflicting addresses. Now you don't know which address is correct one. This is a 
+      clear sign of design error in your table.
       
       Your tables should have only a single source of truth for an attribute. Attributes 
       should be captured once and stored once in one field only. If needed, you can make 
@@ -102,16 +112,16 @@ anomalies:
 
 How does one end up with such anomalies in a database? Well, those of us with experience 
 using Microsoft Excel or other tools like it might be inclined at organizing a database 
-in the "spreadsheet design" style. However, an RDBMS is not a spreadsheet program, despite
-superficial similarities. Therefore, following this approach will only result in a 
-database with the data quality of Excel spreadsheets found in any standard business 
-setting. Most of these spreadsheets are rife with data anomalies, duplication and data 
-inconsistency problems. Spreadsheets are not very good are solving the fundamental 
-problems that databases are trying to solve. 
+in the "spreadsheet design" style. However, as previously mentioned, an RDBMS is not a 
+spreadsheet program, despite superficial similarities. Therefore, following this approach 
+will only result in a database with the data quality of Excel spreadsheets found in any 
+standard business setting. Most of these spreadsheets are rife with data anomalies, 
+duplication and data inconsistency problems. Spreadsheets are not very good are solving 
+the fundamental problems that databases are trying to solve. 
 
-The other big problem with taking a "spreadsheet" approach to database design is that 
-this results in tables that fail to take advantage of the database's ability to impose 
-data integrity constraints. This can lead to a database design that does not respect the 
+The big problem with taking a "spreadsheet" approach to database design is that this 
+results in tables that fail to take advantage of the database's ability to impose data 
+integrity constraints. This can lead to a database design that does not respect the 
 'Four Integrities': Entity, Domain, Referential and User-Defined. Even worse than that, 
 an unnormalized database does not enforce inter-column and inter-table relationships. If 
 you fail to leverage the full powers of an RDBMS, you might as well use a spreadsheet 
