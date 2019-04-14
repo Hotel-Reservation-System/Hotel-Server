@@ -179,15 +179,15 @@ unique student records. Or at least, that should be the case, if there are no du
 records in it. Each record has the same structure; it contains information required by 
 the columns. 
  
-ASIDE: Sometimes, records are referred to as tuples. A tuple is a formal term that is 
+ASIDE: Sometimes, records are referred to as tuples. A tuple is a formal term that is a
 distinct concept but it is related to a record (or a row).
 
 The intersection of a column and a row is a Field. This is where an individual piece of 
 data is to be stored. In the example table, you should see meaningful pieces of data in 
 all of the fields.  
 
-Finally, there is a way to represent a relation and its attributes. There is the generic
-format:
+Finally, here is a way to represent a relation and its attributes in writing. This is 
+the generic format:
 
 
     TableName(Attribute1, Attribute2, Attribute3, Attribute4...)
@@ -215,11 +215,12 @@ as follows:
 
 
     1. Entity Integrity Constraints: are enforced by using primary keys to ensure that no 
-       two rows in your table have identical values for all columns. At the very least, 
-       a table must have at least one (set of) attributes with unique values. This role 
-       is usually played by primary key columns, which must contain unique values for 
-       every record. With the help of a primary key, you should be able to uniquely 
-       identify any record in the table.
+       two rows in your table have identical values for all columns. This will help you 
+       to prevent one type of update anomaly. To enforce entity integrity, at the very 
+       least, a table must have at least one (set of) attributes with unique values. 
+       This role is usually played by primary key columns, which must contain unique 
+       values for every record. With the help of a primary key, you should be able to 
+       uniquely identify any record in the table.
        
        When you design a table, you must give it a primary key (or a composite key). 
        
@@ -228,11 +229,11 @@ as follows:
        attribute. When adding columns to a table, remember to give them unique names.   
        You have the responsibility of setting constraints on the data stored within a 
        column. One constraint that you must impose is the column's data type. This is 
-       critical to Domain Integrity.  
+       critical to enforcing Domain Integrity.  
        
        You can also set other limitations if you so choose, such as formatting or range 
        restrictions on the values. Another thing you can do is you can direct an 
-       attribute to accept NULL values. 
+       attribute to accept NULL values in its fields. 
        
        
     3. Referential Integrity Constraints: When you want to create inter-table 
@@ -242,6 +243,10 @@ as follows:
        This constraint will check to see whether every foreign key value in the dependent 
        table has a corresponding primary key in the principal table. 
        
+       Referential Integrity Constraints will help you prevent insertion and deletion 
+       anomalies.  
+       
+       
     4. User-Defined Constraints: This constraint is optional. However, if you wish to 
        have legal requirements or business process rules codified into constraints, you
        can also do it via CHECK constraints and TRIGGERS. An RDBMS will enforce these
@@ -249,19 +254,20 @@ as follows:
 
 
 At the completion of the ER-Modelling process for your database, you should have 
-identified tables and their columns. You should also identified the nature of 
-relationships between two tables. And to enforce integrity constraints, you should have 
-declared a primary or composite key in every table and a foreign key whenever two tables 
+identified tables and their columns. If two tables have a relationship, you should also 
+have identified the nature of their inter-relationship and codified it as a database 
+enforced constraint. And to enforce integrity constraints, you should have declared a 
+primary or composite key in every table and a foreign key whenever two tables 
 have to be connected. Within tables, you should have carefully considered and assigned 
 data types and restrictions to every attribute. 
 
 
 3.3 INTRODUCTION TO DATABASE NORMALIZATION: WHY DO YOU NEED IT? 
 
-Here is an introductory description of Normalization from Wikipedia's article[1]:
+Here is an introductory description of Normalization from Wikipedia's article on the 
+topic[1]:
 
 
-    Database normalization is the process of restructuring a relational database in 
     Database normalization is the process of restructuring a relational database in 
     accordance with a series of so-called normal forms in order to reduce data redundancy 
     and improve data integrity. It was first proposed by Edgar F. Codd as an integral 
@@ -304,9 +310,9 @@ you should already have arrived at a preliminary design for your database. Howev
 are still not fully taking advantage of an RDBMS's capabilities to manage inter-attribute 
 relationships. What that does mean mean? 
 
-An attribute's values may have one of several relationships to another attribute. For 
-instance, if you have a 'Social Security Number' column in an properly designed 
-'Employees' table, it will map on to one and only one value in 'EmployeeName', 
+Within a table, an attribute's values may have one of several relationships to another 
+attribute. For instance, if you have a 'Social Security Number' column in an properly 
+designed 'Employees' table, it will map on to one and only one value in 'EmployeeName', 
 'DateOfBirth' and perhaps other columns. This is a logical constraint that exists between
 two attributes, and the general term for such inter-attribute relationships is 
 'Dependency'. In this case, the existence of this dependency is a very useful property: 
@@ -341,22 +347,22 @@ then, is the general goal of Database Normalization: to use formal methods to st
 database, re-design tables and attributes until your database has a structure that 
 resists anomalous data issues.
 
-By doing this, you are moving from merely a spreadsheet style collection of information, 
+By doing this, you are moving from a mere spreadsheet style collection of information 
 to Structured Data. Structured data has well-defined attributes which give it a clearly 
 defined form. For instance, in a table, every record must have values for mandatory 
 columns. Every attribute must have the correct relationship to other attributes, in 
-accordance with the formal rules. By doing these things, you are imposing structure on 
-on what is just a heap of data.   
+accordance with the formal rules. By making sure that these requirements are met, you 
+are imposing structure on on a heap of unstructured data.   
 
 Normalization should lead to a much more robust database design, one in which you are 
-doing as little work to maintain data quality as possible. A solid database design should 
-pro-actively prevent the majority of data-quality issues which plague databases. 
-Normalization will make your database easier and more reliable to work with. It will 
-reduce unwanted duplicate data in the database, thereby decreasing your database's size. 
-It will render many classes of anomalies impossible, increasing the integrity, validity
-and robustness of the data stored therein. This will make it harder to create invalid 
-states in the database or enter poor quality data into it. This should make it easier 
-to query, modify and maintain your database.
+doing as little manual work on an regular basis as possible to maintain data quality. 
+A solid database design should pro-actively prevent the majority of data-quality issues 
+which plague databases. Normalization will make your database easier and more reliable 
+to work with. It will reduce unwanted duplicate data, thereby decreasing your database's 
+size. It will render many classes of anomalies impossible, increasing the integrity, 
+validity and robustness of the data stored therein. This will make it harder to create 
+invalid states in the database or enter poor quality data into it. This should make it 
+easier to query, modify and maintain your database.
 
 For all these reasons, you should normalize every database you design. You should do 
 normalization as part of the initial design and whenever you revisit and tweak your 
@@ -374,30 +380,33 @@ to both situations.
 Before you can start normalization, you should have completed the 'ER-Modelling' phase. 
 You should have a provisional database design in hand. 
 
-Normalization is applied at the "micro level". The general idea behind Normalization is 
-that a table is about a specific topic and that only those columns which are related to 
-this topic must be included within it. Therefore, during the Normalization process, you 
-will focus on one entity (table) and study its attributes, looking to find attributes 
-that just do not belong in a table. You will be asking this question: Are any of the 
-columns in the present table not directly related to its main topic?
+In contrast with ER-Modelling, Normalization is applied at the "micro level". The general 
+idea behind Normalization is that a table is about a specific topic and that only those 
+columns which are related to this topic must be included within it. Therefore, during 
+the Normalization process, you will focus on one entity (table) and study its attributes, 
+looking to find attributes that just do not belong in that table. You will be asking this 
+question: Are any of the columns in the present table not directly related to its main 
+topic?
 
-In order to do this, you need to understand the nature of dependencies that may occur 
-between columns. To determine if a column belongs in a table, you will study its 
-relationships to other attributes. Both "good" and "bad" kinds of dependencies can 
-exist between attributes. "Good" dependencies are a sign that the two sets of attributes 
-in question belong to the table and are in good standing with respect to each other. 
-"Bad" dependencies indicate that columns don't have an acceptable relationship to other
-attributes, suggesting that one or more of these columns are extraneous to the table.
-When you find extraneous attributes, you should move them out into a new table. That's
-right: the solution to a normalization issues is usually the creation of a new table. 
+In order to do normalization, you need to understand the nature of dependencies that 
+may occur between columns. To determine if a column belongs in a table, you will study 
+its relationships to other attributes. Both "good" and "bad" kinds of dependencies can 
+exist between attributes. "Good" dependencies are a sign that the two (sets of) 
+attributes in question belong to the table and are in good standing with respect to 
+each other. "Bad" dependencies indicate that columns don't have an acceptable 
+relationship to other attributes, suggesting that one or more of these columns are 
+extraneous to the table. When you find extraneous attributes, you should move them out 
+into a new table. That's right: the standard solution to a normalization issue is usually 
+the creation of a new table. 
 
 The goal is to identify and keep the set of columns that have "good" dependencies, which
 contribute to promoting data integrity and validity in your database, while getting rid 
 of negative dependencies that detract from this goal. The result should be that every 
-table only contains the attributes it needs. Each attribute will only positive 
-dependencies on other attributes, as all the columns with negative ones should have been 
-moved to other tables or deleted completely. Remember that by doing this, you will get a 
-database design that is very resistant to many classes of data integrity issues. 
+table only contains the attributes it needs. Each attribute will only have positive 
+dependencies on other attributes, as all the columns with negative dependencies should 
+have been moved to other tables or deleted completely. Remember that by normalizing your
+tables, you will get a database design that is very resistant to many classes of data 
+integrity issues. 
 
 In order to successfully apply Normalization on a database, you have to understand these
 concepts and their many sub-concepts:
@@ -408,12 +417,13 @@ concepts and their many sub-concepts:
        relationships.
        
 
-The first topic explains attribute dependencies. You need to understand the nature of 
-dependencies and recognize them so that you can work out whether they are "good" or "bad". 
-The 'Normal Forms' are a set of formal rules that will help you remove columns with "bad"
-dependencies. There are half of dozen of them, and implementing each one will bring you
-one step closer to soundly designed table. Apply them to every table in the database and 
-you will have a robust database design.
+The first topic explains attribute dependencies, which is the subject of section 4. You 
+need to understand the nature of dependencies and recognize them so that you can work out 
+whether they are "good" or "bad". Section 5 discussed the 'Normal Forms', which are a set 
+of formal rules that will help you remove columns with "bad" dependencies. There are
+half of dozen of them, and implementing each one will bring you one step closer to 
+soundly designed table. Apply the 'Normal Forms' to every table in the database and you 
+will have a robust database design.
 
 
 ****************************************************************************************************
