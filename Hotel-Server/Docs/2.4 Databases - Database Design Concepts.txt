@@ -417,13 +417,17 @@ concepts and their many sub-concepts:
        relationships.
        
 
-The first topic explains attribute dependencies, which is the subject of section 4. You 
-need to understand the nature of dependencies and recognize them so that you can work out 
-whether they are "good" or "bad". Section 5 discussed the 'Normal Forms', which are a set 
-of formal rules that will help you remove columns with "bad" dependencies. There are
-half of dozen of them, and implementing each one will bring you one step closer to 
-soundly designed table. Apply the 'Normal Forms' to every table in the database and you 
-will have a robust database design.
+These topics are inter-related. Dependency theory explains the rules for inter-attribute 
+dependencies. It is the subject of section 4. You need to understand the nature of 
+dependencies and recognize them so that you can work out whether they are "good" or 
+"bad". 
+
+Section 5 discusses the 'Normal Forms', which are a set of formal rules based on
+dependency theory that governs what attributes (columns) belong in a table and which 
+do not. The Normal Forms will will help you remove columns with "bad" dependencies 
+from tables. There are half of dozen such forms, and implementing each one will bring 
+you one step closer to soundly designed table. Apply the 'Normal Forms' to every table 
+in the database and you will have a robust database, resistant to data anomalies.
 
 
 ****************************************************************************************************
@@ -437,8 +441,8 @@ will have a robust database design.
 As I just explained, within a table, the data in one attribute(s) may have certain 
 relationships to data from other attribute(s), which are called dependencies. The 
 process of database normalization requires you to understand dependencies and root out 
-the "bad" ones by removing associated columns from the table. To do this, you must 
-understand the nature of the attribute relationships.
+the "bad" ones by removing these columns from the table. If you want to learn how to do 
+this, you must understand the nature of attribute relationships.
 
 Dependency theory is the field that deals with such relationships. The Wikipedia article
 provides a somewhat opaque definition[4]:
@@ -451,13 +455,31 @@ provides a somewhat opaque definition[4]:
     dependencies are the multivalued dependencies.
     
     
-So there exist logical constraints between two attributes or more, which are called 
-DEPENDENCIES. There are several major kinds of dependencies: Functional, Multi-Valued and 
-Join. This article will only consider the most common type of dependency, which is 
-Functional Dependency and its sub-types. That is because this concept is important to the 
-types of Normal Forms which are covered later in this article: The first three Normal 
-Forms and the Boyce-Codd Normal Form. Multi-Valued and Join dependencies apply to later 
-Normal Forms. 
+So there exist logical constraints between sets of two or more attributes, which are 
+called DEPENDENCIES. There are several major kinds of dependencies: Functional, 
+Multi-Valued and Join. This article will only consider the most common type of 
+dependency, which is Functional Dependency and its sub-types. That is because this 
+concept is important to the types of Normal Forms which are covered later in this
+article, namely the first three Normal Forms and the Boyce-Codd Normal Form. Multi-Valued 
+and Join dependencies apply to later Normal Forms. The later Normal Forms are considered
+rather exotic, so both they and the dependencies related to them are out of the scope of 
+this article.
+
+There are half a dozen or so concepts in this section, but I should point out the most
+important ones. The "bad" dependencies are:
+
+
+    * Partial Functional Dependency
+    * Transitive Dependency
+    
+
+The "good" dependencies are:
+
+    
+    * Full Functional Dependency. 
+    
+    
+But first, a few other concepts...
 
 
 4.2. PRIME AND NON-PRIME ATTRIBUTES
@@ -481,17 +503,17 @@ In the most general terms[5], "a dependency is a constraint that applies to or d
 the relationship between attributes." As I said before, there are several kinds of 
 dependencies, but this section and the rest of the article will concern itself only with
 'Functional Dependency' and its variations. A Functional Dependency is a type of 
-relationship that exists between two sets of attributes. Usually, but not always, this 
+relationship that exists between two (sets of) attributes. Usually, but not always, this 
 relationship occurs between a Primary Key (PK) attribute set and a second set of 
 non-prime attribute(s) within a table. 
 
 Let's start with an simple and informal definition:
 
 Assume that there are two columns in a table. If you can use the value from one column to 
-uniquely identify the a value in the second column, then a functional dependency exists 
-between these two columns. 
+uniquely identify the a value in the second column, then a functional dependency is said
+to exist between these two columns. 
 
-I'll re-iterate the example of Employee table. Consider this relation: 
+I'll re-use the example of Employee table. Consider this relation: 
 
 
     Employees(Social Security Number, FirstName, LastName)
@@ -509,17 +531,19 @@ In this relationship, then, the 'Social Security Number' column is said to be th
 Determinant attribute, while the 'FirstName' column is said to be DEPENDANT attribute. 
 'FirstName' can also be called the DETERMINED attribute. The same relationship exists 
 between 'Social Security Number' and 'LastName', with the former once again being the 
-Determinant while the latter is Dependant. The SSN column is said to determine the other 
-two columns, and in return, the other two are said to be dependant on SSN. 
+Determinant while the latter is the Dependant attribute. The SSN column is said to 
+determine the other two columns, and in return, the other two are said to be dependant 
+on SSN. 
 
-This relationship is expressed like this: 
+These relationships are expressed in shorthand like this: 
 
 
     Social Security Number -> FirstName
     Social Security Number -> LastName
 
 
-This is what it looks like generically: 
+This is called a Functional Dependency (FD) diagram. This is what a generic FD diagram
+looks like: 
 
 
     A -> B 
@@ -527,19 +551,19 @@ This is what it looks like generically:
 
 The left hand side of this Functional Dependency diagram contains the determinant set and
 the right hand side is the determined set. It is read like this from left to right: "A 
-(functionally) determines B" OR "A derives B". The Inverse: "B depends on A." Functional 
-dependencies occur when there is only one value in the determined set for a given value 
-of the determinant set. 
+(functionally) determines B" OR "A derives B". The Inverse: "B depends on A." To be 
+clear, functional dependencies occur when there is only one value in the determined set 
+for a given value of the determinant set. 
 
 Do note, that in real tables, keys can be comprised of multiple columns, which is where 
 you might become confused. So, you can have a set of columns that form the 
 determinant/primary key/candidate key.
 
 Columns or collections of columns that can serve as determinants in that table are 
-excellent candidates to become Primary key. Thus, determinant columns are either 
+excellent candidates to become the Primary key. Thus, determinant columns are either 
 candidate keys or the primary key. As I noted before, columns that are part  
-of the part of a candidate key or a primary key are called prime attributes and the 
-columns that are not part of such keys are called non-prime attributes. 
+of a candidate key or a primary key are called prime attributes and the columns that 
+are not part of such keys are called non-prime attributes. 
 
 Let's look at the formal definition of a functional dependency: 
 
@@ -572,7 +596,7 @@ of Third Normal Form) require an understanding of functional dependencies.
 During Normalization, one of the first things you will have to do when studying a table 
 is to identify the prime and non-prime attributes. Then you will study the nature of the 
 dependencies that exist between them. There are certain kinds of functional dependencies
-that are undesirable in a table, indicating the those columns must be removed to an other
+that are undesirable in a table, indicating that those columns must be removed to another 
 table. 
 
 For this reason, you will need to know what sub-type of functional dependency exists 
@@ -597,8 +621,8 @@ Functional Dependency diagram for this relationship:
  
 This is where Trivial Dependency occurs: The composite key can uniquely identify an 
 'EmployeeName' because this attribute is a part of the composite key. If you already
-know the name of you employee you are searching for, it can play a part in finding it. 
-This follows from common sense. So if this seems obvious, it is because it is. A trivial 
+know the name of you employee you are searching for, it will help in finding it! This 
+follows from common sense. So if this seems obvious, it is because it is. A trivial 
 dependency occurs because 'EmployeeName' is part of both the determining and determined 
 sets. 
   
@@ -606,6 +630,9 @@ sets.
 
 
     {A, B} -> B 
+    
+
+A trivial dependency is neither "good" nor "bad", just obvious and rather useless.
     
 
 4.3.2 PARTIAL FUNCTIONAL DEPENDENCY
@@ -622,7 +649,7 @@ dependant attribute and thus, it is a non-prime attribute.
 Thus, this is the FD diagram for this table:
 
 
-    StoreId, Product -> Price
+    { StoreId, Product } -> Price
 
 
 'StoreId' and 'Product' combined form the determining set, which determines the value for
@@ -637,9 +664,12 @@ this:
     Product -> Price
 
 
-Partial Dependency is a "bad" dependency. The existence of partial functional dependency
-between two columns violates Second Normal Form. It is something that you must strive to 
-eliminate from your database, or it will lead to data inconsistency errors. 
+Partial Dependency is a "bad" dependency. It occurs when you do not take care when 
+selecting attributes for a composite key, thus polluting it with non-essential 
+attributes. The existence of partial functional dependency between two columns violates 
+Second Normal Form. It is something that you must strive to eliminate from your
+database, or it will lead to data inconsistency errors. See the next section on Full 
+Functional Dependency (Section 4.3.3) to learn how to rid tables of partial dependencies. 
 
 
 4.3.3. FULL FUNCTIONAL DEPENDENCY 
@@ -647,45 +677,49 @@ eliminate from your database, or it will lead to data inconsistency errors.
 Before discussing the Full Functional Dependency, I want to talk about the concept of a
 'Minimum Viable Determinant Set'. When you create a determinant set, you can add 
 extraneous attributes to it, as the partial dependency example demonstrated. This does
-absolutely nothing useful, but it can serve as a source of confusion about nature of 
-dependencies in your table as well as open the door to data inconsistencies and 
-redundancies. Remember, partial dependency is not to be embraced, but eliminated. 
+absolutely nothing useful, but it will open the door to data inconsistencies and 
+redundancies as well as serve as a source of confusion about the nature of dependencies 
+in your table. Remember, partial dependency is not to be embraced, but eliminated. 
 
-Therefore, when you are creating candidate keys, it is necessary to reduce the set of 
-attributes to the bare minimum required to uniquely identify records. If you remove any 
-more attributes from this minimum set, you will lose the ability to uniquely identify 
-records, which is to say, you will break functional dependency. I call this the 'Minimum 
-Viable Determinant Set' (MVDS).
+'Full Functional Dependency' is what you get when you eliminate Partial Dependencies 
+from your table. It is a "good" kind of dependency. To make this happen, when you are 
+creating a candidate key, it is necessary to reduce the set of attributes in it to the 
+bare minimum required to uniquely identify records. If you remove anymore attributes 
+from this minimum set, you will lose the ability to uniquely identify records, which is 
+to say, you will break functional dependency. I call this the 'Minimum Viable Determinant 
+Set' (MVDS).
 
-'Full Functional Dependency' occurs when the conditions for functional dependency are met 
-AND the determinant set is an MVDS. In this situation, the dependant set is functionally 
-dependant on the entirety of the determinant set, not merely on a subset of it. To 
-rephrase: Full dependency describes a situation where dependent attribute(s) in a relation
-is dependant on ALL the component attributes of the determinant attribute(s). The operative 
-word here is "All". 'Full Functional Dependency' is a "good" sub-type of dependency.
+'Full Functional Dependency' occurs when the conditions for functional 
+dependency are met AND the determinant set is an MVDS. In this situation, the dependant 
+set is functionally dependant on the entirety of the determinant set, not merely on a 
+subset of it. To rephrase: Full dependency describes a situation where dependent 
+attribute(s) in a relation is dependant on ALL the component attributes of the 
+determinant attribute(s). The operative word here is "All". 
 
 Consider an 'Employee' relation with three attributes, 'EmployeeId', 'EmployeeName' and 
-'Location'. It can be represented like this: Employee(EmployeeId, EmployeeName, Location). 
+'Salary'. It can be represented like this: Employee(EmployeeId, EmployeeName, Salary). 
 'EmployeeId' is the primary key and the other two columns are non-key attributes. In this 
 example, the second and third attributes are fully dependent on the 'EmployeeId' 
-attribute. The relationship looks like this:
+attribute. The functional diagram looks like this:
 
 
-    EmployeeId  ->  EmployeeName, Location 
+    EmployeeId  -> { EmployeeName, Salary }
     
 
-Because 'EmployeeId' uniquely identifies employees, it functionally determines a value 
-for 'EmployeeName' and 'Location'. 'EmployeeName' and 'Location' each are fully dependant 
-on the entirety of the determinant set, which in this case is a single attribute primary 
-key. 
+Let's take a closer look at both sides of this relationship. Because 'EmployeeId' 
+uniquely identifies employees, it functionally determines a value for 'EmployeeName' 
+and 'Salary'. 'EmployeeName' and 'Salary' each are fully dependant on the entirety of 
+the determinant set. In this table, a state of full functional dependency exists between
+the determinant set and the determined set. 
 
-This is a simple case because the determinant set has only one attribute, but more 
+Aside: This is a simple case because the determinant set has only one attribute, but more 
 complex cases arise when the determinant set is composed of many keys. Indeed, violations
 of Second Normal Form occur only when you have multi-attribute primary keys. Thus, when 
-you have a composite primary key, you have to ensure that every dependent attribute 
-depends on every attribute in the composite key. By doing this, you eliminate partial
-dependencies and bring Full Functional Dependency to the attributes in your table. This
-should bring it into compliance with Second Normal Form.
+you have a composite primary key, to ensure 'Full Functional Dependency', you have to 
+see to it that every dependent attribute depends on every attribute in the composite key. 
+By doing this, you eliminate partial dependencies and bring Full Functional Dependency to 
+the attributes in your table. This should bring it into compliance with Second Normal 
+Form.
 
 
 4.3.4 TRANSITIVE DEPENDENCY
@@ -697,7 +731,7 @@ that is core to this idea. This axiom states the following:
     If A -> B, and B -> C, then A -> C
     
     
-The term 'transitive' in mathematics and logic, simply says that if some relationship 
+The term 'transitive' in mathematics and logic simply says that if some relationship 
 (such as equality, greater than, less than or functional dependency) exists between the 
 first and second elements, and also exists between the second and third elements, this 
 same relation will also hold between the first and third elements. Take a moment to 
@@ -713,9 +747,9 @@ The Functional Diagram looks like this:
     A -> B -> C
 
     
-Where A is a prime attribute, and B and C are non-prime attributes. This concept is a 
-bit tricky, so let's jump into an example. Take a look at the relation below, which was
-taken from Wikipedia: 
+A determines B which determines C, where A is a prime attribute, and B and C are 
+non-prime attributes. This concept is a bit tricky, so let's jump into an example. Take 
+a look at the relation below, which was taken from Wikipedia: 
 
 
         +----------------------+------+-----------------+------------------------+
@@ -730,28 +764,29 @@ taken from Wikipedia:
 
 The primary key is a composite one, made up of 'Tournament' and 'Year', making 'Winner' 
 and 'Winner's Date of Birth' non-prime attributes. The problem with this table is that
-the composite key has a transitive dependency relationship to the other two attributes.
-The composite key determines the 'Winner' attribute, which in turn determines the 
-'Winner's Date of Birth'.  
+the composite key has a transitive dependency relationship to the other two non-key 
+attributes. The composite key determines the 'Winner' attribute, which in turn 
+determines the 'Winner's Date of Birth'.  
 
 Why is this a problem? Well, oddly enough, when you have three attributes that are in a 
-state of Transitive Dependance, the relationship stops being Transitive. More 
+state of Transitive Dependence, the relationship stops being Transitive. More 
 specifically, this happens when the middle attribute is a non-prime attribute. In the 
 example above, due to the fact that 'Winner' is non-prime, the composite key does not 
 determine the 'Winner's Date of Birth' column. The Functional Dependence relationship 
 has broken, and sure enough, if you check the last column, you will find duplicate values 
 in it. 
 
-If the 'Winner' column of any record is changed, you have to manually update the 
-'Winner's DOB' column and vice versa. If you fail to ensure that the values have been 
-simultaneously updated, you will get data inconsistencies on top of data duplication 
-issues. As I have said before, if you have a human in charge of cross-checking records to 
-prevent anomalies, you know how this situation is going to end: the person will fail and 
-the database will fill up with rubbish. This, in turn, will lead to update anomalies.
+This is the problem with Transitive Dependencies: they cause Update Anomalies. If the 
+'Winner' column of any record is changed, you have to manually update the 'Winner's DOB' 
+column and vice versa. If you fail to ensure that the values have been simultaneously 
+updated, you will get data inconsistencies on top of data duplication issues. As I have 
+said before, if you have a human in charge of cross-checking columns and records to 
+uphold data consistency, you know how this situation is going to end: the person will 
+fail and the database will fill up with rubbish. 
 
 Therefore, transitive dependencies are "bad" - they violate Third Normal Form. In a well-
 designed table, you have non-prime attributes directly depending on prime attributes. 
-Three-part dependencies seem lead to anomalies. For this reason, a good database design 
+Three-way dependencies seem lead to anomalies. For this reason, a good database design 
 needs to eliminate indirect dependencies on non-prime columns. In this table, you can 
 eliminate this problem by creating a new 'Winners' table and moving the 'Winner's DOB' 
 attribute into it. You can use the add a 'Names' column and populate it with the names 
