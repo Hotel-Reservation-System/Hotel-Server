@@ -811,9 +811,9 @@ minor extension to the Third Normal Form. The fourth and fifth forms come into p
 when you have multi-value dependencies, which is rather rare. The sixth form seems to be 
 treated like a theoretical oddity.  
 
-The Forms are mainly properties of a relation. Therefore, you have to scrutinize every 
-table in your database and apply the forms to each one in order to give your database a
-good design.
+The Forms are mainly properties of a relation. Therefore, doing Normalization means you 
+have to scrutinize every table in your database and apply the forms to each one in order 
+to give your database a good design.
 
 
 5.1 UNNORMALIZED FORM (UNF or 0NF)
@@ -828,8 +828,8 @@ As you start the Normalization process, remember these guidelines:
     * A table is about one topic. Create a table for each set of related data. Do not 
       forget to give it a meaningful name. 
       
-    * Moving on, Normalization is about removing columns that do not belong in a table. 
-      When you analyze a table and find unnecessary dependencies and columns, remove the 
+    * Normalization is about removing columns that do not belong in a table. When you 
+      analyze a table and find unnecessary dependencies and columns, remove the 
       troublesome columns to a new table or re-evaluate their existence.
 
     
@@ -838,30 +838,30 @@ As you start the Normalization process, remember these guidelines:
 These are the criteria of First Normal Form:
 
       
-    * In a relation, a field is the intersection of a row and a column. It is the most 
-      fundamental unit of storage in a database. You can store a data fragment in it.
-      This piece of data must be atomic, i.e. a piece of data that cannot or should not 
-      be divided into smaller pieces. (For example of the latter case, you can divide 
-      date values into separate year, month and date columns, but this is widely regarded 
-      as a poor idea.) 
+    1. In a relation, a field is the intersection of a row and a column. It is the most 
+       fundamental unit of storage in a database. You can store a data fragment in it.
+       This piece of data must be atomic, i.e. a piece of data that cannot or should not 
+       be divided into smaller pieces. (As a counter-example, you can divide date values 
+       into separate year, month and date columns, but this is widely regarded as a poor 
+       idea.) 
       
-    * A field must, at most, contain only one piece of data. 1NF prohibits multi-value 
-      fields. This applies to all fields in all tables. Do not use commas, semi-colons or 
-      other delimiters to put multiple values into a field. Databases treat multi-value
-      fields as a single value. 
+    2. A field must, at most, contain only one piece of data. 1NF prohibits multi-value 
+       fields. This applies to all fields in all tables. Do not use commas, semi-colons 
+       or other delimiters to put multiple values into a field. Databases treat 
+       multi-value fields as a single value. 
       
-      Applying 1NF lets the database track, store and display data in a tabular format. 
-      Violating 1NF will mean that the database is no longer tracking the extra values in
-      multi-value fields. This will prevent the database from applying domain integrity 
-      constraints to them. This will lead to an increase in the amount of low-quality 
-      or inconsistent data in your database.
+       Applying 1NF lets the database track, store and display data in a tabular format. 
+       Violating 1NF will mean that the database is no longer tracking the extra values 
+       in multi-value fields. This will prevent the database from applying domain 
+       integrity constraints to them, leading to an increase in the amount of low-quality 
+       or inconsistent data in your database.
     
-    * Eliminate repeating groups from tables. Repeating groups are columns with the same
-      name, but different numbers at the end. They are a special case of multi-value 
-      fields. They usually occur when you try to get rid of multi-value fields by 
-      creating new columns. The best way to eliminate repeating groups is to study the 
-      table, find and identify the set of data related to repeating groups and move them 
-      into a new table. 
+    3. Eliminate repeating groups from tables. Repeating groups are columns with the same
+       name, but different numbers at the end. They are a special case of multi-value 
+       fields. They usually occur when you try to get rid of multi-value fields by 
+       creating new columns. The best way to eliminate repeating groups is to study the 
+       table, find and identify the set of data related to repeating groups and move them 
+       into a new table. 
           
     
 This principle is hard to understand in the abstract, so consider the table below[7]. It 
@@ -879,11 +879,11 @@ to be tracked. This will be done in the last column, which is called 'DeviceSeri
     +------------+-----------+----------+-----------------------+--------------+
 
 
-So far, this table lets the company track the devices they given to employees and as a
-bonus, complies with 1NF. However, what happens if employees are given more than one 
+So far, this table lets the company track the devices they have given to employees and as 
+a bonus, complies with 1NF. However, what happens if employees are given more than one 
 device? The easiest solution to the problem is to add additional devices to the 
-DeviceSerial column, separated by commas and other delimiters. This is what it would look
-like:
+'DeviceSerial' column, separated by commas and other delimiters. This is what it would 
+look like:
 
 
 +------------+-----------+----------+-----------------------+--------------------------------------------+
@@ -902,7 +902,7 @@ for data becomes extremely difficult in a database that fails 1NF compliance. Th
 problem is that this practice retards a database's full abilities to categorize and 
 manage data. If you use multi-value fields, you are now responsible for enforcing data 
 types, and other data integrity constraints for potentially millions of records. So, 
-don't go there. Let your database manage the data and enforce types and constraints. All 
+do NOT go there. Let your database manage the data and enforce types and constraints. All 
 you have to do to offload this responsibility to the database is put a maximum of one 
 value in a field.  
 
@@ -920,24 +920,24 @@ device per column. See the table below:
 +------------+-----------+----------+-----------------------+---------------+---------------+---------------+
 
 
-Creating multiple columns in the vein of DeviceSerial1, DeviceSerial2, DeviceSerial3 etc., 
-is called a REPEATING GROUP. The existence of repeating groups also violates First Normal 
-Form. Therefore, this is also something you should NEVER do. The classic sign of a 
-repeating group is identical column names with different numbers tacked on the end of it 
-to make unique names. 
+Creating multiple columns in the vein of 'DeviceSerial1', 'DeviceSerial2', 
+'DeviceSerial3' etc., is called a REPEATING GROUP. The existence of repeating groups also 
+violates First Normal Form. Therefore, this is also something you should NEVER do. The 
+classic sign of a repeating group is identical column names with different numbers tacked 
+on the end of it to make unique names. 
 
 Repeating groups are a sign of inflexible design; they do not scale well. What happens 
 when employees from the quality control department need to be given 10 different devices 
-each? Giving an employee a new device should not necessitate changes to a database's 
-schema. 
+each? Add ten columns to the table just for these employees? That's absurd. Giving an 
+employee a new device should not necessitate changes to a database's schema. 
 
 No, the correct response to such a problem is to create a new table that tracks devices,
 with 'EmployeeId' as foreign key. You can move the 'DeviceSerial' column to this new 
 table and add new ones, like 'DeviceType' and 'Description' to help the business better 
 track its devices. After doing this, you can establish a one-to-many relationship between 
 the 'Employee' and 'Devices' table, where the 'One' side is the 'Employee' table and the 
-'Many' side being the 'Devices' table. This is the modified 'Employees' table may look 
-like:
+'Many' side being the 'Devices' table. This is what the modified 'Employees' table may 
+look like:
 
     
     +------------+-----------+----------+-----------------------+
@@ -964,51 +964,54 @@ This is what the 'Devices' table might look like:
     
 You can use 'EmployeeId' to query the 'Devices' table and find a list of all devices that
 a given employee had been loaned. With this design modification, there are no repeating 
-groups in tables or multipe values in any field.
+groups in tables or multiple values in any field.
 
-Note that the trouble with the original table was that table's design was too broad: 
-extraneous columns were stuck in there. The 'Employees' table should not contain data 
-from the 'Devices' table. Often, as was the case in this example, the typical solution to 
-a normalization problem is the creation of a new table.
+Note that the trouble with the original table was that table's was too accepting: it had 
+several extraneous columns in there. However, by applying 1NF to the original table, it
+helped us to understand that our table had mixed up the columns from two distinct 
+tables: 'Employees' and 'Devices' table. Often, as was the case in this example, the 
+typical solution to a normalization problem is to create a new table and move extraneous 
+columns into it.
   
     
 5.3 SECOND NORMAL FORM (2NF)
 
 These are the requirements for Second Normal Form: 
       
-    * The first requirement for Second Normal Form is that the table is in First Normal
-      Form. Full compliance with 1NF is a mandatory requirement for full compliance with 
-      2NF.
+    1. The first requirement for Second Normal Form is that the table is in First Normal
+       Form. Full compliance with 1NF is a mandatory requirement for full compliance with 
+       2NF.
     
-    * Second Normal Form is concerned with the relationship between Key columns and 
-      Non-key columns. More specifically, 2NF is only a problem for tables that use a 
-      composite primary key. A composite key is a primary key that is composed of values 
-      from two or more columns. It appears that composite keys are used when there are no 
-      candidate keys in a table, i.e., no single attribute that can determine the values 
-      of the other non-prime attributes. If you use a composite key, you must pay close
-      attention to its relationship to other non-key columns in that table. If a table 
-      has a single-attribute primary key, which is the case most of the time, then you do 
-      not have to worry: the table is automatically compliant with 2NF. 
+    2. Second Normal Form is concerned with the relationship between Key columns and 
+       Non-key columns. More specifically, 2NF is only a problem for tables that use a 
+       composite primary key. A composite key is a primary key that is composed of values 
+       from two or more columns. It appears that composite keys are used when there are 
+       no candidate keys in a table, i.e., no single attribute that can determine the 
+       values of the other non-prime attributes. If you use a composite key, you must pay 
+       close attention to its relationship to other non-key columns in that table. If a 
+       table has a single-attribute primary key, which is the case most of the time, then 
+       you do not have to worry: the table is automatically compliant with 2NF. 
     
-      But what happens when you have a composite key? As a composite key is composed of 
-      two or more attributes, it is possible for some of the non-prime attributes in a 
-      table to be dependent on only some of the component attributes of the composite 
-      key. This happens when the composite key is not a Minimum Viable Determinant Set. 
-      The composite key has extraneous columns in it, which causes Partial Functional 
-      Dependence between the composite key and (some of) the non-prime elements in
-      the table. This is a violation of 2NF. 
+       But what happens when you have a composite key? As a composite key is composed of 
+       two or more attributes, it is possible for some of the non-prime attributes in a 
+       table to be dependent on only some of the component attributes of the composite 
+       key. This happens when the composite key is not a Minimum Viable Determinant Set. 
+       The composite key has extraneous columns in it, which causes Partial Functional 
+       Dependence between the composite key and (some of) the non-prime elements in
+       the table. This is a violation of 2NF. 
       
-      If your table does use a composite key, 2NF demands that all non-prime attributes
-      must be dependant on the entire key. Stated another way, non-key attributes must be 
-      fully functionally dependent on all constituent attributes of the composite key. 
+       If your table does use a composite key, 2NF demands that all non-prime attributes
+       must be dependant on the entire key. Stated another way, non-key attributes must 
+       have full functional dependence on all constituent attributes of the composite 
+       key. 
       
-      Therefore, to effect 2NF, you will have to ensure that all non-prime attributes in 
-      a table are in a state of Full Functional Dependence on the composite key. To do
-      this, remove all extraneous columns from the composite key and make it an MVDS. 
+       Therefore, to effect 2NF, you will have to ensure that all non-prime attributes in 
+       a table are in a state of Full Functional Dependence on the composite key. To do
+       this, remove all extraneous columns from the composite key and make it an MVDS. 
       
-      Then, check the relationship between a non-prime column and the all the columns in 
-      the composite key to see if is fully dependant on all of them. Repeat this process 
-      for all the non-prime attributes. 
+       Then, check the relationship between each non-prime column and the all the columns in 
+       the composite key to see if is fully dependant on all of them. Repeat this process 
+       for all the non-prime attributes in the table.
     
     
 Once again, this is hard to understand without a actual example, so consider the example
@@ -1030,8 +1033,8 @@ This is an 'Events' table for a school. It uses a composite primary key that was
 by combining the 'Course' and 'Date' columns. This was done because the 'Course' column 
 alone cannot uniquely identify a course due to the fact that the another class for this 
 course can run on another date. However, if you combine the first two columns, this 
-combination of values can help you locate a specific course. Thus, this combination of 
-attributes can act as a primary key. 
+combination of values can help you locate a specific course. Therefore, this combination 
+of attributes can act as a primary key. 
 
 As Second Normal Form requires us to pay close attention to non-prime keys if you have a 
 composite key, lets take a closer look. Is there a problem with this table? Yes. The 
@@ -1050,8 +1053,8 @@ data inconsistencies. Multiply the number of the tables in your database by numb
 records in each table to get a feeling for how many flawed records you get if you decline
 to implement 2NF. You do not want to be in charge of finding and correcting all these 
 records by hand. As you can see, this is not just an academic point, it indicates a 
-structural weakness in the design of your table. The best thing you can do is design this 
-table in such a way that these problems cannot manifest.  
+structural weakness in the design of your table. The best thing you can do is re-design 
+this table in such a way that these problems cannot manifest.
 
 How do you do that? By applying 2NF: All non-key columns must depend on the entirety of 
 the composite key. Again, the solution to a normalization process is the creation of a
@@ -1095,29 +1098,29 @@ Second Normal Form.
 
 These are the requirements of Third Normal Form:
 
-    * The first requirement for Third Normal Form is that the table is in Second Normal
-      Form. As 2NF requires compliance with 1NF, effecting 3NF first requires compliance
-      with both First and Second Normal Form. Full compliance with 1NF and 2NF is a 
-      mandatory pre-requisite for full compliance with 3NF.
+    1. The first requirement for Third Normal Form is that the table is in Second Normal
+       Form. As 2NF requires compliance with 1NF, effecting 3NF first requires compliance
+       with both First and Second Normal Form. Full compliance with 1NF and 2NF is a 
+       mandatory pre-requisite for full compliance with 3NF.
       
-    * 3NF is concerned with the relationship between Non-key attributes. Branko 
-      Dimitrijevic explains that Third Normal Form tries to enforce this general 
-      principle[8]: "All attributes should depend on the key, whole key and nothing but 
-      the key." Transitive Dependencies are a kind of "bad" dependency that flouts this
-      principle. Oppel defines this term on page 203[1]: "An attribute that depends on 
-      another attribute that is not the primary key of the relation is said to be 
-      transitively dependent." As a Transitive Dependency involves a non-prime attribute 
-      determining another non-prime attribute, such dependencies violate Dimitrijevic's 
-      principle. For this reason, 3NF calls for the elimination of all Transitive 
-      Dependencies in your tables. 
+    2. 3NF is concerned with the relationship between Non-key attributes. Branko 
+       Dimitrijevic explains that Third Normal Form tries to enforce this general 
+       principle[8]: "All [non-key?] attributes should depend on the key, whole key and 
+       nothing but the key." Transitive Dependencies are a kind of "bad" dependency that 
+       flouts this principle. Oppel defines this term on page 203[1]: "An attribute that 
+       depends on another attribute that is not the primary key of the relation is said to
+       be transitively dependent." As a Transitive Dependency involves a non-prime 
+       attribute determining another non-prime attribute, such dependencies violate 
+       Dimitrijevic's principle. For this reason, 3NF calls for the elimination of all 
+       Transitive Dependencies in your tables. 
       
-      This means that functional dependencies between non-prime attributes are prohibited. 
-      3NF accepts functional dependencies only between the primary key and a non-prime 
-      attribute. This is the order of things according to Third Normal Form: Every table 
-      ought to have a primary key which on all the other attributes are functionally 
-      dependant. There should be no dependencies between non-prime columns. The presence 
-      of a transitive dependency means that the dependant non-prime column does not 
-      belong in that table.  
+       This means that functional dependencies between non-prime attributes are prohibited. 
+       3NF accepts functional dependencies only between the primary key and a non-prime 
+       attribute. This is the order of things according to Third Normal Form: Every table 
+       ought to have a primary key which on all the other attributes are functionally 
+       dependant. There should be no dependencies between non-prime columns. The presence 
+       of a transitive dependency means that the dependant non-prime column does not 
+       belong in that table.  
       
 
 Let's go back to the example from Second Normal Form. Here is the 'Events' table[7]:
@@ -1166,10 +1169,10 @@ This is the new 'Events' table:
             +--------+-----------+-----------+
 
 
-Note how it shed so many of its attributes as the Normal Forms were applied to it. Let's 
-move on to an example that will highlight a common design mistake that leads to 
-Transitive Dependencies. Look at the 'OrderItem' table below, which calculates parts of
-an invoice[7]: 
+Note how the 'Events' table shed so many of its attributes as the Normal Forms were 
+applied to it. Let's move on to an example that will highlight a common design mistake 
+that leads to Transitive Dependencies. Look at the 'OrderItem' table below, which 
+calculates parts of an invoice[7]: 
 
 
         +-------+---------+-----------+----------+-----------+--------+
@@ -1192,10 +1195,10 @@ should NOT do this.
 If the values of one non-key can be ascertained from another field(s), it may lead to 
 hard-to-resolve conflicts. If an order is updated and its quantity or unit price changed, 
 the 'Total' column does not automatically get updated. If you fail to update the total, 
-and notice the discrepancy at a later time, you face a serious data inconsistency problem: 
-Which of the values is wrong? Is it the 'Quantity' value, 'UnitPrice' or the 'Total'? 
-This is the reason that 3NF exists - to prevent your database from devolving into a 
-chaotic mess of conflicting values.
+and notice the discrepancy at a later time, you face a serious data inconsistency 
+problem: Which of the values is wrong? Is it the 'Quantity' value, 'UnitPrice' or the 
+'Total'? This is the reason that 3NF exists - to prevent your database from devolving 
+into a chaotic mess of conflicting values.
 
 You can resolve this problem by removing the transitively dependent column from the 
 table. But if the information in the 'Total' column is valuable to you, can you keep it
@@ -1211,55 +1214,51 @@ cannot be corrupted by human error.
 
 BCNF has two requirements:
 
-    * The relation must be in Third Normal Form. As the Forms are cumulative, this means
-      that 1NF, 2NF and 3NF must be applied to your table before you can apply BCNF. 
+    1. The relation must be in Third Normal Form. As the Forms are cumulative, this means
+       that 1NF, 2NF and 3NF must be applied to your table before you can apply BCNF. 
       
-    * BCNF is an extension of Third Normal Form and was created to strengthen it. This is
-      due to certain rare anomalies that 3NF does not prevent. BCNF closes these 
-      loopholes. The techopedia article on BCNF explains the circumstances that led to the 
-      development of this extension Form[9]: "3NF states that all data in a table must 
-      depend only on that table’s primary key, and not on any other field in the table. 
-      At first glance it would seem that BCNF and 3NF are the same thing. However, in 
-      some rare cases it does happen that a 3NF table is not BCNF-compliant. This may 
-      happen in tables with two or more overlapping composite candidate keys." 
-    
-      Oppel provides more detail about what BCNF is designed to prevent on page 206[1]: 
-      "It addresses anomalies that occur when a non-key attribute is a determinant of an 
-      attribute that is part of the primary key (that is, when an attribute that is part 
-      of the primary key is functionally dependent on a non-key attribute)." These are 
-      anomalies that occur in tables with multiple candidate keys. 
+    2. The Second Normal Form addresses anomalies that arise when non-key attributes 
+       fail to be fully dependent on all parts of a composite key. To put it more 
+       generally, 2NF deals with the relationship between non-key and key attributes. 
+       The Third Normal Form addresses situations that occur when non-prime attributes 
+       determine other non-prime attributes. However, one situation has been left
+       unresolved: what happens if a non-prime attribute determines a prime attribute? 
+       
+       Recall that 3NF says that all non-key attributes in a table must depend only on 
+       the primary key, the whole key and nothing but the key. Cases where a non-prime 
+       attribute derives a prime attribute should be covered by 3NF but are not. BCNF is 
+       an extension of Third Normal Form that is designed to strengthen it by addressing 
+       this loophole. In some rare cases, a 3NF-compliant table is not BCNF-compliant. It 
+       appears that BCNF violations are common in tables with overlapping composite keys, 
+       i.e. two or more composite keys have at least one attribute in common. (??)
+      
+       What is the exact situation that BCNF is designed to prevent? Oppel explains on 
+       page 206[9]: "It addresses anomalies that occur when a non-key attribute is a 
+       determinant of an attribute that is part of the primary key (that is, when an 
+       attribute that is part of the primary key is functionally dependent on a non-key 
+       attribute)."
   
-      Oppel explains BCNF's prime criterion on page 206[1]: "No determinants exist that 
-      are not either the primary key or a candidate key for the table. That is, a non-key 
-      attribute may not uniquely identify (determine) any other attribute, including one 
-      that participates in the primary key."  
-      
-      In the Second Normal Form, we have addressed cases where non-prime attributes 
-      depend upon prime attributes. In the Third Normal Form, we have addressed situations 
-      that arise when non-prime attributes depended upon other non-prime attributes. The 
-      one possibility that the first three Normal Forms have not addressed is what happens 
-      if a non-prime attribute determines a prime attribute? BCNF addresses this 
-      situation. 
-      
-      BCNF demands that, for any dependency where A derives B (A -> B), A must be a 
-      candidate key. Rephrased: BCNF states that if B is a prime attribute, then A cannot 
-      be a non-prime attribute. 
-      
-      In other words, BCNF insists that every determinant in a table be a candidate key. 
-      A candidate key is the most minimum set of attributes in a table that can be used 
-      to uniquely identify a record. In an article[10], Agnieszka Kozubek puts it this 
-      way: "Informally the Boyce-Codd normal form is expressed as “Each attribute must 
-      represent a fact about the key, the whole key, and nothing but the key.”" 
+       Oppel explains BCNF's prime criterion on page 206[1]: "No determinants exist that 
+       are not either the primary key or a candidate key for the table. That is, a 
+       non-key attribute may not uniquely identify (determine) any other attribute, 
+       including one that participates in the primary key."  
+       
+       To rephrase Oppel, BCNF demands that, for any dependency where A derives B 
+       (A -> B), A must be a candidate key. Rephrased again: BCNF states that if B is a 
+       prime attribute, then A cannot be a non-prime attribute. In other words, BCNF 
+       insists that every determinant in a table be a candidate key. (A candidate key is 
+       the most minimum set of attributes in a table that can be used to uniquely 
+       identify a record.) 
 
     
 If ever there was a concept in need of an example, it is this one. BCNF is a bit more 
 impenetrable than the first three Normal Forms, but it is still understandable. The 
-example below is taken from MariaDb's Docs[11]. It depicts a 'Student Enrollment' table. 
+example below is taken from MariaDb's Docs[10]. It depicts a 'Student Enrollment' table. 
 You should make the following assumptions about the attributes in it:
 
 
-    * Each instructor takes only one course
-    * Each course can have one or more instructors
+    * Each instructor teaches only one course
+    * Each course can have multiple sessions (with an instructor teaching a maximum of one session)
     * Each student only has one instructor per course
     * Each student can take one or more courses 
 
@@ -1279,14 +1278,14 @@ and 'Course'. The table complies with 1NF. It complies with 2NF because the 'Stu
 'Course' attributes both determine the 'Instructor' column. Therefore, the 'Instructor' 
 column is fully dependent on both attributes of the composite key. The table also easily
 complies with 3NF's demand that no non-key attribute be dependent on any other non-key
-attribute: there's only one non-key field, 'Instructor'! So what's the problem? 
+attribute because there's only one non-key field, 'Instructor'! So what's the problem? 
 
 Look at the third and fourth rows. There are two students taking Philosophy 427, which 
 results in the instructor's name (Richard Mbappe) being stored twice. This is a data 
 redundancy problem that the current design of our table fails to eliminate. This happened 
 because 'Instructor' determines 'Course', which stated generically is: a non-prime 
 attribute determines a prime attribute. In other words, 'Instructor' determines 'Course', 
-but 'Instructor' is not a super key. Thus, this table fails to enforce BCNF. 
+but 'Instructor' is not a super key. Thus, this table fails to comply with BCNF. 
 
 The solution is to move the 'Course' attribute to a separate table, along with its key.
 This leaves only two attributes in the original table, as you can see below: 
@@ -1341,8 +1340,8 @@ Normalization in certain places).
 The act of re-designing a database's tables, trading away some data integrity, increasing 
 data redundancy and potentially the incidence of anomalies, in return for something else 
 is called DENORMALIZATION. Note that Denormalization does mean not doing Normalization; 
-it is done after successfully normalizing your database, when the circumstances require 
-you to make such a tradeoff.   
+it is done at some point after you have successfully normalized your database, when the 
+circumstances require you to make such a tradeoff.   
 
 For example here is an example table[7]: 
 
@@ -1369,10 +1368,10 @@ province from a postal code, this is not always so. Reality is not that straight
 there could be multiple towns in one postal code or postal codes that overlap two 
 provinces.
 
-The point of this example is to remind you that you need to really understand your data
-before you make a decision to Normalize or Denormalize. Corner cases and nuances abound
-in real world data, and you have to account for this when designing your tables. It's 
-important to be informed when making structural changes to your database.     
+The point of this example is to remind you that it's important to be informed when making 
+structural changes to your database. You need to really understand your data before you 
+make a decision to Normalize or Denormalize. Corner cases and nuances abound in real 
+world data, and you have to account for this when (re-)designing your tables. 
 
 
 ****************************************************************************************************
@@ -1389,6 +1388,5 @@ SOURCES
 06: https://stackoverflow.com/questions/4199444/functional-dependency-and-normalization
 07: Programming Foundations: Databases (Lynda.com, Simon Allardice, 2015)
 08: https://stackoverflow.com/questions/9950367/what-is-wrong-with-a-transitive-dependency
-09: https://www.techopedia.com/definition/5642/boyce-codd-normal-form-bcnf
-10: https://www.vertabelo.com/blog/technical-articles/boyce-codd-normal-form-bcnf
-11: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
+09: Databases - A Beginner's Guide (Andy Oppel, 2009)
+10: https://mariadb.com/kb/en/library/database-normalization-boyce-codd-normal-form/
